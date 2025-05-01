@@ -8,3 +8,4 @@
 - Matheus Davi Leão: 15520593
 
 ## Descrição do Projeto
+Escolhemos o projeto A1 - Assistente para Organização Pessoal. O programa sera desenvolvido pensando no caso de uso dos docentes da usp
