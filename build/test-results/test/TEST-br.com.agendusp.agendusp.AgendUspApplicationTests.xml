@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.agendusp.agendusp.AgendUspApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-05-01T23:03:23.427Z" hostname="x220" time="0.949">
+  <properties/>
+  <testcase name="contextLoads()" classname="br.com.agendusp.agendusp.AgendUspApplicationTests" time="0.949"/>
+  <system-out><![CDATA[20:03:18.915 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [br.com.agendusp.agendusp.AgendUspApplicationTests]: AgendUspApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+20:03:19.103 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration br.com.agendusp.agendusp.AgendUspApplication for test class br.com.agendusp.agendusp.AgendUspApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2025-05-01T20:03:19.958-03:00  INFO 25228 --- [agendUSP] [    Test worker] b.c.a.agendusp.AgendUspApplicationTests  : Starting AgendUspApplicationTests using Java 21.0.6 with PID 25228 (started by enoch in /home/enoch/projects/MAC0321-Project)
+2025-05-01T20:03:19.962-03:00  INFO 25228 --- [agendUSP] [    Test worker] b.c.a.agendusp.AgendUspApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2025-05-01T20:03:23.402-03:00  INFO 25228 --- [agendUSP] [    Test worker] b.c.a.agendusp.AgendUspApplicationTests  : Started AgendUspApplicationTests in 3.961 seconds (process running for 5.908)
+]]></system-out>
+  <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build what is described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/home/enoch/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.15.11/a38b16385e867f59a641330f0362ebe742788ed8/byte-buddy-agent-1.15.11.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>
