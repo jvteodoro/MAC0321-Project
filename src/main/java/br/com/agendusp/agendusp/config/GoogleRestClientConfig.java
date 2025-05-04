@@ -10,10 +10,12 @@ import org.springframework.web.client.RestClient;
 public class GoogleRestClientConfig {
 
     @Bean
-    public RestClient googleRestClient(OAuth2AuthorizedClientManager authorizedClientManager){
-        OAuth2ClientHttpRequestInterceptor requestInterceptor =
-        new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
-        return RestClient.builder().requestInterceptor(requestInterceptor)
+    public RestClient restClient(OAuth2AuthorizedClientManager authorizedClientManager){
+        System.out.println("INSIDE GOOGLE REST CLIENT");
+        OAuth2ClientHttpRequestInterceptor interceptor = new OAuth2ClientHttpRequestInterceptor(authorizedClientManager);
+
+        return RestClient.builder().requestInterceptor(interceptor)
+        .baseUrl("https://www.googleapis.com/calendar/v3/users/me/calendarList")
         .build();
     }
 }
