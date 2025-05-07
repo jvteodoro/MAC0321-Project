@@ -63,8 +63,10 @@ public class CalendarController {
         //System.out.println("ID: "+SecurityContextHolder.getContext().getAuthentication());
         //return result;
         //
+        
         ResponseEntity<String> calList = googleRestClient.get()
-        .retrieve().toEntity(String.class);
+                .uri("/calendarList")
+                .retrieve().toEntity(String.class);
         return calList;
     }
 
