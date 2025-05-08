@@ -1,0 +1,9 @@
+task('start', group: 'npm', type: Exec) {
+    executable 'npm'
+    args '--prefix', './app', 'run', 'start'
+}
+
+task('build', group: 'npm', type: Exec) {
+    executable 'npm'
+    args '--prefix', './app', 'run', 'build'
+}
