@@ -15,12 +15,13 @@ java {
 group = 'br.com.agendusp'
 version = '0.0.1-SNAPSHOT'
 
-task('build', group: 'build') {
-    dependsOn ':backend:build'
-}
+//task('build', group: 'build') {
+//    dependsOn ':backend:build'
+//}
 
-task('run', group: 'custom') {
-    dependsOn ':backend:bootRun'
+//task('run', group: 'custom') {
+//    dependsOn ':backend:bootRun'
+//}
 repositories {
 	mavenCentral()
 }
