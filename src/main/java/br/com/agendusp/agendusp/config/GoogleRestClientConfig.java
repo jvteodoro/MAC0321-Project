@@ -9,27 +9,18 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestClient;
 
-import br.com.agendusp.agendusp.components.Interceptor;
-
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+
 @Configuration
 public class GoogleRestClientConfig {
 
-    private final Interceptor interceptor;
+	@Bean
+	public RestClient restClient(OAuth2AuthorizedClientManager authorizedClientManager) {
 
-    GoogleRestClientConfig(Interceptor interceptor) {
-        this.interceptor = interceptor;
-    }
-
-    @Bean
-    public RestClient restClient(OAuth2AuthorizedClientManager authorizedClientManager, Interceptor interceptor) {
-        System.out.println("INSIDE GOOGLE REST CLIENT");
-    
-        
-        return RestClient.builder()
-                .requestInterceptor(this.interceptor)
+		return RestClient.builder()
                 .baseUrl("https://www.googleapis.com/calendar/v3/users/me")
-                .build();
-    }
+				//.requestInterceptor(requestInterceptor)
+				.build();
+	}
 }
