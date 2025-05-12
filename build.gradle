@@ -1,0 +1,7 @@
+group = 'br.com.agendusp'
+version = '0.0.1-SNAPSHOT'
+
+task('buildAll', group: 'build') {
+    dependsOn ':backend:build'
+    dependsOn ':frontend:build'
+}

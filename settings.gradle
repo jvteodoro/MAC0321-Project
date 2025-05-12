@@ -1,2 +1,3 @@
 rootProject.name = 'agendusp'
-include("backend")
+include 'backend'
+include 'frontend'
