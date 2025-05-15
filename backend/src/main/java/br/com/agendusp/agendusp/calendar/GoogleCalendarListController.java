@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-public class GoogleCalendarListController { // implements CalendarListController {
+public class GoogleCalendarListController implements CalendarListController {
 
     private final RestClient restClient;
     private final OAuth2AuthorizedClient auhtorizedClient;
@@ -28,7 +28,34 @@ public class GoogleCalendarListController { // implements CalendarListController
 
     }
 
-    public HttpStatusCode delete(){}
+    /**
+     * Remove uma agenda da lista de agendas do usuário.
+     *
+     * @param calendarId o ID da agenda a ser removida (ex.: "primary" ou o ID customizado)
+     * @return 204 No Content em caso de sucesso, ou 500 em caso de erro
+     */
+    @Override
+    @DeleteMapping("/google/calendarList/{calendarId}")
+    public ResponseEntity<Void> delete(@PathVariable String calendarId) {
+        try {
+            restClient.delete()
+                .uri(uriBuilder -> uriBuilder
+                    .path("/calendar/v3/users/me/calendarList/{id}")
+                    .build(calendarId))
+                .headers(headers -> 
+                    headers.setBearerAuth(
+                        authorizedClient.getAccessToken().getTokenValue()))
+                .retrieve()
+                .toBodilessEntity()   // esperamos sem corpo de resposta
+                .block();             // bloqueia até completar a chamada
+
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatusCode.valueOf(500)).build();
+        }
+    }
+
     public ArrayList<Calendar> get(Calendar calendar){}
     public CalendarList insert(Calendar calendar){}
 
