@@ -36,7 +36,7 @@ public class GoogleCalendarListController implements CalendarListController {
      */
     @Override
     @DeleteMapping("/google/calendarList/{calendarId}")
-    public ResponseEntity<Void> delete(@PathVariable String calendarId) {
+    public ResponseEntity<Void> delete(@PathVariable String calendarId, OAuth2AuthorizedClient authorizedClient) {
         try {
             restClient.delete()
                 .uri(uriBuilder -> uriBuilder
@@ -55,9 +55,9 @@ public class GoogleCalendarListController implements CalendarListController {
             return ResponseEntity.status(HttpStatusCode.valueOf(500)).build();
         }
     }
-
+/*
     public ArrayList<Calendar> get(Calendar calendar){}
-    public CalendarList insert(Calendar calendar){}
+    public CalendarList insert(Calendar calendar){}*/
 
     @GetMapping("/google/calendarList/list")
     public CalendarList list(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
@@ -66,8 +66,8 @@ public class GoogleCalendarListController implements CalendarListController {
                 .headers(headers -> headers.setBearerAuth(auhtorizedClient.getAccessToken().getTokenValue()))
                 .retrieve().toEntity(Json.class);
         CalendarListResource calendarListResource = new CalendarListResource();
-    }
+    }/*
     public CalendarList patch(Calendar calendar){}
     public CalendarList update(Calendar calendar){}
-    public WatchResponse watch(WatchRequest watchRequest){}
+    public WatchResponse watch(WatchRequest watchRequest){}*/
 }
