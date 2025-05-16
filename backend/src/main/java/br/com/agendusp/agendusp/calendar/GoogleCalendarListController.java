@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
 import com.google.api.client.json.Json;
+import com.google.gson.Gson;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,10 +21,12 @@ public class GoogleCalendarListController implements CalendarListController {
 
     private final RestClient restClient;
     private final OAuth2AuthorizedClient auhtorizedClient;
+    private final Gson gson;
 
-    public GoogleCalendarListController(OAuth2AuthorizedClient authorizedClient, RestClient restClient ) {
+    public GoogleCalendarListController(OAuth2AuthorizedClient authorizedClient, RestClient restClient, Gson gson) {
         this.restClient = restClient;
         this.auhtorizedClient = authorizedClient;
+        this.gson = gson;
 
 
     }
@@ -58,16 +61,33 @@ public class GoogleCalendarListController implements CalendarListController {
 /*
     public ArrayList<Calendar> get(Calendar calendar){}
     public CalendarList insert(Calendar calendar){}*/
+    public HttpStatusCode delete(){}
+    public CalendarListResource get(Calendar calendar){
 
-    @GetMapping("/google/calendarList/list")
-    public CalendarList list(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
-          ResponseEntity<Json> calList = restClient.get()
-                .uri("/calendarList")
+        ResponseEntity<Json> calendarResponse = restClient.get()
+                .uri("https://www.googleapis.com/calendar/v3/users/me/calendarList/"+calendar.getId())
                 .headers(headers -> headers.setBearerAuth(auhtorizedClient.getAccessToken().getTokenValue()))
                 .retrieve().toEntity(Json.class);
-        CalendarListResource calendarListResource = new CalendarListResource();
-    }/*
-    public CalendarList patch(Calendar calendar){}
-    public CalendarList update(Calendar calendar){}
-    public WatchResponse watch(WatchRequest watchRequest){}*/
+        CalendarListResource calRes = new Gson.fromJson(calendarResponse.getBody(), CalendarListResource.class);
+        return new CalendarListResource(gson);
+    }
+    
+    CalendarListResource insert(Calendar calendar){}
+
+    @GetMapping("/google/calendarList/list")
+    public CalendarListResource list(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+          ResponseEntity<Gson> calList = restClient.get()
+                .uri("/calendarList")
+                .headers(headers -> headers.setBearerAuth(auhtorizedClient.getAccessToken().getTokenValue()))
+                .retrieve().toEntity(Gson.class);
+        CalendarListResource calendarListResource = new CalendarListResource(calList.getBody());
+        return calendarListResource;
+    }
+    //public CalendarListResource patch(Calendar calendar){}
+    //public CalendarListResourceve().toEntity(Json.class);
+    //    CalendarListResource calendarListResource = new CalendarListResource();
+    //}
+    public CalendarList patch(Calendar calendar){return new CalendarList()}
+    public CalendarList update(Calendar calendar){return new CalendarList()}
+    public WatchResponse watch(WatchRequest watchRequest){return new WatchResponse()}*/
 }
