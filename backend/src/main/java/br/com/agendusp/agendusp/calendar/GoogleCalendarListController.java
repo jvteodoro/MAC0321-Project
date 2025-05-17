@@ -144,9 +144,31 @@ public class GoogleCalendarListController implements CalendarListController {
         //update conforme orientação do google api
     }
 
+    public CalendarList update(Calendar calendar){
+        if (calendar == null || calendar.getId() == null || calendar.getId().isEmpty()){
+            throw new IllegalArgumentException("Calendar ou ID do calendar não pode ser nulo/vazio.");
+        }
 
+        try{
+            String calendarJson = gson.toJson(calendar);
 
+            //Requisição para API
+            ResponseEntity<String> response = restClient.put()
+            .uri("https://www.googleapis.com/calendar/v3/users/me/calendarList/" + calendar.getId())
+            .headers(headers -> headers.setBearerAuth(auhtorizedClient.getAccessToken().getTokenValue()))
+            .body(calendarJson)
+            .retrieve()
+            .toEntity(String.class);
+
+            CalendarList updatedCalendarList = gson.fromJson(response.getBody(), CalendarList.class);
+            return updatedCalendarList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao atualizar o calendário: " + e.getMessage(), e);
+        }
+    }
     /* 
-    public CalendarList update(Calendar calendar){}
+    
     public WatchResponse watch(WatchRequest watchRequest){}*/
 }
