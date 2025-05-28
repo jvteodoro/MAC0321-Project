@@ -1,5 +1,0 @@
-package calendario
-
-class Evento{
-
-}
