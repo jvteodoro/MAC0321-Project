@@ -65,10 +65,7 @@ public class GoogleCalendarListController implements CalendarListController {
 /*
     public ArrayList<Calendar> get(Calendar calendar){}
     public CalendarList insert(Calendar calendar){}*/
-<<<<<<< HEAD
-=======
 
->>>>>>> b53c134a3afbd253ca264018d0168797fc905e6b
     public CalendarListResource get(Calendar calendar){
 
         ResponseEntity<Json> calendarResponse = restClient.get()
