@@ -89,12 +89,10 @@ public class GoogleCalendarListController implements CalendarListController {
         CalendarListResource calendarListResource = new CalendarListResource(calList.getBody());
         return calendarListResource;
     }
-    //public CalendarListResource patch(Calendar calendar){}
     //public CalendarListResourceve().toEntity(Json.class);
     //    CalendarListResource calendarListResource = new CalendarListResource();
     //}
-    // public CalendarList patch(Calendar calendar){return new CalendarList();}
-    // public CalendarList update(Calendar calendar){return new CalendarList()}
+
     public WatchResponse watch(WatchRequest watchRequest){
         ResponseEntity<Gson> response = restClient.post()
         .uri("https://www.googleapis.com/calendar/v3/users/me/calendarList/watch")
@@ -158,7 +156,7 @@ public class GoogleCalendarListController implements CalendarListController {
     }
 
     //
-    public CalendarListResource update(Calendar calendar){
+    public CalendarListResource update(CalendarListResource calendar){
         if (calendar == null || calendar.getId() == null || calendar.getId().isEmpty()){
             throw new IllegalArgumentException("Calendar ou ID do calendar não pode ser nulo/vazio.");
         }
