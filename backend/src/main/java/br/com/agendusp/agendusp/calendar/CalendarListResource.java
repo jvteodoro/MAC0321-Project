@@ -50,6 +50,108 @@ public class CalendarListResource {
         this.primary = gson.toJsonTree(this).getAsJsonObject().get("primary").getAsString();
         this.deleted = gson.toJsonTree(this).getAsJsonObject().get("deleted").getAsBoolean();
     }
-
+    public String getKind() {
+        return kind;
+    }
+    public void setKind(String kind) {
+        this.kind = kind;
+    }
+    public String getEtag() {
+        return etag;
+    }
+    public void setEtag(String etag) {
+        this.etag = etag;
+    }
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+    public String getSummary() {
+        return summary;
+    }
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    public String getLocation() {
+        return location;
+    }
+    public void setLocation(String location) {
+        this.location = location;
+    }
+    public String getTimeZone() {
+        return timeZone;
+    }
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+    public String getSummaryOverride() {
+        return summaryOverride;
+    }
+    public void setSummaryOverride(String summaryOverride) {
+        this.summaryOverride = summaryOverride;
+    }
+    public String getColorId() {
+        return colorId;
+    }
+    public void setColorId(String colorId) {
+        this.colorId = colorId;
+    }
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+    public String getForegroundColor() {
+        return foregroundColor;
+    }
+    public void setForegroundColor(String foregroundColor) {
+        this.foregroundColor = foregroundColor;
+    }
+    public boolean isHidden() {
+        return hidden;
+    }
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+    public boolean isSelected() {
+        return selected;
+    }
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+    public String getAccessRole() {
+        return accessRole;
+    }
+    public void setAccessRole(String accessRole) {
+        this.accessRole = accessRole;
+    }
+    public String getPrimary() {
+        return primary;
+    }
+    public void setPrimary(String primary) {
+        this.primary = primary;
+    }
+    public boolean isDeleted() {
+        return deleted;
+    }
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+    public ArrayList<Calendar> getCalendars() {
+        return calendars;
+    }
+    public void setCalendars(ArrayList<Calendar> calendars) {
+        this.calendars = calendars;
+    }
+    
 
 }
