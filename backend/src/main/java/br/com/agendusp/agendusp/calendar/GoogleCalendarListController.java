@@ -65,7 +65,7 @@ public class GoogleCalendarListController implements CalendarListController {
 /*
     public ArrayList<Calendar> get(Calendar calendar){}
     public CalendarList insert(Calendar calendar){}*/
-    public HttpStatusCode delete(){}
+
     public CalendarListResource get(Calendar calendar){
 
         ResponseEntity<Json> calendarResponse = restClient.get()
@@ -77,7 +77,6 @@ public class GoogleCalendarListController implements CalendarListController {
     }
     
     public CalendarListResource insert(Calendar calendar){
-        return new CalendarListResource();
     }
 
     @GetMapping("/google/calendarList/list")
@@ -86,6 +85,7 @@ public class GoogleCalendarListController implements CalendarListController {
                 .uri("/calendarList")
                 .headers(headers -> headers.setBearerAuth(auhtorizedClient.getAccessToken().getTokenValue()))
                 .retrieve().toEntity(Gson.class);
+        
         CalendarListResource calendarListResource = new CalendarListResource(calList.getBody());
         return calendarListResource;
     }
@@ -181,7 +181,4 @@ public class GoogleCalendarListController implements CalendarListController {
             throw new RuntimeException("Erro ao atualizar o calendário: " + e.getMessage(), e);
         }
     }
-    /* 
-    
-    public WatchResponse watch(WatchRequest watchRequest){}*/
 }
