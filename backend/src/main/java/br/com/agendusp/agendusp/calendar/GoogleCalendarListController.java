@@ -76,7 +76,9 @@ public class GoogleCalendarListController implements CalendarListController {
         return new CalendarListResource(gson);
     }
     
-    CalendarListResource insert(Calendar calendar){}
+    public CalendarListResource insert(Calendar calendar){
+        return new CalendarListResource();
+    }
 
     @GetMapping("/google/calendarList/list")
     public CalendarListResource list(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
