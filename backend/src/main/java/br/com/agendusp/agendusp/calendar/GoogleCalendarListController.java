@@ -87,13 +87,20 @@ public class GoogleCalendarListController implements CalendarListController {
     //public CalendarListResourceve().toEntity(Json.class);
     //    CalendarListResource calendarListResource = new CalendarListResource();
     //}
-    public CalendarList patch(Calendar calendar){return new CalendarList()}
-    public CalendarList update(Calendar calendar){return new CalendarList()}
-    public WatchResponse watch(WatchRequest watchRequest){return new WatchResponse()}
+    // public CalendarList patch(Calendar calendar){return new CalendarList();}
+    // public CalendarList update(Calendar calendar){return new CalendarList()}
+    public WatchResponse watch(WatchRequest watchRequest){
+        ResponseEntity<Gson> response = restClient.post()
+        .uri("https://www.googleapis.com/calendar/v3/users/me/calendarList/watch")
+        .headers(headers -> headers.setBearerAuth(auhtorizedClient.getAccessToken().getTokenValue()))
+        .body(watchRequest)
+        .retrieve()
+        .toEntity(Gson.class);
+        return new WatchResponse(response.getBody());
+    }
     //            .retrieve().toEntity(Json.class);
     //    CalendarListResource calendarListResource = new CalendarListResource();
     
-    // patch nao mexe no id, primary, etag, kind, accessRole, deleted (atualizar no get e no list)
     //quem fez esse acho legal verificar eses campos
     
     
