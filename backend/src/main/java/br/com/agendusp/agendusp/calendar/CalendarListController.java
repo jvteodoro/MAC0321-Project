@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 public interface CalendarListController {
     public ResponseEntity<Void> delete(String calendarId, OAuth2AuthorizedClient authorizedClient);
     public CalendarListResource get(Calendar calendar);
-    public CalendarListResource insert(Calendar calendar);
+    public CalendarListResource insert(Calendar calendar, OAuth2AuthorizedClient authorizedClient);
     public CalendarListResource list(OAuth2AuthorizedClient authorizedClient); 
     public CalendarListResource patch(Calendar calendar);
     public CalendarListResource update(Calendar calendar);

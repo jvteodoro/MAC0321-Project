@@ -9,6 +9,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -60,17 +62,18 @@ public class CalendarListResource {
         this.deleted = gson.toJsonTree(this).getAsJsonObject().get("deleted").getAsBoolean();
     }
     
-    public CalendarListResource insert(CalendarListResource calendar, String accessToken) throws IOException {
+    public CalendarListResource insert(CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient) throws IOException {
         Gson gson = new GsonBuilder().serializeNulls().create(); // Inclui nulls, se necessário
-
         // Converte o objeto CalendarListResource em JSON
         String jsonRequest = gson.toJson(calendar);
+        // Pega o token de acesso de formas magicas
+        String accessToken = authorizedClient.getAccessToken().getTokenValue();
 
         // URL da API do Google Calendar para criação de calendários (mudar metodo deprecated dps)
         URL url = new URL("https://www.googleapis.com/calendar/v3/calendars");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-        // Configurações da conexão (alterar forma de acessar token dps)
+        // Configurações da conexão 
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Authorization", "Bearer " + accessToken);
         conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
