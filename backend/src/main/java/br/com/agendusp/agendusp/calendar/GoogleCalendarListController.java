@@ -141,7 +141,8 @@ public class GoogleCalendarListController implements CalendarListController {
     // CalendarListResource calendarListResource = new CalendarListResource();
     // }
 
-    public WatchResponse watch(WatchRequest watchRequest) {
+    public WatchResponse watch(WatchRequest watchRequest,
+            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         ResponseEntity<Gson> response = restClient.post()
                 .uri("https://www.googleapis.com/calendar/v3/users/me/calendarList/watch")
                 .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
