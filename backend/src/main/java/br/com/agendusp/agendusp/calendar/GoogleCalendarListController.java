@@ -82,49 +82,16 @@ public class GoogleCalendarListController implements CalendarListController {
         CalendarListResource calRes = new Gson.fromJson(calendarResponse.getBody(), CalendarListResource.class);
         return new CalendarListResource(gson);
     }
-
-    public CalendarListResource insert(CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient)
-            throws IOException {
-        Gson gson = new GsonBuilder().serializeNulls().create(); // Inclui nulls, se necessário
-        // Converte o objeto CalendarListResource em JSON
-        String jsonRequest = gson.toJson(calendar);
-        // Pega o token de acesso de formas magicas
-        String accessToken = authorizedClient.getAccessToken().getTokenValue();
-
-        // URL da API do Google Calendar para criação de calendários (mudar metodo
-        // deprecated dps)
-        URL url = new URL("https://www.googleapis.com/calendar/v3/calendars");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        // Configurações da conexão
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Authorization", "Bearer " + accessToken);
-        conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-        conn.setDoOutput(true);
-
-        // Envia o JSON do calendário na requisição
-        try (OutputStream os = conn.getOutputStream()) {
-            byte[] input = jsonRequest.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
-
-        // Verifica o código de resposta
-        int responseCode = conn.getResponseCode();
-        if (responseCode == 200 || responseCode == 201) {
-            // Lê a resposta JSON do servidor
-            try (InputStream is = conn.getInputStream();
-                    InputStreamReader isr = new InputStreamReader(is, "utf-8")) {
-                return gson.fromJson(isr, CalendarListResource.class);
-            }
-        } else {
-            // Lê e exibe o corpo da resposta de erro
-            try (InputStream err = conn.getErrorStream();
-                    Scanner scanner = new Scanner(err).useDelimiter("\\A")) {
-                String errorResponse = scanner.hasNext() ? scanner.next() : "";
-                throw new IOException("Erro ao inserir calendário: HTTP " + responseCode + "\n" + errorResponse);
-            }
-        }
-    }
+    public CalendarListResource insert(CalendarListResource calendar,
+        @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        ResponseEntity<Gson> response = restClient.post()
+                .uri("https://www.googleapis.com/calendar/v3/calendars")
+                .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
+                .body(calendar)
+                .retrieve()
+                .toEntity(Gson.class);
+        return new CalendarListResource(response.getBody());
+}
 
     @GetMapping("/google/calendarList/list")
     public CalendarListResource list(
@@ -206,7 +173,6 @@ public class GoogleCalendarListController implements CalendarListController {
         // update conforme orientação do google api
     }
 
-    //
     public CalendarListResource update(CalendarListResource calendar) {
         if (calendar == null || calendar.getId() == null || calendar.getId().isEmpty()) {
             throw new IllegalArgumentException("Calendar ou ID do calendar não pode ser nulo/vazio.");
