@@ -3,6 +3,7 @@ package br.com.agendusp.agendusp.calendar;
 import org.springframework.http.HttpStatusCode;
 
 public interface EventsController {
+    public HttpStatusCode cancel(String calendarID, String eventId, String sendUpdates);
     public HttpStatusCode delete(String calendarId, String eventId, String sendUpdates);
     public AbstractEvent get(String calendarId, String eventId,
         String timeZone, String alwaysIncludeEmail, String maxAttendees);
