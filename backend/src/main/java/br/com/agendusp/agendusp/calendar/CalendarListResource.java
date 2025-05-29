@@ -1,8 +1,17 @@
 package br.com.agendusp.agendusp.calendar;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Scanner;
 
+import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class CalendarListResource {
     
@@ -50,6 +59,47 @@ public class CalendarListResource {
         this.primary = gson.toJsonTree(this).getAsJsonObject().get("primary").getAsString();
         this.deleted = gson.toJsonTree(this).getAsJsonObject().get("deleted").getAsBoolean();
     }
+    
+    public CalendarListResource insert(CalendarListResource calendar, String accessToken) throws IOException {
+        Gson gson = new GsonBuilder().serializeNulls().create(); // Inclui nulls, se necessário
+
+        // Converte o objeto CalendarListResource em JSON
+        String jsonRequest = gson.toJson(calendar);
+
+        // URL da API do Google Calendar para criação de calendários (mudar metodo deprecated dps)
+        URL url = new URL("https://www.googleapis.com/calendar/v3/calendars");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        // Configurações da conexão (alterar forma de acessar token dps)
+        conn.setRequestMethod("POST");
+        conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+        conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        conn.setDoOutput(true);
+
+        // Envia o JSON do calendário na requisição
+        try (OutputStream os = conn.getOutputStream()) {
+            byte[] input = jsonRequest.getBytes("utf-8");
+            os.write(input, 0, input.length);
+    }
+
+        // Verifica o código de resposta
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 200 || responseCode == 201) {
+            // Lê a resposta JSON do servidor
+            try (InputStream is = conn.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is, "utf-8")) {
+                return gson.fromJson(isr, CalendarListResource.class);
+        }
+    } else {
+            // Lê e exibe o corpo da resposta de erro
+            try (InputStream err = conn.getErrorStream();
+                Scanner scanner = new Scanner(err).useDelimiter("\\A")) {
+                String errorResponse = scanner.hasNext() ? scanner.next() : "";
+                throw new IOException("Erro ao inserir calendário: HTTP " + responseCode + "\n" + errorResponse);
+        }
+    }
+}
+
     public String getKind() {
         return kind;
     }
