@@ -1,17 +1,14 @@
 package br.com.agendusp.agendusp.calendar;
 
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.api.client.json.Json;
 import com.google.gson.Gson;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -36,32 +33,23 @@ public class LocalCalendarListController implements CalendarListController {
     
 
     @GetMapping("/calendarList")
-    public CalendarListResource get(String calendarId){
-        return new CalendarListResource(gson);
+    public String get(String calendarId){
+        return gson.toJson(new CalendarListResource(gson));
     }
     
     @PostMapping("/calendarList/insert")
-    public Json insert(@RequestBody CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient){
+    public String insert(@RequestBody CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient){
         dataController.addCalendar(calendar);
-        return calendar;
+        return gson.toJson(calendar);
     }
-    public Json list(OAuth2AuthorizedClient authorizedClient){
-        return dataController.getCalendars();
+    public String list(OAuth2AuthorizedClient authorizedClient){
+        return gson.toJson(dataController.getCalendars());
     } 
-    public Json patch(CalendarListResource calendar){
-        return dataController.patchCalendar(calendar.getId(), calendar);
+    public String patch(CalendarListResource calendar){
+        return gson.toJson(dataController.patchCalendar(calendar.getId(), calendar));
     }
-    public Json update(CalendarListResource calendar){
-        return dataController.updateCalendar(calendar.getId(), calendar);
-    }
-    public Json watch(WatchRequest watchRequest){
-        WatchResponse watchResponse = new WatchResponse(gson);
-        watchResponse.setId("watch-id");
-        watchResponse.setResourceId("resource-id");
-        watchResponse.setResourceUri("https://example.com/watch");
-        watchResponse.setExpiration(1728000000L); // 20 dias em milissegundos
-        watchResponse.setKind("api#watchResponse");
-        return watchResponse;
+    public String update(CalendarListResource calendar){
+        return gson.toJson(dataController.updateCalendar(calendar.getId(), calendar));
     }
 
 }
