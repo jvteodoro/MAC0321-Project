@@ -2,7 +2,7 @@ package br.com.agendusp.agendusp.calendar;
 
 import com.google.api.services.calendar.model.Event.ExtendedProperties;
 
-public abstract class AbstractEvent {
+public abstract class EventResource {
 
     int links; // It's necessary to know how many calendars links this event.
             // If it is 0, the event can be deleted.
