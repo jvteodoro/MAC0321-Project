@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 @RestController
 public class LocalEventsController implements EventsController {
@@ -39,23 +40,8 @@ public class LocalEventsController implements EventsController {
         return gson.toJson(null);
     }
 
-    /*
-    Documentação: toJsonTree() transforma o objeto em uma árvore JSON manipulável
-    (JsonElement), que pode ser convertida facilmente em RequestBody.
-     */
-
     public String update(String calendarId, String eventId, EventsResource event) {
-        JsonObject body = new JsonObject(); //atualização total
-
-        body.add("start", gson.toJsonTree(event.getStart())); // usa tree para objetos aninhados
-        body.add("end", gson.toJsonTree(event.getEnd()));
-        body.addProperty("summary", event.getSummary());
-        body.addProperty("location", event.getLocation());
-        if (event.getAttendees() !=null) {
-            body.add("attendees", gson.toJsonTree(event.getAttendees()));
-        }
-        
-        return gson.toJson(dataController.updateEvent(eventId, body));
+        return gson.toJson(dataController.updateEvent(eventId, event));
     }
 
     public String patch(String calendarId, String eventId, EventsResource event) {
@@ -77,6 +63,6 @@ public class LocalEventsController implements EventsController {
             body.add("attendees", gson.toJsonTree(event.getAttendees()));
         }
         
-        return gson.toJson(dataController.patchEvent(eventId, body));
+        return gson.toJson(dataController.patchEvent(eventId, gson.fromJson(body, EventsResource.class)));
     }
 }

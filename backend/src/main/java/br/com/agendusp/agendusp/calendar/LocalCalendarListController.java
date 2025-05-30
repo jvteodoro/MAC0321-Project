@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,14 +48,7 @@ public class LocalCalendarListController implements CalendarListController {
 
 
     public String update(CalendarListResource calendar) {
-        JsonObject body = new JsonObject(); // atualização total
-
-        body.addProperty("description", calendar.getDescription());
-        body.addProperty("location", calendar.getLocation());
-        body.addProperty("summary", calendar.getSummary());
-        body.addProperty("timeZone", calendar.getTimeZone());
-
-        return gson.toJson(dataController.updateCalendar(calendar.getId(), body));
+        return gson.toJson(dataController.updateCalendar(calendar.getId(), calendar));
     }
 
     public String patch(CalendarListResource calendar) {
@@ -73,7 +67,6 @@ public class LocalCalendarListController implements CalendarListController {
             body.addProperty("timeZone", calendar.getTimeZone());
         }
 
-        return gson.toJson(dataController.patchCalendar(calendar.getId(), body));
+        return gson.toJson(dataController.patchCalendar(calendar.getId(), gson.fromJson(body, CalendarListResource.class)));
     }
 }
-
