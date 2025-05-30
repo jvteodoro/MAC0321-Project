@@ -3,6 +3,7 @@ package br.com.agendusp.agendusp.calendar;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class CalendarListResource {
 
@@ -36,20 +37,21 @@ public class CalendarListResource {
     }
 
     public CalendarListResource(Gson gson) {
-        this.id = gson.toJsonTree(this).getAsJsonObject().get("id").getAsString();
-        this.summary = gson.toJsonTree(this).getAsJsonObject().get("summary").getAsString();
-        this.description = gson.toJsonTree(this).getAsJsonObject().get("description").getAsString();
-        this.location = gson.toJsonTree(this).getAsJsonObject().get("location").getAsString();
-        this.timeZone = gson.toJsonTree(this).getAsJsonObject().get("timeZone").getAsString();
-        this.summaryOverride = gson.toJsonTree(this).getAsJsonObject().get("summaryOverride").getAsString();
-        this.colorId = gson.toJsonTree(this).getAsJsonObject().get("colorId").getAsString();
-        this.backgroundColor = gson.toJsonTree(this).getAsJsonObject().get("backgroundColor").getAsString();
-        this.foregroundColor = gson.toJsonTree(this).getAsJsonObject().get("foregroundColor").getAsString();
-        this.hidden = gson.toJsonTree(this).getAsJsonObject().get("hidden").getAsBoolean();
-        this.selected = gson.toJsonTree(this).getAsJsonObject().get("selected").getAsBoolean();
-        this.accessRole = gson.toJsonTree(this).getAsJsonObject().get("accessRole").getAsString();
-        this.primary = gson.toJsonTree(this).getAsJsonObject().get("primary").getAsString();
-        this.deleted = gson.toJsonTree(this).getAsJsonObject().get("deleted").getAsBoolean();
+        JsonObject json = gson.toJsonTree(this).getAsJsonObject();
+        this.id = json.get("id").getAsString();
+        this.summary = json.get("summary").getAsString();
+        this.description = json.get("description").getAsString();
+        this.location = json.get("location").getAsString();
+        this.timeZone = json.get("timeZone").getAsString();
+        this.summaryOverride = json.get("summaryOverride").getAsString();
+        this.colorId = json.get("colorId").getAsString();
+        this.backgroundColor = json.get("backgroundColor").getAsString();
+        this.foregroundColor = json.get("foregroundColor").getAsString();
+        this.hidden = json.get("hidden").getAsBoolean();
+        this.selected = json.get("selected").getAsBoolean();
+        this.accessRole = json.get("accessRole").getAsString();
+        this.primary = json.get("primary").getAsString();
+        this.deleted = json.get("deleted").getAsBoolean();
     }
 
     public String getKind() {

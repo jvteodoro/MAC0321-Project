@@ -52,13 +52,15 @@ public class DataController implements AbstractDataController {
     }
 
     @Override
-    public void updateEvent(String eventId, EventsResource eventResource) {
+    public EventsResource updateEvent(String eventId, EventsResource eventResource) {
         // Implementação para atualizar um evento específico de um calendário
+        return null;
     }
-
+    
     @Override
-    public void patchEvent(String eventId, EventsResource eventResource) {
+    public EventsResource patchEvent(String eventId, EventsResource eventResource) {
         // Implementação para atualizar parcialmente
+        return null;
     }
 
     @Override
