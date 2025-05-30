@@ -4,11 +4,14 @@ import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.springframework.data.couchbase.core.mapping.Document;
 
+@Document
 public class CalendarListResource {
 
     String kind = "calendar#calendarListEntry";
     String etag;
+    @Id
     String id;
     String summary;
     String description;

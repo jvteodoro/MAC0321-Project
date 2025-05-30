@@ -2,11 +2,23 @@ package br.com.agendusp.agendusp.calendar;
 
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import br.com.agendusp.agendusp.repositories.CalendarListRepository;
+
 public class DataController implements AbstractDataController {
     // Calendars
+    @Autowired
+    private final CalendarListRepository calendarListRepository;
+
+    public DataController(CalendarListRepository calendarListRepository){
+        this.calendarListRepository = calendarListRepository;
+    }
+
     @Override
     public void addCalendar(CalendarListResource calResource) {
         // Implementação para adicionar um calendário
+        calendarListRepository.insert(calResource);
     }
 
     @Override
