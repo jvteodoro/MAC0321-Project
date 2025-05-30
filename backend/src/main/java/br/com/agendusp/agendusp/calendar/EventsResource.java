@@ -22,12 +22,12 @@ public class EventsResource {
     String colorId;
     CalendarPerson creator;
     CalendarPerson organizer;
-    TimePoint start;
-    TimePoint end;
+    EventDate start;
+    EventDate end;
     boolean endTimeUnspecified;
     String[] recurrence;
     String recurringEventId;
-    TimePoint originalStartTime;
+    EventDate originalStartTime;
     String transparency;
     String visibility;
     String iCalUID;
@@ -39,8 +39,8 @@ public class EventsResource {
 
     public EventsResource(int links, String kind, String etag, String id, String status, String htmlLink,
             String created, String updated, String summary, String description, String location, String colorId,
-            CalendarPerson creator, CalendarPerson organizer, TimePoint start, TimePoint end,
-            boolean endTimeUnspecified, String[] recurrence, String recurringEventId, TimePoint originalStartTime,
+            CalendarPerson creator, CalendarPerson organizer, EventDate start, EventDate end,
+            boolean endTimeUnspecified, String[] recurrence, String recurringEventId, EventDate originalStartTime,
             String transparency, String visibility, String iCalUID, String sequence, Attendee[] attendees,
             boolean attendeesOmitted, ExtendedProperties extendedProperties, String hangoutLink) {
         this.links = links;
@@ -89,12 +89,12 @@ public class EventsResource {
         this.colorId = json.get("colorId").getAsString();
         this.creator = gson.fromJson(json.get("creator"), CalendarPerson.class);
         this.organizer = gson.fromJson(json.get("organizer"), CalendarPerson.class);
-        this.start = gson.fromJson(json.get("start"), TimePoint.class);
-        this.end = gson.fromJson(json.get("end"), TimePoint.class);
+        this.start = gson.fromJson(json.get("start"), EventDate.class);
+        this.end = gson.fromJson(json.get("end"), EventDate.class);
         this.endTimeUnspecified = json.get("endTimeUnspecified").getAsBoolean();
         this.recurrence = gson.fromJson(json.get("recurrence"), String[].class);
         this.recurringEventId = json.get("recurringEventId").getAsString();
-        this.originalStartTime = gson.fromJson(json.get("originalStartTime"), TimePoint.class);
+        this.originalStartTime = gson.fromJson(json.get("originalStartTime"), EventDate.class);
         this.transparency = json.get("transparency").getAsString();
         this.visibility = json.get("visibility").getAsString();
         this.iCalUID = json.get("iCalUID").getAsString();
@@ -189,16 +189,16 @@ public class EventsResource {
     public void setOrganizer(CalendarPerson organizer) {
         this.organizer = organizer;
     }
-    public TimePoint getStart() {
+    public EventDate getStart() {
         return start;
     }
-    public void setStart(TimePoint start) {
+    public void setStart(EventDate start) {
         this.start = start;
     }
-    public TimePoint getEnd() {
+    public EventDate getEnd() {
         return end;
     }
-    public void setEnd(TimePoint end) {
+    public void setEnd(EventDate end) {
         this.end = end;
     }
     public boolean isEndTimeUnspecified() {
@@ -219,10 +219,10 @@ public class EventsResource {
     public void setRecurringEventId(String recurringEventId) {
         this.recurringEventId = recurringEventId;
     }
-    public TimePoint getOriginalStartTime() {
+    public EventDate getOriginalStartTime() {
         return originalStartTime;
     }
-    public void setOriginalStartTime(TimePoint originalStartTime) {
+    public void setOriginalStartTime(EventDate originalStartTime) {
         this.originalStartTime = originalStartTime;
     }
     public String getTransparency() {
