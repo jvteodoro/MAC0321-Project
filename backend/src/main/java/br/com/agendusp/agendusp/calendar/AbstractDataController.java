@@ -12,8 +12,8 @@ public interface AbstractDataController {
     public void removeCalendar(String calendarId);
     public void addEvent(String calendarId, EventsResource eventResource);
     public EventsResource getEvent(String eventId, String calendarId);
-    public EventsResource updateEvent(String eventId, EventsResource eventResource);
+    public EventsResource updateEvent(String calendarId, String eventId, EventsResource eventResource);
     public ArrayList<EventsResource> getEvents(String calendarId);
-    public EventsResource patchEvent(String eventId, EventsResource eventResource);
+    public EventsResource patchEvent(String calendarId, String eventId, EventsResource eventResource);
     public void removeEvent(String eventId, String calendarId);
 }

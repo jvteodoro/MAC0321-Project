@@ -10,8 +10,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -33,25 +36,30 @@ public class LocalCalendarListController implements CalendarListController {
     }
     
 
-    @GetMapping("/calendarList")
-    public String get(String calendarId){
+    @GetMapping("/calendarList/get")
+    public String get(String calendarId, OAuth2AuthorizedClient authorizedClient){
+        // IMPLEMENTAR
         return gson.toJson(null);
     }
     
     @PostMapping("/calendarList/insert")
     public String insert(@RequestBody CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient){
+        // IMPLEMENTAR
         return gson.toJson(null);
     }
+
+    @GetMapping("/calendarList/list")
     public String list(OAuth2AuthorizedClient authorizedClient){
-        return gson.toJson(null);
+        return gson.toJson(dataController.getCalendars());
     }  
 
-
-    public String update(CalendarListResource calendar) {
+    @PutMapping("/calendarList/update")
+    public String update(@RequestBody CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient) {
         return gson.toJson(dataController.updateCalendar(calendar.getId(), calendar));
     }
 
-    public String patch(CalendarListResource calendar) {
+    @PatchMapping("/calendarList/patch")
+    public String patch(@RequestBody CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient) {
         JsonObject body = new JsonObject(); //atualização parcial (dos atributos nao nulos)
         
         if (calendar.getDescription() !=null) {
