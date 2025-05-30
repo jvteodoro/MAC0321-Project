@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 public class LocalEventsController implements EventsController {
@@ -33,10 +36,10 @@ public class LocalEventsController implements EventsController {
         // IMPLEMENTAR
         return gson.toJson(null);
     }
-
+    @PostMapping("/events/insert/{calendarId}")
     public String insert(String calendarId, EventsResource event, OAuth2AuthorizedClient authorizedClient) {
-        // IMPLEMENTAR
-        return gson.toJson(null);
+        dataController.addEvent(calendarId, event);
+        return gson.toJson(event);
     }
 
     @GetMapping("/events/list")
