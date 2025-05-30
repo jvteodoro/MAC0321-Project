@@ -1,17 +1,17 @@
 package br.com.agendusp.agendusp.calendar;
 
-import java.util.ArrayList;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 
+import com.google.api.client.json.Json;
+
 public interface CalendarListController {
     public ResponseEntity<Void> delete(String calendarId, OAuth2AuthorizedClient authorizedClient);
-    public CalendarListResource get(String calendarId);
-    public CalendarListResource insert(CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient);
-    public ArrayList<CalendarListResource> list(OAuth2AuthorizedClient authorizedClient); 
-    public CalendarListResource patch(CalendarListResource calendar);
-    public CalendarListResource update(CalendarListResource calendar);
-    public WatchResponse watch(WatchRequest watchRequest);
+    public Json get(String calendarId);
+    public Json insert(CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient);
+    public Json list(OAuth2AuthorizedClient authorizedClient); 
+    public Json patch(CalendarListResource calendar);
+    public Json update(CalendarListResource calendar);
+    public Json watch(WatchRequest watchRequest);
 
 }
