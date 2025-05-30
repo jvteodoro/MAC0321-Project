@@ -12,5 +12,5 @@ public class CalendarEvents {
     AbstractCalendarReminder[] defaultReminders;
     String nextPageToken;
     String nextSyncToken;
-    EventResource[] items;
+    EventsResource[] items;
 }

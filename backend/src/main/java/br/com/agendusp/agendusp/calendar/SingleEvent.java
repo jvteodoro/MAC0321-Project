@@ -1,5 +1,5 @@
-package br.com.agendusp.agendusp.calendar;
+// package br.com.agendusp.agendusp.calendar;
 
-public class SingleEvent extends EventResource {
+// public class SingleEvent extends EventsResource {
 
-}
+// }

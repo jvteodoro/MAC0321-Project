@@ -1,6 +1,6 @@
 package br.com.agendusp.agendusp.calendar;
 
-import com.google.api.services.calendar.model.ConferenceProperties;
+// import com.google.api.services.calendar.model.ConferenceProperties;
 import com.google.gson.Gson;
 
 public class GoogleCalendar implements Calendar{

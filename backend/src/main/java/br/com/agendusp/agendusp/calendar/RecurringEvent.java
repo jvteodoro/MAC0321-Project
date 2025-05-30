@@ -1,5 +1,5 @@
-package br.com.agendusp.agendusp.calendar;
+// package br.com.agendusp.agendusp.calendar;
 
-public class RecurringEvent extends EventResource {
+// public class RecurringEvent extends EventsResource {
 
-}
+// }
