@@ -34,22 +34,46 @@ public class LocalCalendarListController implements CalendarListController {
 
     @GetMapping("/calendarList")
     public String get(String calendarId){
-        return gson.toJson(new CalendarListResource(gson));
+        return gson.toJson(null);
     }
     
     @PostMapping("/calendarList/insert")
     public String insert(@RequestBody CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient){
-        dataController.addCalendar(calendar);
-        return gson.toJson(calendar);
+        return gson.toJson(null);
     }
     public String list(OAuth2AuthorizedClient authorizedClient){
-        return gson.toJson(dataController.getCalendars());
-    } 
-    public String patch(CalendarListResource calendar){
-        return gson.toJson(dataController.patchCalendar(calendar.getId(), calendar));
-    }
-    public String update(CalendarListResource calendar){
-        return gson.toJson(dataController.updateCalendar(calendar.getId(), calendar));
+        return gson.toJson(null);
+    }  
+
+
+    public String update(CalendarListResource calendar) {
+        JsonObject body = new JsonObject(); // atualização total
+
+        body.addProperty("description", calendar.getDescription());
+        body.addProperty("location", calendar.getLocation());
+        body.addProperty("summary", calendar.getSummary());
+        body.addProperty("timeZone", calendar.getTimeZone());
+
+        return gson.toJson(dataController.updateCalendar(calendar.getId(), body));
     }
 
+    public String patch(CalendarListResource calendar) {
+        JsonObject body = new JsonObject(); //atualização parcial (dos atributos nao nulos)
+        
+        if (calendar.getDescription() !=null) {
+            body.addProperty("description", calendar.getDescription());
+        }
+        if (calendar.getLocation() !=null) {
+            body.addProperty("location", calendar.getLocation());
+        }
+        if (calendar.getSummary() != null) {
+            body.addProperty("summary", calendar.getSummary());
+        }
+        if (calendar.getTimeZone() !=null) {
+            body.addProperty("timeZone", calendar.getTimeZone());
+        }
+
+        return gson.toJson(dataController.patchCalendar(calendar.getId(), body));
+    }
 }
+
