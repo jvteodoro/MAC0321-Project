@@ -22,6 +22,13 @@ public class DataController implements AbstractDataController {
     }
 
     @Override
+    public CalendarListResource patchCalendar(String calendarId, CalendarListResource calResource) {
+        // Implementação para atualizar parcialmente um calendário
+        return null;
+    }
+    
+
+    @Override
     public ArrayList<CalendarListResource> getCalendars() {
         // Implementação para obter todos os calendários
         return new ArrayList<>();
@@ -47,6 +54,11 @@ public class DataController implements AbstractDataController {
     @Override
     public void updateEvent(String eventId, EventsResource eventResource) {
         // Implementação para atualizar um evento específico de um calendário
+    }
+
+    @Override
+    public void patchEvent(String eventId, EventsResource eventResource) {
+        // Implementação para atualizar parcialmente
     }
 
     @Override
