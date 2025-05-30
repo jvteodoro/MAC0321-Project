@@ -39,13 +39,44 @@ public class LocalEventsController implements EventsController {
         return gson.toJson(null);
     }
 
-    public String patch(String calendarId, String eventId, EventsResource event) {
-        // IMPLEMENTAR
-        return gson.toJson(null);
-    }
+    /*
+    Documentação: toJsonTree() transforma o objeto em uma árvore JSON manipulável
+    (JsonElement), que pode ser convertida facilmente em RequestBody.
+     */
 
     public String update(String calendarId, String eventId, EventsResource event) {
-        // IMPLEMENTAR
-        return gson.toJson(null);
+        JsonObject body = new JsonObject(); //atualização total
+
+        body.add("start", gson.toJsonTree(event.getStart())); // usa tree para objetos aninhados
+        body.add("end", gson.toJsonTree(event.getEnd()));
+        body.addProperty("summary", event.getSummary());
+        body.addProperty("location", event.getLocation());
+        if (event.getAttendees() !=null) {
+            body.add("attendees", gson.toJsonTree(event.getAttendees()));
+        }
+        
+        return gson.toJson(dataController.updateEvent(eventId, body));
+    }
+
+    public String patch(String calendarId, String eventId, EventsResource event) {
+        JsonObject body = new JsonObject(); //atualizacão parcial (dos atributos nao nulos)
+
+        if (event.getStart() != null) {
+            body.add("start", gson.toJsonTree(event.getStart()));
+        }
+        if (event.getEnd() != null) {
+            body.add("end", gson.toJsonTree(event.getEnd()));
+        }
+        if (event.getSummary() != null) {
+            body.addProperty("summary", event.getSummary());
+        }
+        if (event.getLocation() != null) {
+            body.addProperty("location", event.getLocation());
+        }
+        if (event.getAttendees() != null) {
+            body.add("attendees", gson.toJsonTree(event.getAttendees()));
+        }
+        
+        return gson.toJson(dataController.patchEvent(eventId, body));
     }
 }
