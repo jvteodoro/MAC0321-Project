@@ -1,16 +1,23 @@
 package br.com.agendusp.agendusp.calendar;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
+import br.com.agendusp.agendusp.CustomOAuth2User;
 
 public interface CalendarListController {
-    public ResponseEntity<Void> delete(String calendarId, OAuth2AuthorizedClient authorizedClient);
-    public String get(String calendarId, OAuth2AuthorizedClient authorizedClient);
-    public String insert(CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient);
-    public String list(OAuth2AuthorizedClient authorizedClient); 
-    public String patch(CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient);
-    public String update(CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient);
-    
+    public ResponseEntity<Void> delete(String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser);
+
+    public String get(String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser);
+
+    public String insert(CalendarListResource calendar, @AuthenticationPrincipal CustomOAuth2User customUser);
+
+    public String list(@AuthenticationPrincipal CustomOAuth2User customUser);
+
+    public String patch(CalendarListResource calendar, @AuthenticationPrincipal CustomOAuth2User customUser);
+
+    public String update(CalendarListResource calendar, @AuthenticationPrincipal CustomOAuth2User customUser);
+
     // public String watch(WatchRequest watchRequest);
 
 }

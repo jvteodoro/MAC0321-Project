@@ -1,30 +1,34 @@
 package br.com.agendusp.agendusp.calendar;
 
-import org.springframework.http.HttpStatusCode;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
+import br.com.agendusp.agendusp.CustomOAuth2User;
 
 public interface EventsController {
-    public HttpStatusCode delete(String calendarId, String eventId, OAuth2AuthorizedClient authorizedClient);
+        public ResponseEntity<String> delete(String calendarId, String eventId,
+                        @AuthenticationPrincipal CustomOAuth2User customUser);
 
-    public String get(String calendarId, String eventId, OAuth2AuthorizedClient authorizedClient);
+        public String get(String calendarId, String eventId, @AuthenticationPrincipal CustomOAuth2User customUser);
 
-    // public String importEvent(String calendarId, EventResource event);
+        // public String importEvent(String calendarId, EventResource event);
 
-    public String insert(String calendarId, EventsResource event, OAuth2AuthorizedClient authorizedClient);
+        public String insert(String calendarId, EventsResource event,
+                        @AuthenticationPrincipal CustomOAuth2User customUser);
 
-    // public CalendarEvents instances(String calendarId, String eventId);
+        // public CalendarEvents instances(String calendarId, String eventId);
 
-    public String list(String calendarId, OAuth2AuthorizedClient authorizedClient);
+        public String list(String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser);
 
-    // public String move(String calendarId, String eventId, String destination);
+        // public String move(String calendarId, String eventId, String destination);
 
-    public String patch(String calendarId, EventsResource event,
-            OAuth2AuthorizedClient authorizedClient);
+        public String patch(String calendarId, EventsResource event,
+                        @AuthenticationPrincipal CustomOAuth2User customUser);
 
-    // public String quickAdd(String calendarId, String text);
+        // public String quickAdd(String calendarId, String text);
 
-    public String update(String calendarId, EventsResource event,
-            OAuth2AuthorizedClient authorizedClient);
+        public String update(String calendarId, EventsResource event,
+                        @AuthenticationPrincipal CustomOAuth2User customUser);
 
-    // public WatchResponse watch(String calendarId, WatchRequest watchRequest);
+        // public WatchResponse watch(String calendarId, WatchRequest watchRequest);
 }
