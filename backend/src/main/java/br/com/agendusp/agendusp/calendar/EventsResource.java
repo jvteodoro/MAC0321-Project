@@ -1,9 +1,13 @@
 package br.com.agendusp.agendusp.calendar;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.google.api.services.calendar.model.Event.ExtendedProperties;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+@Document
 public class EventsResource {
 
     int links; // It's necessary to know how many calendars links this event.
@@ -11,6 +15,7 @@ public class EventsResource {
 
     String kind;
     String etag;
+    @Id
     String id;
     String status;
     String htmlLink;

@@ -32,6 +32,7 @@ public class LocalCalendarListController implements CalendarListController {
     }
 
     public ResponseEntity<Void> delete(String calendarId, OAuth2AuthorizedClient authorizedClient){
+        // IMPLEMENTAR
         return ResponseEntity.status(HttpStatusCode.valueOf(200)).build();
     }
     

@@ -2,9 +2,11 @@ package br.com.agendusp.agendusp.calendar;
 
 import java.util.ArrayList;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import org.springframework.data.couchbase.core.mapping.Document;
 
 @Document
 public class CalendarListResource {
@@ -26,7 +28,7 @@ public class CalendarListResource {
     String accessRole;
     // ArrayList<DefaultReminder> defaultReminders;
     // ArrayList<> notificationSettings;
-    String primary;
+    boolean primary;
     boolean deleted;
     // ConferenceProperties conferenceProperties;
     ArrayList<Calendar> calendars;
@@ -53,7 +55,7 @@ public class CalendarListResource {
         this.hidden = json.get("hidden").getAsBoolean();
         this.selected = json.get("selected").getAsBoolean();
         this.accessRole = json.get("accessRole").getAsString();
-        this.primary = json.get("primary").getAsString();
+        this.primary = json.get("primary").getAsBoolean();
         this.deleted = json.get("deleted").getAsBoolean();
     }
 
@@ -169,11 +171,11 @@ public class CalendarListResource {
         this.accessRole = accessRole;
     }
 
-    public String getPrimary() {
+    public boolean getPrimary() {
         return primary;
     }
 
-    public void setPrimary(String primary) {
+    public void setPrimary(boolean primary) {
         this.primary = primary;
     }
 
