@@ -29,8 +29,16 @@ public class DataController implements AbstractDataController {
 
     @Override
     public CalendarListResource getCalendar(String calendarId, String userId) {
-        // Implementação para obter um calendário por ID
-        return null;
+        List<UserCalendarListRelation> relations = userCalendarListResourceAccessRelationRepository
+                .findAllByUserId(userId) //coloca em relations todas asa relaçoes do usurio com algum calendarion
+                .orElseThrow(() -> new IllegalArgumentException("O usuário não possui calendários"));
+        for (UserCalendarListRelation relation : relations) {
+            CalendarListResource calendar = calendarListRepository.findById(relation.getCalendarId()).orElse(null);
+            if (calendar.getId().equals(calendarId)) {
+                return calendar; // Retorna o calendário se encontrado
+            }
+        }
+        throw new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado.");
     }
 
     @Override
@@ -81,15 +89,24 @@ public class DataController implements AbstractDataController {
     @Override
     public EventsResource getEvent(String eventId, String calendarId,
             String userId) {
-        // Implementação para obter um evento específico de um calendário
-        return null;
+            EventsResource event = eventsRepository.findById(eventId)
+            .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId + "' não encontrado."));
+                for (Attendee attendee : event.getAttendees()) {
+                    if (attendee.calendarPerson.id() == userId) {
+                        return event; // Retorna o evento se encontrado
+                    }
+                }  
+            throw new IllegalArgumentException("Evento com ID '" + eventId + "' não encontrado para o usuário de ID '" + calendarId + "'.");
     }
 
     @Override
     public EventsResource updateEvent(String calendarId, String eventId, EventsResource eventResource,
             String userId) {
-        // Implementação para atualizar um evento específico de um calendário
+        //implementação para atualizar um evento
         return null;
+        
+    
+    }
     }
 
     @Override
