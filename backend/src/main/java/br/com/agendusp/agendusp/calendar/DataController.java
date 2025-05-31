@@ -5,16 +5,20 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.agendusp.agendusp.repositories.CalendarListRepository;
+import br.com.agendusp.agendusp.repositories.EventsRepository;
 
 public class DataController implements AbstractDataController {
-    // Calendars
-    @Autowired
+    
     private final CalendarListRepository calendarListRepository;
+    private final EventsRepository eventsRepository;
 
-    public DataController(CalendarListRepository calendarListRepository){
+    @Autowired
+    public DataController(CalendarListRepository calendarListRepository, EventsRepository eventsRepository){
         this.calendarListRepository = calendarListRepository;
+        this.eventsRepository = eventsRepository;
     }
 
+    // Calendars
     @Override
     public void addCalendar(CalendarListResource calResource) {
         // Implementação para adicionar um calendário
@@ -48,7 +52,11 @@ public class DataController implements AbstractDataController {
 
     @Override
     public void removeCalendar(String calendarId) {
-        // Implementação para remover um calendário
+        if (calendarListRepository.existsById(calendarId)) {
+            calendarListRepository.deleteById(calendarId);
+        } else {
+            throw new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado.");
+        }
     }
 
     // Events
@@ -83,7 +91,13 @@ public class DataController implements AbstractDataController {
 
     @Override
     public void removeEvent(String eventId, String calendarId) {
-        // Implementação para remover um evento de um calendário
-    }
+        EventsResource event = eventsRepository.findById(eventId)
+        .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId + "' não encontrado."));
 
+        if (!event.getCalendarId().equals(calendarId)) {
+            throw new IllegalArgumentException("Evento não pertence ao calendário informado.");
+        }
+        
+        eventsRepository.deleteById(eventId);
+    }
 }
