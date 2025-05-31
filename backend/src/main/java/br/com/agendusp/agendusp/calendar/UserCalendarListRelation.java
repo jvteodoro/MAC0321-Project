@@ -3,12 +3,10 @@ package br.com.agendusp.agendusp.calendar;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 @Document
 public class UserCalendarListRelation {
     @Id
+    public String id;
     public String userId;
     public String calendarId;
     public String accessRole;
@@ -20,11 +18,19 @@ public class UserCalendarListRelation {
     }
 
     // public UserCalendarListRelation(Gson gson) {
-    //     JsonObject json = gson.toJsonTree(this).getAsJsonObject();
-    //     this.userId = json.get("userId").getAsString();
-    //     this.calendarId = json.get("calendarId").getAsString();
-    //     this.accessRole = json.get("accessRole").getAsString();
+    // JsonObject json = gson.toJsonTree(this).getAsJsonObject();
+    // this.userId = json.get("userId").getAsString();
+    // this.calendarId = json.get("calendarId").getAsString();
+    // this.accessRole = json.get("accessRole").getAsString();
     // }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUserId() {
         return userId;

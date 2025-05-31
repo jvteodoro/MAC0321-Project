@@ -1,18 +1,23 @@
 package br.com.agendusp.agendusp.calendar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import br.com.agendusp.agendusp.repositories.CalendarListRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
+import br.com.agendusp.agendusp.repositories.UserCalendarListResourceAccessRelationRepository;
 
 public class DataController implements AbstractDataController {
 
     private final CalendarListRepository calendarListRepository;
     private final EventsRepository eventsRepository;
+    private final UserCalendarListResourceAccessRelationRepository userCalendarListResourceAccessRelationRepository;
 
-    public DataController(CalendarListRepository calendarListRepository, EventsRepository eventsRepository) {
+    public DataController(CalendarListRepository calendarListRepository, EventsRepository eventsRepository,
+            UserCalendarListResourceAccessRelationRepository userCalendarListResourceAccessRelationRepository) {
         this.calendarListRepository = calendarListRepository;
         this.eventsRepository = eventsRepository;
+        this.userCalendarListResourceAccessRelationRepository = userCalendarListResourceAccessRelationRepository;
     }
 
     // Calendars
@@ -43,9 +48,18 @@ public class DataController implements AbstractDataController {
     }
 
     @Override
-    public ArrayList<CalendarListResource> getCalendars(String userId) {
-        // Implementação para obter todos os calendários
-        return new ArrayList<>();
+    public CalendarListResource[] getCalendars(String userId) throws Exception {
+        List<UserCalendarListRelation> relations = userCalendarListResourceAccessRelationRepository
+                .findAllByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("O usuário não possui calendários"));
+        List<CalendarListResource> calendars = new ArrayList<>();
+        for (UserCalendarListRelation relation : relations) {
+            CalendarListResource calendar = calendarListRepository.findById(relation.getCalendarId()).orElse(null);
+            if (calendar != null) {
+                calendars.add(calendar);
+            }
+        }
+        return calendars.toArray(new CalendarListResource[0]);
     }
 
     @Override
@@ -86,10 +100,16 @@ public class DataController implements AbstractDataController {
     }
 
     @Override
-    public ArrayList<EventsResource> getEvents(String calendarId,
+    public EventsResource[] getEvents(String calendarId,
             String userId) {
-        // Implementação para obter eventos de um calendário específico
-        return new ArrayList<EventsResource>();
+        List<EventsResource> allEvents = eventsRepository.findAll();
+        List<EventsResource> userEvents = new ArrayList<>();
+
+        for (EventsResource event : allEvents)
+            for (Attendee attendee : event.getAttendees())
+                if (attendee.calendarPerson.id() == userId)
+                    userEvents.add(event);
+        return userEvents.toArray(new EventsResource[0]);
     }
 
     @Override
