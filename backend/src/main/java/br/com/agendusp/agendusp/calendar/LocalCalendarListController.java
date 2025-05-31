@@ -54,7 +54,11 @@ public class LocalCalendarListController implements CalendarListController {
     @GetMapping("/calendarList/list")
     public String list(@AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        return gson.toJson(dataController.getCalendars(userId));
+        try {
+            return gson.toJson(dataController.getCalendars(userId));
+        } catch (Exception e) {
+            return gson.toJson("Error fetching calendars: " + e.getMessage());
+        }
     }
 
     @PutMapping("/calendarList/update")

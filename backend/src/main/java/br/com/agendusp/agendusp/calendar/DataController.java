@@ -107,7 +107,7 @@ public class DataController implements AbstractDataController {
         
     
     }
-    }
+    
 
     @Override
     public EventsResource patchEvent(String calendarId, String eventId, EventsResource eventResource,

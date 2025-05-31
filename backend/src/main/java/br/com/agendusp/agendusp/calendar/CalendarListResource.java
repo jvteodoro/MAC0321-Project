@@ -33,6 +33,9 @@ public class CalendarListResource {
     // ConferenceProperties conferenceProperties;
     ArrayList<Calendar> calendars;
 
+    public CalendarListResource() {
+    }
+
     public CalendarListResource(String id, String summary, String description, String location, String timeZone) {
         this.id = id;
         this.summary = summary;
