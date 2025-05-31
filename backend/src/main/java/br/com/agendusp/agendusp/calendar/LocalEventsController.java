@@ -1,7 +1,7 @@
 package br.com.agendusp.agendusp.calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -11,6 +11,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
@@ -26,14 +28,17 @@ public class LocalEventsController implements EventsController {
         this.gson = gson;
     }
 
-    public HttpStatusCode delete(String calendarId, String eventId, OAuth2AuthorizedClient authorizedClient) {
-        // IMPLEMENTAR
-        return HttpStatusCode.valueOf(204); // No Content
+    @DeleteMapping("/events/delete/{calendarId}/{eventId}")
+    public ResponseEntity<void> delete(@PathVariable String calendarId, @PathVariable String eventId, OAuth2AuthorizedClient authorizedClient) {
+        dataController.removeEvent(eventId, calendarId);
+        return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/events/get")
     public String get(String calendarId, String eventId, OAuth2AuthorizedClient authorizedClient) {
         return gson.toJson(dataController.getEvent(eventId, calendarId));
     }
+
     @PostMapping("/events/insert/{calendarId}")
     public String insert(String calendarId, EventsResource event, OAuth2AuthorizedClient authorizedClient) {
         dataController.addEvent(calendarId, event);
