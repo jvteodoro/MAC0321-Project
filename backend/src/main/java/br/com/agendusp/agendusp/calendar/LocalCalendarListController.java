@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
@@ -31,14 +32,14 @@ public class LocalCalendarListController implements CalendarListController {
     }
 
     @DeleteMapping("/calendarList/delete")
-    public ResponseEntity<Void> delete(String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
+    public ResponseEntity<Void> delete(@RequestParam String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
         dataController.removeCalendar(calendarId, userId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/calendarList/get")
-    public String get(String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
+    public String get(@RequestParam String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
         return gson.toJson(dataController.getCalendar(calendarId, userId));
     }
