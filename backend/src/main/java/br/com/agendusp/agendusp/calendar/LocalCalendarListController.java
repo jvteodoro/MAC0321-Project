@@ -39,8 +39,7 @@ public class LocalCalendarListController implements CalendarListController {
 
     @GetMapping("/calendarList/get")
     public String get(String calendarId, OAuth2AuthorizedClient authorizedClient){
-        // IMPLEMENTAR
-        return gson.toJson(null);
+        return gson.toJson(dataController.getCalendar(calendarId));
     }
     
     @PostMapping("/calendarList/insert")

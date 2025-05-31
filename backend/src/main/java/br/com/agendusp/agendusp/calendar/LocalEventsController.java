@@ -32,8 +32,7 @@ public class LocalEventsController implements EventsController {
     }
 
     public String get(String calendarId, String eventId, OAuth2AuthorizedClient authorizedClient) {
-        // IMPLEMENTAR
-        return gson.toJson(null);
+        return gson.toJson(dataController.getEvent(eventId, calendarId));
     }
     @PostMapping("/events/insert/{calendarId}")
     public String insert(String calendarId, EventsResource event, OAuth2AuthorizedClient authorizedClient) {
