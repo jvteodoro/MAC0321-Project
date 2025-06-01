@@ -160,4 +160,15 @@ public class DataController implements AbstractDataController {
 
         eventsRepository.deleteById(eventId);
     }
+
+    @Override
+    public void cancelEvent(String eventId, String calendarId, String userId) {
+
+        EventsResource event = eventsRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId + "' não encontrado."));
+        event.setStatus("cancelled");
+
+        eventsRepository.save(event);
+   
+    }
 }

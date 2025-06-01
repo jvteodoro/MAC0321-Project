@@ -29,4 +29,6 @@ public interface AbstractDataController {
                         String userId);
 
         public void removeEvent(String eventId, String calendarId, String userId);
+
+        public void cancelEvent(String eventId, String calendarId, String userId);
 }
