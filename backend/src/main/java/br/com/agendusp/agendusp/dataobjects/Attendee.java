@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.calendar;
+package br.com.agendusp.agendusp.dataobjects;
 
 public abstract class Attendee {
     CalendarPerson calendarPerson;

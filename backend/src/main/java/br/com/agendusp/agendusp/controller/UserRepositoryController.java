@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.calendar;
+package br.com.agendusp.agendusp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

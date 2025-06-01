@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.calendar;
+package br.com.agendusp.agendusp.dataobjects;
 
 public record CalendarPerson(String id, String email, String displayName) {
 }

@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.calendar;
+package br.com.agendusp.agendusp.controller;
 
 import java.util.ArrayList;
 

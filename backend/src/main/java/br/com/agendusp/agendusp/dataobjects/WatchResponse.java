@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.calendar;
+package br.com.agendusp.agendusp.dataobjects;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
