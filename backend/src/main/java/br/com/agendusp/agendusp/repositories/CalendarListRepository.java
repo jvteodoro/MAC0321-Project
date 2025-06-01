@@ -9,7 +9,7 @@ import br.com.agendusp.agendusp.calendar.CalendarListResource;
 
 @Repository
 public interface CalendarListRepository extends MongoRepository<CalendarListResource, String> {
-    public Optional<CalendarListResource> findById(String id);
+    //public Optional<CalendarListResource> findById(String id);
     //public CalendarListResource insert(CalendarListResource calendarListResource);
     // public CalendarListResource insert(CalendarListResource
     // calendarListResource);
