@@ -1,5 +1,6 @@
 package br.com.agendusp.agendusp.calendar;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,26 +120,30 @@ public class DataController implements AbstractDataController {
     }    
 
     @Override
-    public CalendarListResource[] getCalendars(String userId) throws Exception {
-        List<UserCalendarRelation> relations = userCalendarListResourceAccessRelationRepository
-                .findAllByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("O usuário não possui calendários"));
-        List<CalendarListResource> calendars = new ArrayList<>();
-        for (UserCalendarRelation relation : relations) {
-            CalendarListResource calendar = calendarListRepository.findById(relation.getCalendarId()).orElse(null);
-            if (calendar != null) {
-                calendars.add(calendar);
-            }
+    public ArrayList<CalendarListResource> getCalendars(String userId) throws Exception {
+
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("ID do usuário não pode ser nulo ou vazio.");
         }
-        return calendars.toArray(new CalendarListResource[0]);
+        if (!userRepository.existsById(userId)) {
+            throw new IllegalArgumentException("Usuário com ID '" + userId + "' não encontrado.");
+        }
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + userId + "' não encontrado."));
+        return user.getCalendarList();
     }
 
     @Override
     public void removeCalendar(String calendarId, String userId) {
-        if (calendarListRepository.existsById(calendarId)) {
-            calendarListRepository.deleteById(calendarId);
+
+        CalendarListResource calResource = userRepository
+        .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
+        .orElseThrow((() -> new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado para o usuário de ID '" + userId + "'.")));
+
+        if (calResource.getAccessRole() == "owner"){
+            calendarRepository.deleteById(calendarId);
+            userRepository.refreshLinks(calendarId);   
         } else {
-            throw new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado.");
+            userRepository.deleteCalendarListResourceById(userId, calendarId);
         }
     }
 

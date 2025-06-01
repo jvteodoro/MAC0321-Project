@@ -1,5 +1,7 @@
 package br.com.agendusp.agendusp.calendar;
 
+import java.util.ArrayList;
+
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
@@ -10,7 +12,7 @@ public interface AbstractDataController {
         public CalendarListResource patchCalendar(String calendarId, CalendarListResource calResource,
                         String userId);
 
-        public CalendarListResource[] getCalendars(String userId) throws Exception;
+        public ArrayList<CalendarListResource> getCalendars(String userId) throws Exception;
 
         public void addCalendar(CalendarResource calResource, String userId);
 

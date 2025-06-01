@@ -23,4 +23,11 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     @Query("{ 'userId' : ?0, 'calendarList.id': ?1 }")
     Boolean existsByCalendarId(String userId, String calendarId);
+
+    @Query("{ 'userId' : ?0, 'calendarList.id': ?1 }")
+    void deleteCalendarListResourceById(String userId, String calendarId);
+
+    @Query("{'calendarList.id': ?0}")
+    @Update("{$pull : {'calendarList.id' : ?0} ")
+    void refreshLinks(String calendarId);
 }
