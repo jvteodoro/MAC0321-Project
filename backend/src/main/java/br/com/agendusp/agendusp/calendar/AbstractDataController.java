@@ -11,7 +11,7 @@ public interface AbstractDataController {
 
         public CalendarListResource[] getCalendars(String userId) throws Exception;
 
-        public void addCalendar(CalendarListResource calResource, String userId);
+        public void addCalendar(CalendarListResource calResource, String userId, String acessRole);
 
         public CalendarListResource getCalendar(String calendarId, String userId);
 
