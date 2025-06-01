@@ -29,7 +29,7 @@ public interface AbstractDataController {
         public EventsResource updateEvent(String calendarId, String eventId, EventsResource eventResource,
                         String userId);
 
-        public EventsResource[] getEvents(String calendarId, String userId);
+        public ArrayList<EventsResource> getEvents(String calendarId, String userId);
 
         public EventsResource patchEvent(String calendarId, String eventId, EventsResource eventResource,
                         String userId);

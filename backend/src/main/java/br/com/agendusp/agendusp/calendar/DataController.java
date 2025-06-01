@@ -169,6 +169,9 @@ public CalendarListResource updateCalendar(String calendarId, CalendarListResour
     @Override
     public EventsResource getEvent(String eventId, String calendarId,
             String userId) {
+
+
+        
             EventsResource event = eventsRepository.findById(eventId)
             .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId + "' não encontrado."));
                 for (Attendee attendee : event.getAttendees()) {
@@ -226,16 +229,16 @@ public CalendarListResource updateCalendar(String calendarId, CalendarListResour
     }
 
     @Override
-    public EventsResource[] getEvents(String calendarId,
+    public ArrayList<EventsResource> getEvents(String calendarId,
             String userId) {
-        List<EventsResource> allEvents = eventsRepository.findAll();
-        List<EventsResource> userEvents = new ArrayList<>();
 
-        for (EventsResource event : allEvents)
-            for (Attendee attendee : event.getAttendees())
-                if (attendee.calendarPerson.id() == userId)
-                    userEvents.add(event);
-        return userEvents.toArray(new EventsResource[0]);
+        CalendarListResource calResource = userRepository.findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
+        .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado para o usuário de ID '" + userId + "'."));
+
+        ArrayList<EventsResource> events = eventsRepository.findAllBycalendarId(calResource.getId())
+        .orElseThrow(() -> new IllegalArgumentException("Nenhum evento encontrado para o calendário com ID '" + calendarId + "'."));
+
+        return events;
     }
 
     @Override
