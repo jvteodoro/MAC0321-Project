@@ -40,7 +40,7 @@ public class DataController implements AbstractDataController {
             throw new IllegalArgumentException("Calendário com ID '" + calResource.getId() + "' já existe.");
         }
         else {
-            UserCalendarListRelation relation = new UserCalendarListRelation(userId, calResource.getId(), accessRole)
+            UserCalendarListRelation relation = new UserCalendarListRelation(userId, calResource.getId(), calResource.getAccessRole());
             calendarListRepository.save(calResource);
             if (userRepository.existsById(userId)) {
                 userRepository.updateUserCalendarList(userId, relation);
@@ -143,16 +143,16 @@ public class DataController implements AbstractDataController {
     // Events
     @Override
     public void addEvent(String calendarId, EventsResource eventResource,
-            String userId) {
+            String userId, String accessRole) {
         if (eventResource == null || calendarId == null || calendarId.isEmpty() || userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("Evento, ID do calendário ou ID do usuário não podem ser nulos ou vazios.");
         }
         else if (!calendarListRepository.existsById(calendarId)) {
             throw new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado.");
         } else {
-            eventResource.setCalendarId(calendarId);
+            eventResource.increaseLinks();
             eventsRepository.save(eventResource);
-            UserCalendarListRelation relation = new UserCalendarListRelation(userId, calendarId);
+            UserCalendarListRelation relation = new UserCalendarListRelation(userId, calendarId, accessRole);
             userCalendarListResourceAccessRelationRepository.save(relation);
         }
     }

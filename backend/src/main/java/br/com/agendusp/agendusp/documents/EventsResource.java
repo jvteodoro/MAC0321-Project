@@ -21,6 +21,8 @@ public class EventsResource {
     String etag;
     @Id
     String id;
+    String mainCalendarId;
+   
     String status;
     String htmlLink;
     String created;
@@ -112,6 +114,17 @@ public class EventsResource {
         this.attendeesOmitted = json.get("attendeesOmitted").getAsBoolean();
         this.extendedProperties = gson.fromJson(json.get("extendedProperties"), ExtendedProperties.class);
         this.hangoutLink = json.get("hangoutLink").getAsString();
+    }
+    public void increaseLinks(){
+        this.links++;
+    }
+
+    public String getMainCalendarId() {
+        return this.mainCalendarId;
+    }
+
+    public void setMainCalendarId(String mainCalendarId) {
+        this.mainCalendarId = mainCalendarId;
     }
 
     public int getLinks() {
