@@ -14,9 +14,13 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByName(String name);
     Optional<User> findByEmail(String email);
 
+    User insertUser(User user);
+
     @Query("{'name' : ?0}")
     @Update("$addToSet: {'calendarList' : ?1}")
     User addUserCalendarList(String name, CalendarListResource calendarListResource);
+
+    public Optional<User> findByUserId(String userId);
     
     @Query("{ 'userId' : ?0, 'calendarList.id': ?1 }")
     Optional<CalendarListResource> findCalendarListResourceByUserIdAndCalendarId(String userId, String calendarId);
