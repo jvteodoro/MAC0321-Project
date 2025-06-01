@@ -4,15 +4,16 @@ import java.util.ArrayList;
 
 import org.springframework.data.annotation.Id;
 
-import br.com.agendusp.agendusp.calendar.Calendar;
 import br.com.agendusp.agendusp.calendar.CalendarPerson;
 
 public class CalendarResource {
     
-    String kind = "calendar#calendar";
-    String etag;
     @Id
     String id;
+    String calendarId;
+    String kind = "calendar#calendar";
+    String calendarResource;
+    String etag;
     String summary;
     String description;
     String location;
@@ -21,25 +22,53 @@ public class CalendarResource {
     boolean hidden;
     boolean selected;
     CalendarPerson owner;
-    ArrayList<UserCalendarRelation> userCalendarRelation;
+    ArrayList<CalendarPerson> writers;
+    ArrayList<CalendarPerson> readers;
+    ArrayList<CalendarPerson> freeBusyReaders;
 
     // ArrayList<DefaultReminder> defaultReminders;
     // ArrayList<> notificationSettings;
     boolean primary;
     boolean deleted;
-
-    public ArrayList<UserCalendarRelation> getUserCalendarListRelation(){
-        return userCalendarRelation;
+    
+    public String getCalendarId() {
+        return calendarId;
     }
 
-    public UserCalendarRelation addUserCalendarRelation(UserCalendarRelation userCalendarRelation) {
-        if (this.userCalendarRelation == null) {
-            this.userCalendarRelation = new ArrayList<UserCalendarRelation>();
-        }
-        this.userCalendarRelation.add(userCalendarRelation);
-        return userCalendarRelation;
+    public void setCalendarId(String calendarId) {
+        this.calendarId = calendarId;
     }
-    public String getId(){
-        return this.id;
+
+    public CalendarPerson getOwner() {
+        return owner;
     }
+
+    public void setOwner(CalendarPerson owner) {
+        this.owner = owner;
+    }
+
+    public ArrayList<CalendarPerson> getWriters() {
+        return writers;
+    }
+
+    public void setWriters(ArrayList<CalendarPerson> writers) {
+        this.writers = writers;
+    }
+
+    public ArrayList<CalendarPerson> getReaders() {
+        return readers;
+    }
+
+    public void setReaders(ArrayList<CalendarPerson> readers) {
+        this.readers = readers;
+    }
+
+    public ArrayList<CalendarPerson> getFreeBusyReaders() {
+        return freeBusyReaders;
+    }
+
+    public void setFreeBusyReaders(ArrayList<CalendarPerson> freeBusyReaders) {
+        this.freeBusyReaders = freeBusyReaders;
+    }
+
 }

@@ -1,18 +1,14 @@
 package br.com.agendusp.agendusp.documents;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.AuthenticatedPrincipal;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import br.com.agendusp.agendusp.calendar.CalendarPerson;
 
 
 @Document(collection = "users")
@@ -24,6 +20,7 @@ public class User implements UserDetails {
     private String email;
     private String name;
     private ArrayList<CalendarListResource> calendarList;
+    private CalendarPerson calendarPerson;
 
     public User() {
     }
@@ -32,6 +29,15 @@ public class User implements UserDetails {
         this.googleId = googleId;
         this.email = email;
         this.name = name;
+        this.calendarPerson = new CalendarPerson(this.googleId, this.email, this.name);
+    }
+
+    public CalendarPerson getAsCalendarPerson() {
+        return this.calendarPerson;
+    }
+
+    private void updateCalendarPerson() {
+        this.calendarPerson = new CalendarPerson(this.googleId, this.email, this.name);
     }
 
     public String getId() {
@@ -40,6 +46,7 @@ public class User implements UserDetails {
 
     public void setId(String id) {
         this.id = id;
+        updateCalendarPerson();
     }
 
     public String getGoogleId() {
@@ -48,6 +55,7 @@ public class User implements UserDetails {
 
     public void setGoogleId(String googleId) {
         this.googleId = googleId;
+        updateCalendarPerson();
     }
 
     public String getEmail() {
@@ -56,6 +64,7 @@ public class User implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+        updateCalendarPerson();
     }
 
     public String getName() {
@@ -64,6 +73,7 @@ public class User implements UserDetails {
 
     public void setUsername(String name) {
         this.name = name;
+        updateCalendarPerson();
     }
 
     public ArrayList<CalendarListResource> getCalendarList() {

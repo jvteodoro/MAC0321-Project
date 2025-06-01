@@ -16,13 +16,14 @@ import br.com.agendusp.agendusp.calendar.EventDate;
 @Document
 public class EventsResource {
 
+    @Id
+    String id;
+    String eventId;
     int links; // It's necessary to know how many calendars links this event.
             // If it is 0, the event can be deleted.
 
     String kind;
     String etag;
-    @Id
-    String id;
     String mainCalendarId;
     ArrayList<String> calendarIds;
    
@@ -51,13 +52,14 @@ public class EventsResource {
     ExtendedProperties extendedProperties;
     String hangoutLink;
 
-    public EventsResource(int links, String kind, String etag, String id, String status, String htmlLink,
+    public EventsResource(int links, String eventId, String kind, String etag, String id, String status, String htmlLink,
             String created, String updated, String summary, String description, String location, String colorId,
             CalendarPerson creator, CalendarPerson organizer, EventDate start, EventDate end,
             boolean endTimeUnspecified, String[] recurrence, String recurringEventId, EventDate originalStartTime,
             String transparency, String visibility, String iCalUID, String sequence, Attendee[] attendees,
             boolean attendeesOmitted, ExtendedProperties extendedProperties, String hangoutLink) {
         this.links = links;
+        this.eventId = eventId;
         this.kind = kind;
         this.etag = etag;
         this.id = id;
@@ -117,6 +119,14 @@ public class EventsResource {
         this.attendeesOmitted = json.get("attendeesOmitted").getAsBoolean();
         this.extendedProperties = gson.fromJson(json.get("extendedProperties"), ExtendedProperties.class);
         this.hangoutLink = json.get("hangoutLink").getAsString();
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
     public void setCalendarId(String calendarId) {

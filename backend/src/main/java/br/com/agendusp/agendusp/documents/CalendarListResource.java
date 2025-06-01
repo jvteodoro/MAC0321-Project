@@ -1,22 +1,19 @@
 package br.com.agendusp.agendusp.documents;
 
-import java.util.ArrayList;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import br.com.agendusp.agendusp.calendar.Calendar;
-
 @Document
 public class CalendarListResource {
 
-    String kind = "calendar#calendarListEntry";
-    String etag;
     @Id
     String id;
+    String calendarId;
+    String kind = "calendar#calendarListEntry";
+    String etag;
     String summary;
     String description;
     String location;
@@ -33,13 +30,13 @@ public class CalendarListResource {
     boolean primary;
     boolean deleted;
     // ConferenceProperties conferenceProperties;
-    ArrayList<Calendar> calendars;
+    // ArrayList<Calendar> calendars;
 
     public CalendarListResource() {
     }
 
-    public CalendarListResource(String id, String summary, String description, String location, String timeZone) {
-        this.id = id;
+    public CalendarListResource(String calendarId, String summary, String description, String location, String timeZone) {
+        this.calendarId = calendarId;
         this.summary = summary;
         this.description = description;
         this.location = location;
@@ -80,12 +77,12 @@ public class CalendarListResource {
         this.etag = etag;
     }
 
-    public String getId() {
-        return id;
+    public String getCalendarId() {
+        return calendarId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCalendarId(String calendarId) {
+        this.calendarId = calendarId;
     }
 
     public String getSummary() {
@@ -190,14 +187,6 @@ public class CalendarListResource {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public ArrayList<Calendar> getCalendars() {
-        return calendars;
-    }
-
-    public void setCalendars(ArrayList<Calendar> calendars) {
-        this.calendars = calendars;
     }
 
 }
