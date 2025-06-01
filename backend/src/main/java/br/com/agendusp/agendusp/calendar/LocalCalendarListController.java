@@ -75,19 +75,21 @@ public class LocalCalendarListController implements CalendarListController {
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
         JsonObject body = new JsonObject(); // atualização parcial (dos atributos nao nulos)
-
-        if (calendar.getDescription() != null) {
+        if (calendar.getDescription() !=null) {
             body.addProperty("description", calendar.getDescription());
         }
-        if (calendar.getLocation() != null) {
+        if (calendar.getLocation() !=null) {
             body.addProperty("location", calendar.getLocation());
         }
-        if (calendar.getSummary() != null) {
+        if (calendar.getSummary() !=null) {
             body.addProperty("summary", calendar.getSummary());
         }
-        if (calendar.getTimeZone() != null) {
+        if (calendar.getTimeZone() !=null) {
             body.addProperty("timeZone", calendar.getTimeZone());
         }
+       if (calendar.getAcessRole() !=null){
+        body.addProperty("acessRole", calendar.getAcessRole());
+       }
 
         return gson.toJson(dataController.patchCalendar(calendar.getId(),
                 gson.fromJson(body, CalendarListResource.class), userId));
