@@ -1,10 +1,15 @@
 package br.com.agendusp.agendusp;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import br.com.agendusp.agendusp.CustomOAuth2User;
+import br.com.agendusp.agendusp.calendar.DataController;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 
 
@@ -12,6 +17,7 @@ import br.com.agendusp.agendusp.documents.CalendarListResource;
 @SpringBootTest
 public class DataControllerTest extends MongoTestContainer {
 
+    @Autowired
     private DataController dataController;
 
 
