@@ -3,11 +3,18 @@ package br.com.agendusp.agendusp.repositories;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.Update;
 
+import br.com.agendusp.agendusp.calendar.UserCalendarListRelation;
 import br.com.agendusp.agendusp.documents.User;
 
 public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByGoogleId(String googleId);
     Optional<User> findByName(String name);
     Optional<User> findByEmail(String email);
+
+    @Query("{'name' : ?0}")
+    @Update("$addToSet: {'calendarList' : ?1}")
+    User updateUserCalendarList(String name, UserCalendarListRelation calendarId);
 }

@@ -3,17 +3,23 @@ package br.com.agendusp.agendusp.calendar;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
+import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarListRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
 import br.com.agendusp.agendusp.repositories.UserCalendarListResourceAccessRelationRepository;
+import br.com.agendusp.agendusp.repositories.UserRepository;
 
 public class DataController implements AbstractDataController {
 
     private final CalendarListRepository calendarListRepository;
     private final EventsRepository eventsRepository;
     private final UserCalendarListResourceAccessRelationRepository userCalendarListResourceAccessRelationRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public DataController(CalendarListRepository calendarListRepository, EventsRepository eventsRepository,
             UserCalendarListResourceAccessRelationRepository userCalendarListResourceAccessRelationRepository) {
@@ -32,11 +38,15 @@ public class DataController implements AbstractDataController {
             throw new IllegalArgumentException("Calendário com ID '" + calResource.getId() + "' já existe.");
         }
         else {
+            UserCalendarListRelation relation = new UserCalendarListRelation(userId, calResource.getId(), calResource.getAccessRole())
             calendarListRepository.save(calResource);
-            UserCalendarListRelation relation = new UserCalendarListRelation(userId, calResource.getId());
-            userCalendarListResourceAccessRelationRepository.save(relation);
+            if (userRepository.existsById(userId)) {
+                userRepository.updateUserCalendarList(userId, relation);
+            } else {
+                User user = new User();
+            }
         }
-        }
+    }
 
     @Override
     public CalendarListResource getCalendar(String calendarId, String userId) {

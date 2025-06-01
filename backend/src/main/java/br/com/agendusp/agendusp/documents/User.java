@@ -1,6 +1,7 @@
 package br.com.agendusp.agendusp.documents;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.agendusp.agendusp.calendar.UserCalendarListRelation;
+
 
 @Document(collection = "users")
 public class User implements UserDetails {
@@ -22,6 +25,7 @@ public class User implements UserDetails {
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
+    private ArrayList<UserCalendarListRelation> calendarList;
 
     public User() {
     }
@@ -62,6 +66,20 @@ public class User implements UserDetails {
 
     public void setUsername(String name) {
         this.name = name;
+    }
+    public void setUserCalendarListRelation(ArrayList<UserCalendarListRelation> calendarList) {
+        this.calendarList = calendarList;
+    }
+    public void addUserCalendarListRelation(UserCalendarListRelation calendarListRelation) {
+        if (this.calendarList == null) {
+            this.calendarList = new ArrayList<UserCalendarListRelation>();
+            this.calendarList.add(calendarListRelation);
+        } else {
+            this.calendarList.add(calendarListRelation);
+        }
+    }
+    public ArrayList<UserCalendarListRelation> getUserCalendarListRelation() {
+        return this.calendarList;
     }
 
     @Override
