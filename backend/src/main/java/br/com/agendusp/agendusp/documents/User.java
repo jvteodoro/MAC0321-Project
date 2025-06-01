@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-import br.com.agendusp.agendusp.calendar.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
 
 @Document(collection = "users")
@@ -29,7 +29,6 @@ public class User implements UserDetails {
     private String name;
     private ArrayList<CalendarListResource> calendarList;
     private CalendarPerson calendarPerson;
-    private CalendarListResource[] calendarListArray;
 
     public User() {
     }

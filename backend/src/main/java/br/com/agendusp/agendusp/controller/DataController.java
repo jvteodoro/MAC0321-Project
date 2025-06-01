@@ -1,21 +1,14 @@
 package br.com.agendusp.agendusp.controller;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.api.services.calendar.Calendar.Events;
-import com.google.api.services.calendar.Calendar.CalendarList;
-import com.google.api.services.calendar.model.Event;
 
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
-import br.com.agendusp.agendusp.documents.UserCalendarRelation;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;

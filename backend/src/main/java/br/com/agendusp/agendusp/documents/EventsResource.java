@@ -9,8 +9,8 @@ import com.google.api.services.calendar.model.Event.ExtendedProperties;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import br.com.agendusp.agendusp.calendar.Attendee;
-import br.com.agendusp.agendusp.calendar.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.Attendee;
+import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 import br.com.agendusp.agendusp.calendar.EventDate;
 
 @Document

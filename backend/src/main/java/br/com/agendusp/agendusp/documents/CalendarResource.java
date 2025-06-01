@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.data.annotation.Id;
 
-import br.com.agendusp.agendusp.calendar.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
 public class CalendarResource {
     
