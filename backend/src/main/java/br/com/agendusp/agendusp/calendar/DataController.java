@@ -2,10 +2,12 @@ package br.com.agendusp.agendusp.calendar;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.api.services.calendar.Calendar.CalendarList;
 import com.google.api.services.calendar.model.Event;
 
 import br.com.agendusp.agendusp.documents.CalendarListResource;
@@ -69,55 +71,55 @@ public class DataController implements AbstractDataController {
         return calendar;
     }
 
+    
     @Override
-    public CalendarListResource updateCalendar(String calendarId, CalendarListResource calResource, String userId) {
+public CalendarListResource updateCalendar(String calendarId, CalendarListResource calResource, String userId) {
+    CalendarListResource calendar = calendarRepository
+        .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
+        .orElseThrow(() -> new IllegalArgumentException(
+            "Calendário com ID '" + calendarId + "' não encontrado para o usuário de ID '" + userId + "'"));
 
-        UserCalendarRelation userRelation = userRepository.findRelationByUserIdAndCalendarId(userId, calendarId);//orElseThrow(() -> new IllegalArgumentException("Usuário não tem acesso ao calendário com ID '" + calendarId + "'."));
-        if (userRelation.getAccessRole() != "owner" && userRelation.getAccessRole() != "writer") {
-            throw new IllegalArgumentException("Acesso negado: o usuário não tem permissão para atualizar este calendário.");
-        }
-
-        CalendarListResource calendar = calendarListRepository.findById(calendarId).orElse(null);
-        if (calendar == null) { //tem que existir 
-            throw new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado.");
-        }
-        calResource.setId(calendarId); 
-        calendarListRepository.save(calResource);
-        return calResource;
+    if (calendar.getAccessRole() == "owner" || calendar.getAccessRole() == "writer") {
+        calendarRepository.save(calResource);
+        return calendar;
     }
+    else {
+        throw new IllegalArgumentException(
+                "Acesso negado: o usuário não tem permissão para atualizar este calendário.");
+    }
+}
 
     @Override
     public CalendarListResource patchCalendar(String calendarId, CalendarListResource calResource, String userId) {
+        CalendarListResource calendar = calendarRepository
+                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Calendário com ID '" + calendarId + "' não encontrado para o usuário de ID '" + userId));
 
-        UserCalendarRelation userRelation = userRepository.findRelationByUserIdAndCalendarId(userId, calendarId);
-        //orElseThrow(() -> new IllegalArgumentException("Usuário não tem acesso ao calendário com ID '" + calendarId + "'."));
-        if (userRelation.getAccessRole() != "owner" && userRelation.getAccessRole() != "writer") {
-            throw new IllegalArgumentException(
-                    "Acesso negado: o usuário não tem permissão para atualizar este calendário.");
+        if (calendar.getAccessRole() == "owner" || calendar.getAccessRole() == "writer") {
+            if (calResource.getSummary() != null){
+                calendar.setSummary(calResource.getSummary());
+            }
+            if (calResource.getDescription() != null){
+                calendar.setDescription(calResource.getDescription());
+            }
+            if (calResource.getLocation() != null){
+                calendar.setLocation(calResource.getLocation());
+            }
+            if (calResource.getTimeZone() != null){
+                calendar.setTimeZone(calResource.getTimeZone());
+            }
+            if (calResource.getAccessRole() != null){
+                calendar.setAccessRole(calResource.getAccessRole());
+            }
+
+            calendarRepository.save(calendar);
+            return calendar;
         }
-        CalendarListResource calendar = calendarListRepository.findById(calendarId).orElse(null);
-        if (calendar == null){
-            throw new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado.");
-        }
-        if (calResource.getSummary() !=null) { //atualiza o nao nulo
-            calendar.setSummary(calResource.getSummary());
-        }
-        if (calResource.getDescription() !=null) {
-            calendar.setDescription(calResource.getDescription());
-        }
-        if (calResource.getLocation() !=null) {
-            calendar.setLocation(calResource.getLocation());
-        }
-        if (calResource.getTimeZone() !=null) {
-            calendar.setTimeZone(calResource.getTimeZone());
-        }
-        if (calResource.getAccessRole() !=null) {
-            calendar.setAccessRole(calResource.getAccessRole());
-        }
-        calResource.setId(calendarId);
-        calendarListRepository.save(calendar);
-        return calendar;
-    }    
+
+        throw new IllegalArgumentException(
+                "Acesso negado: o usuário não tem permissão para atualizar este calendário.");
+    }
 
     @Override
     public ArrayList<CalendarListResource> getCalendars(String userId) throws Exception {
