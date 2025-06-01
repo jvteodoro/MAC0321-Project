@@ -1,5 +1,9 @@
 package br.com.agendusp.agendusp;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -30,8 +34,8 @@ public class DataControllerTest {
     @Autowired
     private Gson gson;
 
-    private String userID = "agendusp";
-    private String calendarID = "primeiros";
+     private String userID = "agendusp";
+     private String calendarID = "primeiros";
 
     private CalendarListResource createCalendar() {
         CalendarListResource calendar = new CalendarListResource();
