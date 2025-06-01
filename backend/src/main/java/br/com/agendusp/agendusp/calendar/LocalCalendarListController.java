@@ -33,7 +33,8 @@ public class LocalCalendarListController implements CalendarListController {
     }
 
     @DeleteMapping("/calendarList/delete")
-    public ResponseEntity<Void> delete(@RequestParam String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
+    public ResponseEntity<Void> delete(@RequestParam String calendarId,
+            @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
         dataController.removeCalendar(calendarId, userId);
         return ResponseEntity.ok().build();
@@ -67,31 +68,33 @@ public class LocalCalendarListController implements CalendarListController {
     public String update(@RequestBody CalendarListResource calendar,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        return gson.toJson(dataController.updateCalendar(calendar.getId(), calendar, userId));
+        return gson.toJson(null);
+        // return gson.toJson(dataController.updateCalendar(calendar.getCalendarId(), calendar, userId));
     }
 
     @PatchMapping("/calendarList/patch")
-    public String patch(@RequestBody CalendarListResource calendar,
+    public String patch(@RequestBody CalendarListResource calListResource,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
         JsonObject body = new JsonObject(); // atualização parcial (dos atributos nao nulos)
-        if (calendar.getDescription() !=null) {
-            body.addProperty("description", calendar.getDescription());
+        if (calListResource.getDescription() != null) {
+            body.addProperty("description", calListResource.getDescription());
         }
-        if (calendar.getLocation() !=null) {
-            body.addProperty("location", calendar.getLocation());
+        if (calListResource.getLocation() != null) {
+            body.addProperty("location", calListResource.getLocation());
         }
-        if (calendar.getSummary() !=null) {
-            body.addProperty("summary", calendar.getSummary());
+        if (calListResource.getSummary() != null) {
+            body.addProperty("summary", calListResource.getSummary());
         }
-        if (calendar.getTimeZone() !=null) {
-            body.addProperty("timeZone", calendar.getTimeZone());
+        if (calListResource.getTimeZone() != null) {
+            body.addProperty("timeZone", calListResource.getTimeZone());
         }
-       if (calendar.getAcessRole() !=null){
-        body.addProperty("acessRole", calendar.getAcessRole());
-       }
+        if (calListResource.getAccessRole() != null) {
+            body.addProperty("acessRole", calListResource.getAccessRole());
+        }
 
-        return gson.toJson(dataController.patchCalendar(calendar.getId(),
-                gson.fromJson(body, CalendarListResource.class), userId));
+        return gson.toJson(null);
+        // return gson.toJson(dataController.patchCalendar(calListResource.getCalendarId(),
+        //         gson.fromJson(body, CalendarListResource.class), userId));
     }
 }

@@ -31,10 +31,10 @@ public abstract class AbstractDataController {
                 return "freeBusyReader";
         }
 
-        public abstract CalendarListResource updateCalendar(String calendarId, CalendarListResource calResource,
+        public abstract CalendarListResource updateCalendar(String calendarId, CalendarResource calResource,
                         String userId);
 
-        public abstract CalendarListResource patchCalendar(String calendarId, CalendarListResource calResource,
+        public abstract CalendarListResource patchCalendar(String calendarId, CalendarResource calResource,
                         String userId);
 
         public abstract ArrayList<CalendarListResource> getCalendars(String userId) throws Exception;
