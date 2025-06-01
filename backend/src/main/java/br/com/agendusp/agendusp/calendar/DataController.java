@@ -73,21 +73,21 @@ public class DataController implements AbstractDataController {
 
     
     @Override
-public CalendarListResource updateCalendar(String calendarId, CalendarListResource calResource, String userId) {
-    CalendarListResource calendar = calendarRepository
-        .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
-        .orElseThrow(() -> new IllegalArgumentException(
-            "Calendário com ID '" + calendarId + "' não encontrado para o usuário de ID '" + userId + "'"));
+    public CalendarListResource updateCalendar(String calendarId, CalendarListResource calResource, String userId) {
+        CalendarListResource calendar = calendarRepository
+            .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Calendário com ID '" + calendarId + "' não encontrado para o usuário de ID '" + userId + "'"));
 
-    if (calendar.getAccessRole() == "owner" || calendar.getAccessRole() == "writer") {
-        calendarRepository.save(calResource);
-        return calendar;
+        if (calendar.getAccessRole() == "owner" || calendar.getAccessRole() == "writer") {
+            calendarRepository.save(calResource);
+            return calendar;
+        }
+        else {
+            throw new IllegalArgumentException(
+                    "Acesso negado: o usuário não tem permissão para atualizar este calendário.");
+        }
     }
-    else {
-        throw new IllegalArgumentException(
-                "Acesso negado: o usuário não tem permissão para atualizar este calendário.");
-    }
-}
 
     @Override
     public CalendarListResource patchCalendar(String calendarId, CalendarListResource calResource, String userId) {
