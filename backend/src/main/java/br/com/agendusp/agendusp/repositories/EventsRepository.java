@@ -14,6 +14,7 @@ import br.com.agendusp.agendusp.documents.EventsResource;
 public interface EventsRepository extends MongoRepository<EventsResource, String>{
     /*public Optional<EventsResource> findById(String id);
     public List<EventsResource> findAll();*/
+    public Optional<EventsResource> findByEventId(String eventId);
     @Query("{'calendarIds': { $in: ?0}}")
     public Optional<ArrayList<EventsResource>> findAllByCalendarId(String calendarId);
 

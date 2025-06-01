@@ -29,9 +29,13 @@ public class User implements UserDetails {
     private String name;
     private ArrayList<CalendarListResource> calendarList;
     private CalendarPerson calendarPerson;
+    private CalendarListResource[] calendarListArray;
 
     public User() {
-        securityContext.getAuthentication().getPrincipal().toString();
+    }
+
+    public User(String userId) {
+        this.userId = userId;
     }
 
     public User(String googleId, String email, String name) {

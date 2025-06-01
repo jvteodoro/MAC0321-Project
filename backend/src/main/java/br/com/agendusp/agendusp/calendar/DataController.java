@@ -49,7 +49,7 @@ public class DataController extends AbstractDataController {
         String accessRole = getAccessRole(calResource, userId);
 
         calListResource.setAccessRole(accessRole);
-        userRepository.addUserCalendarList(userId, calListResource);
+        userRepository.updateOneByUserId(userId, calListResource);
     }
 
     @Override

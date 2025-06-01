@@ -60,6 +60,11 @@ public class CalendarListResource {
         this.primary = json.get("primary").getAsBoolean();
         this.deleted = json.get("deleted").getAsBoolean();
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getAcessRole(){
         return this.accessRole;
     }
