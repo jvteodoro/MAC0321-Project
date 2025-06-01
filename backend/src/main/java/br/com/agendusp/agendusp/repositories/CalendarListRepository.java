@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.agendusp.agendusp.calendar.CalendarListResource;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
 
 @Repository
 public interface CalendarListRepository extends MongoRepository<CalendarListResource, String> {

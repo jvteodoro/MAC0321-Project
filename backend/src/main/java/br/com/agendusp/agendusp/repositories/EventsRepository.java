@@ -8,8 +8,8 @@ import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.agendusp.agendusp.calendar.CalendarListResource;
-import br.com.agendusp.agendusp.calendar.EventsResource;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.documents.EventsResource;
 
 @Repository
 public interface EventsRepository extends MongoRepository<EventsResource, String>{

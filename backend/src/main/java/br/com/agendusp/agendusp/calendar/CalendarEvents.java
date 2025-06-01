@@ -1,5 +1,7 @@
 package br.com.agendusp.agendusp.calendar;
 
+import br.com.agendusp.agendusp.documents.EventsResource;
+
 public class CalendarEvents {
 
     String kind = "calendar#events";
