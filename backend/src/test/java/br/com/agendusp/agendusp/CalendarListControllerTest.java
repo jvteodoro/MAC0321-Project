@@ -1,133 +1,170 @@
-package br.com.agendusp.agendusp;
+package br.com.agendusp.agendusp.calendar;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import br.com.agendusp.agendusp.documents.CalendarListResource;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
-import br.com.agendusp.agendusp.calendar.LocalCalendarListController;
-import br.com.agendusp.agendusp.documents.CalendarListResource;
-import br.com.agendusp.agendusp.CustomOAuth2User;
+import java.lang.reflect.Type;
+import java.util.List;
 
-import com.google.gson.Gson;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@AutoConfigureMockMvc
+
 public class CalendarListControllerTest {
 
-    @Autowired
-    private LocalCalendarListController controller;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private Gson gson;
-    private CustomOAuth2User user1;
-    private CalendarListResource calendar1;
+        private Gson gson = new Gson();
 
-    @BeforeEach
-    public void setup() {
-        user1 = new CustomOAuth2User();
-        user1.setUserId("agendusp");
+        private CalendarListResource novoCalendario(String id) {
+                CalendarListResource cal = new CalendarListResource();
+                cal.setCalendarId(id);
+                cal.setSummary("Resumo");
+                cal.setDescription("Descricao");
+                cal.setLocation("Localizacao");
+                cal.setTimeZone("America/Sao_Paulo");
+                cal.setAccessRole("owner");
+                return cal;
+        }
 
-        calendar1 = new CalendarListResource();
-        calendar1.setId("calendar1");
-        calendar1.setAccessRole("owner");
-        calendar1.setSummary("Bolo de Chocolate");
-        calendar1.setDescription("Caldinha de brigadeiro");
-        calendar1.setLocation("China");
-        calendar1.setTimeZone("Greenwich");
+        @BeforeEach
+        void setup() throws Exception {
+                mockMvc.perform(delete("/calendarList/delete?calendarId=cal1"));
+                mockMvc.perform(delete("/calendarList/delete?calendarId=cal2"));
 
-        controller.insert(calendar1, user1);
-    }
+                mockMvc.perform(post("/calendarList/insert")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(gson.toJson(novoCalendario("cal1"))))
+                                .andExpect(status().isOk());
 
-    @Test
-    public void testDelete() {
-        CalendarListResource calendarToDelete = new CalendarListResource();
-        calendarToDelete.setId("NovoCalendario");
-        controller.insert(calendarToDelete, user1);
+                mockMvc.perform(post("/calendarList/insert")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(gson.toJson(novoCalendario("cal2"))))
+                                .andExpect(status().isOk());
+        }
 
-        controller.delete("NovoCalendario", user1);
+        @Test
+        void testInsert() throws Exception {
+                CalendarListResource calendar = novoCalendario("cal3");
 
-        String json = controller.get("NovoCalendario", user1);
-        assertEquals("null", json);
-    }
+                MvcResult result = mockMvc.perform(post("/calendarList/insert")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(gson.toJson(calendar)))
+                                .andExpect(status().isOk())
+                                .andReturn();
 
-    @Test
-    public void testGet() {
-        String responseJson = controller.get(calendar1.getId(), user1);
-        CalendarListResource responseCalendar = gson.fromJson(responseJson, CalendarListResource.class);
+                String json = result.getResponse().getContentAsString();
+                CalendarListResource result = gson.fromJson(json, CalendarListResource.class);
+                assertEquals(calendar.getCalendarId(), result.getCalendarId());
+                assertEquals(calendar.getSummary(), result.getSummary());
+        }
 
-        assertNotNull(responseCalendar);
-        assertEquals("Bolo de Chocolate", responseCalendar.getSummary());
-        assertEquals("Caldinha de brigadeiro", responseCalendar.getDescription());
-        assertEquals("China", responseCalendar.getLocation());
-        assertEquals("Greenwich", responseCalendar.getTimeZone());
-        assertEquals("owner", responseCalendar.getAccessRole());
-    }
+        @Test
+        void testList() throws Exception {
+                MvcResult result = mockMvc.perform(get("/calendarList/list"))
+                                .andExpect(status().isOk())
+                                .andReturn();
 
-    @Test
-    public void testInsert() {
-        CalendarListResource calendar2 = new CalendarListResource();
-        calendar2.setId("calendar2");
-        calendar2.setAccessRole("writer");
-        calendar2.setSummary("Bolo de maçã");
-        calendar2.setDescription("Deixe esfriar antres de desenformar");
-        calendar2.setLocation("São Paulo, meu");
-        calendar2.setTimeZone("America/Sao_Paulo");
+                String json = result.getResponse().getContentAsString();
+                Type listType = new TypeToken<List<CalendarListResource>>() {
+                }.getType();
+                List<CalendarListResource> lista = gson.fromJson(json, listType);
 
-        String responseJson = controller.insert(calendar2, user1);
-        CalendarListResource inserted = gson.fromJson(responseJson, CalendarListResource.class);
+                assertEquals(2, lista.size());
 
-        assertEquals("writer", inserted.getAccessRole());
-        assertEquals("Bolo de maçã", inserted.getSummary());
-        assertEquals("Deixe esfriar antres de desenformar", inserted.getDescription());
-        assertEquals("São Paulo, meu", inserted.getLocation());
-        assertEquals("America/Sao_Paulo", inserted.getTimeZone());
-        assertEquals("writer", inserted.getAccessRole());
-    }
+                assertTrue(lista.stream()
+                                .anyMatch(c -> "cal1".equals(c.getCalendarId()) && "Resumo".equals(c.getSummary())));
+                assertTrue(lista.stream()
+                                .anyMatch(c -> "cal2".equals(c.getCalendarId()) && "Resumo".equals(c.getSummary())));
+        }
 
-    @Test 
-    public void testList() { //esse aqui eu não tenho certeza
-        String jsonList = controller.list(user1);
-        assertNotNull(jsonList);
-        assert (jsonList.contains(calendar1.getId()));
-    }
+        @Test
+        void testGet() throws Exception {
+                MvcResult result = mockMvc.perform(get("/calendarList/get?calendarId=cal1"))
+                                .andExpect(status().isOk())
+                                .andReturn();
 
-    @Test
-    public void testUpdate() {
-        CalendarListResource update = new CalendarListResource();
-        update.setId(calendar1.getId());
-        update.setSummary("Bolo de Banana");
-        update.setDescription("Use uma forma untada");
-        update.setLocation("São Paulo, meu");
-        update.setTimeZone("Espírito Santo");
-        update.setAccessRole("writer");
+                String json = result.getResponse().getContentAsString();
+                CalendarListResource calendar = gson.fromJson(json, CalendarListResource.class);
 
-        String responseJson = controller.update(update, user1);
-        CalendarListResource resposta = gson.fromJson(responseJson, CalendarListResource.class);
+                assertEquals("cal1", calendar.getCalendarId());
+                assertEquals("Resumo", calendar.getSummary());
+        }
 
-        assertEquals("Bolo de Banana", resposta.getSummary());
-        assertEquals("Use uma forma untada", resposta.getDescription());
-        assertEquals("São Paulo, meu", resposta.getLocation());
-        assertEquals("Espírito Santo", resposta.getTimeZone());
-        assertEquals("writer", resposta.getAccessRole());
-    }
+        @Test
+        void testDelete() throws Exception {
+                mockMvc.perform(delete("/calendarList/delete?calendarId=cal1"))
+                                .andExpect(status().isOk());
 
-    @Test
-    public void testPatch() { //se for testar o patch tem que verificar se testou update antes.
-        CalendarListResource patch = new CalendarListResource();
-        patch.setId(calendar1.getId());
-        patch.setSummary("Bolo de Maçã");
+                MvcResult result = mockMvc.perform(get("/calendarList/list"))
+                                .andExpect(status().isOk())
+                                .andReturn();
 
-        String responseJson = controller.patch(patch, user1);
-        CalendarListResource resposta = gson.fromJson(responseJson, CalendarListResource.class);
+                String json = result.getResponse().getContentAsString();
+                Type listType = new TypeToken<List<CalendarListResource>>() {
+                }.getType();
+                List<CalendarListResource> lista = gson.fromJson(json, listType);
 
-        assertEquals("Bolo de Maçã", resposta.getSummary());
-        assertEquals("Caldinha de brigadeiro", resposta.getDescription());
-        assertEquals("China", resposta.getLocation());
-        assertEquals("Greenwich", resposta.getTimeZone());
-        assertEquals("owner", resposta.getAccessRole());
-    }
+                assertEquals(1, lista.size());
+                assertEquals("cal2", lista.get(0).getCalendarId());
+        }
+
+        @Test
+        void testUpdate() throws Exception {
+                CalendarListResource calendar = new CalendarListResource();
+                calendar.setCalendarId("cal1");
+                calendar.setSummary("Resumo atualizado");
+                calendar.setDescription("Descrição atualizada");
+                calendar.setLocation("Localização atualizada");
+                calendar.setTimeZone("America/New_York");
+                calendar.setAccessRole("writer");
+
+                MvcResult result = mockMvc.perform(put("/calendarList/update")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(gson.toJson(calendar)))
+                                .andExpect(status().isOk())
+                                .andReturn();
+
+                String json = result.getResponse().getContentAsString();
+                CalendarListResource result = gson.fromJson(json, CalendarListResource.class);
+
+                assertEquals("cal1", result.getCalendarId());
+                assertEquals("Resumo atualizado", result.getSummary());
+                assertEquals("Descrição atualizada", result.getDescription());
+                assertEquals("Localização atualizada", result.getLocation());
+                assertEquals("America/New_York", result.getTimeZone());
+                assertEquals("writer", result.getAccessRole());
+        }
+
+        @Test
+        void testPatch() throws Exception {
+                CalendarListResource patch = new CalendarListResource();
+                patch.setCalendarId("cal1");
+                patch.setSummary("Resumão modificado");
+
+                MvcResult result = mockMvc.perform(patch("/calendarList/patch")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(gson.toJson(patch)))
+                                .andExpect(status().isOk())
+                                .andReturn();
+
+                String json = result.getResponse().getContentAsString();
+                CalendarListResource result = gson.fromJson(json, CalendarListResource.class);
+
+                assertEquals("cal1", result.getCalendarId());
+                assertEquals("Resumão modificado", result.getSummary());
+        }
 }
-
