@@ -7,6 +7,8 @@ import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import br.com.agendusp.agendusp.documents.User;
+
 public class CustomOAuth2User implements OAuth2User {
     private final User user;
     private final Map<String, Object> attributes;
