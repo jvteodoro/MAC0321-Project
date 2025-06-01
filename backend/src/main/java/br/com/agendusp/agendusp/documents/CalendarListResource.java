@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.calendar;
+package br.com.agendusp.agendusp.documents;
 
 import java.util.ArrayList;
 
@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import br.com.agendusp.agendusp.calendar.Calendar;
 
 @Document
 public class CalendarListResource {

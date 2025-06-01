@@ -1,5 +1,8 @@
 package br.com.agendusp.agendusp.calendar;
 
+import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.documents.EventsResource;
+
 public interface AbstractDataController {
         public CalendarListResource updateCalendar(String calendarId, CalendarListResource calResource, String userId);
 

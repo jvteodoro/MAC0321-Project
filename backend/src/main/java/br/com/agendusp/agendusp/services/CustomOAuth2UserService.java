@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import br.com.agendusp.agendusp.CustomOAuth2User;
-import br.com.agendusp.agendusp.User;
+import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
 @Service

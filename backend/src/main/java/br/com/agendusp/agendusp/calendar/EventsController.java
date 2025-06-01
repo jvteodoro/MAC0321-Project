@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import br.com.agendusp.agendusp.CustomOAuth2User;
+import br.com.agendusp.agendusp.documents.EventsResource;
 
 public interface EventsController {
         public ResponseEntity<String> delete(String calendarId, String eventId,

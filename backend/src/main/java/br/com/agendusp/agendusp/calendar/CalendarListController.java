@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import br.com.agendusp.agendusp.CustomOAuth2User;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
 
 public interface CalendarListController {
     public ResponseEntity<Void> delete(String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser);

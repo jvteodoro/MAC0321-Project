@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import br.com.agendusp.agendusp.CustomOAuth2User;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;

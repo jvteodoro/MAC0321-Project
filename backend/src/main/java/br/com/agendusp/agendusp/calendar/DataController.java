@@ -3,6 +3,8 @@ package br.com.agendusp.agendusp.calendar;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.repositories.CalendarListRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
 import br.com.agendusp.agendusp.repositories.UserCalendarListResourceAccessRelationRepository;
@@ -34,7 +36,7 @@ public class DataController implements AbstractDataController {
             UserCalendarListRelation relation = new UserCalendarListRelation(userId, calResource.getId());
             userCalendarListResourceAccessRelationRepository.save(relation);
         }
-    }
+        }
 
     @Override
     public CalendarListResource getCalendar(String calendarId, String userId) {
