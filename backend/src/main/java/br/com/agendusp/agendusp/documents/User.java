@@ -13,8 +13,13 @@ import br.com.agendusp.agendusp.calendar.CalendarPerson;
 
 @Document(collection = "users")
 public class User implements UserDetails {
+
+    @Autowired
+    private SecurityContext securityContext; // Para acessar o contexto de segurança
+
     @Id
     private String id; // ID gerada pelo MongoDB
+    private String userId;
 
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
@@ -23,6 +28,7 @@ public class User implements UserDetails {
     private CalendarPerson calendarPerson;
 
     public User() {
+        securityContext.getAuthentication().getPrincipal().toString();
     }
 
     public User(String googleId, String email, String name) {
@@ -41,7 +47,10 @@ public class User implements UserDetails {
     }
 
     public String getId() {
-        return id;
+        return this.id;
+    }
+    public String getUserId() {
+        return this.userId;
     }
 
     public void setId(String id) {
