@@ -17,4 +17,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     @Query("{'name' : ?0}")
     @Update("$addToSet: {'calendarList' : ?1}")
     User updateUserCalendarList(String name, UserCalendarListRelation calendarId);
+    
+    @Query("{ 'userId' : ?0, 'calendarList.calendarId': ?1 }")
+    UserCalendarListRelation findRelationByUserIdAndCalendarId(String userId, String calendarId);
 }
