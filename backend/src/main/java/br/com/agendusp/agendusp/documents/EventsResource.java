@@ -1,5 +1,7 @@
 package br.com.agendusp.agendusp.documents;
 
+import java.util.ArrayList;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,6 +24,7 @@ public class EventsResource {
     @Id
     String id;
     String mainCalendarId;
+    ArrayList<String> calendarIds;
    
     String status;
     String htmlLink;

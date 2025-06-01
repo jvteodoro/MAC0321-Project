@@ -18,9 +18,6 @@ public class CalendarResource {
     String location;
     String timeZone;
     String summaryOverride;
-    String colorId;
-    String backgroundColor;
-    String foregroundColor;
     boolean hidden;
     boolean selected;
     CalendarPerson owner;
