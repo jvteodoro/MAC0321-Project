@@ -23,14 +23,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 public class LocalCalendarListController implements CalendarListController {
 
     @Autowired
-    private final AbstractDataController dataController;
+    private AbstractDataController dataController;
     @Autowired
-    private final Gson gson;
+    private Gson gson;
 
-    public LocalCalendarListController(AbstractDataController dataController, Gson gson) {
-        this.dataController = dataController;
-        this.gson = gson;
-    }
+    public LocalCalendarListController() {}
 
     @DeleteMapping("/calendarList/delete")
     public ResponseEntity<Void> delete(@RequestParam String calendarId,

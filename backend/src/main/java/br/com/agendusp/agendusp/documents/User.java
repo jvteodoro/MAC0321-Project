@@ -27,7 +27,7 @@ public class User implements UserDetails {
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
-    private ArrayList<CalendarListResource> calendarList;
+    private ArrayList<CalendarListResource> calendarList; // Índice 0 é o calendário principal do usuário
     private CalendarPerson calendarPerson;
 
     public User() {

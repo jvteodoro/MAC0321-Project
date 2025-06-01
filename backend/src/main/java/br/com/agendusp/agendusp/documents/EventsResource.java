@@ -6,8 +6,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.google.api.services.calendar.model.Event.ExtendedProperties;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import br.com.agendusp.agendusp.dataobjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
@@ -26,7 +24,6 @@ public class EventsResource {
     String etag;
     String mainCalendarId;
     ArrayList<String> calendarIds;
-   
     String status;
     String htmlLink;
     String created;
@@ -51,6 +48,8 @@ public class EventsResource {
     boolean attendeesOmitted;
     ExtendedProperties extendedProperties;
     String hangoutLink;
+
+    public EventsResource() {}
 
     public EventsResource(int links, String eventId, String kind, String etag, String id, String status, String htmlLink,
             String created, String updated, String summary, String description, String location, String colorId,
@@ -89,38 +88,6 @@ public class EventsResource {
         this.hangoutLink = hangoutLink;
     }
 
-    public EventsResource(Gson gson) {
-        JsonObject json = gson.toJsonTree(this).getAsJsonObject();
-        this.links = json.get("links").getAsInt();
-        this.kind = json.get("kind").getAsString();
-        this.etag = json.get("etag").getAsString();
-        this.id = json.get("id").getAsString();
-        this.status = json.get("status").getAsString();
-        this.htmlLink = json.get("htmlLink").getAsString();
-        this.created = json.get("created").getAsString();
-        this.updated = json.get("updated").getAsString();
-        this.summary = json.get("summary").getAsString();
-        this.description = json.get("description").getAsString();
-        this.location = json.get("location").getAsString();
-        this.colorId = json.get("colorId").getAsString();
-        this.creator = gson.fromJson(json.get("creator"), CalendarPerson.class);
-        this.organizer = gson.fromJson(json.get("organizer"), CalendarPerson.class);
-        this.start = gson.fromJson(json.get("start"), EventDate.class);
-        this.end = gson.fromJson(json.get("end"), EventDate.class);
-        this.endTimeUnspecified = json.get("endTimeUnspecified").getAsBoolean();
-        this.recurrence = gson.fromJson(json.get("recurrence"), String[].class);
-        this.recurringEventId = json.get("recurringEventId").getAsString();
-        this.originalStartTime = gson.fromJson(json.get("originalStartTime"), EventDate.class);
-        this.transparency = json.get("transparency").getAsString();
-        this.visibility = json.get("visibility").getAsString();
-        this.iCalUID = json.get("iCalUID").getAsString();
-        this.sequence = json.get("sequence").getAsString();
-        this.attendees = gson.fromJson(json.get("attendees"), Attendee[].class);
-        this.attendeesOmitted = json.get("attendeesOmitted").getAsBoolean();
-        this.extendedProperties = gson.fromJson(json.get("extendedProperties"), ExtendedProperties.class);
-        this.hangoutLink = json.get("hangoutLink").getAsString();
-    }
-
     public String getEventId() {
         return eventId;
     }
@@ -129,12 +96,30 @@ public class EventsResource {
         this.eventId = eventId;
     }
 
-    public void setCalendarId(String calendarId) {
-        this.mainCalendarId = calendarId;
+    public ArrayList<String> setCalendarIds(ArrayList<String> calendarIds) {
+        this.calendarIds = calendarIds;
+        return this.calendarIds;
     }
-    public String getCalendarId() {
-        return this.mainCalendarId;
+
+    public ArrayList<String> getCalendarIds() {
+        return this.calendarIds;
     }
+
+    public ArrayList<String> addCalendarId(String calendarId) {
+        if (this.calendarIds == null) {
+            this.calendarIds = new ArrayList<>();
+        }
+        this.calendarIds.add(calendarId);
+        return this.calendarIds;
+    }
+
+    public ArrayList<String> removeCalendarId(String calendarId) {
+        if (this.calendarIds != null) {
+            this.calendarIds.remove(calendarId);
+        }
+        return this.calendarIds;
+    }
+
     public void increaseLinks(){
         this.links++;
     }
@@ -297,6 +282,28 @@ public class EventsResource {
     public void setAttendees(Attendee[] attendees) {
         this.attendees = attendees;
     }
+
+    public void addAttendee(Attendee attendee) {
+        if (this.attendees == null) {
+            this.attendees = new Attendee[0];
+        }
+        Attendee[] newAttendees = new Attendee[this.attendees.length + 1];
+        System.arraycopy(this.attendees, 0, newAttendees, 0, this.attendees.length);
+        newAttendees[this.attendees.length] = attendee;
+        this.attendees = newAttendees;
+    }
+    public void removeAttendee(Attendee attendee) {
+        if (this.attendees != null) {
+            ArrayList<Attendee> attendeesList = new ArrayList<>();
+            for (Attendee a : this.attendees) {
+                if (!a.getCalendarPerson().id().equals(attendee.getCalendarPerson().id())) {
+                    attendeesList.add(a);
+                }
+            }
+            this.attendees = attendeesList.toArray(new Attendee[0]);
+        }
+    }
+
     public boolean isAttendeesOmitted() {
         return attendeesOmitted;
     }

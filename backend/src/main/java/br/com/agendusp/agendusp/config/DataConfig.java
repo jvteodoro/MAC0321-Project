@@ -3,7 +3,7 @@ package br.com.agendusp.agendusp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import br.com.agendusp.agendusp.calendar.DataController;
+import br.com.agendusp.agendusp.controller.DataController;
 
 @Configuration
 public class DataConfig {

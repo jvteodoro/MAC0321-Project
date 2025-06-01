@@ -2,9 +2,11 @@ package br.com.agendusp.agendusp.controller;
 
 import java.util.ArrayList;
 
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
+import br.com.agendusp.agendusp.dataobjects.Attendee;
+import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
@@ -139,12 +141,9 @@ public class DataController extends AbstractDataController {
         }
         findUser(userId);
 
-        CalendarListResource calResource = userRepository
-                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
-                .orElseThrow((() -> new IllegalArgumentException("Calendário com ID '" + calendarId
-                        + "' não encontrado para o usuário de ID '" + userId + "'.")));
+        CalendarListResource calListResource = findCalendarList(userId, calendarId);
 
-        if (calResource.getAccessRole() == "owner") {
+        if (calListResource.getAccessRole() == "owner") {
             calendarRepository.deleteById(calendarId);
             userRepository.refreshLinks(calendarId);
         } else {
@@ -154,16 +153,13 @@ public class DataController extends AbstractDataController {
 
     // Events
     @Override
-    public EventsResource addEvent(String calendarId, EventsResource eventResource, String userId) {
+    public EventsResource createEvent(String calendarId, EventsResource eventResource, String userId) {
         if (eventResource == null || eventResource.getEventId() == null || eventResource.getEventId().isEmpty()) {
             throw new IllegalArgumentException("Evento não pode ser nulo e deve ter um ID.");
         }
         User user = findUser(userId);
 
-        CalendarListResource calResource = userRepository
-                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
-                .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId
-                        + "' não encontrado para o usuário de ID '" + userId + "'."));
+        CalendarListResource calResource = findCalendarList(userId, calendarId);
 
         String accessRole = calResource.getAccessRole();
 
@@ -176,12 +172,77 @@ public class DataController extends AbstractDataController {
             throw new IllegalArgumentException("Evento com ID '" + eventResource.getEventId() + "' já existe.");
         }
 
-        eventResource.setCalendarId(calendarId);
+        eventResource.setMainCalendarId(calendarId);
+        eventResource.addCalendarId(calendarId);
         eventResource.setCreator(user.getAsCalendarPerson());
         eventResource.setOrganizer(user.getAsCalendarPerson()); // Inicialmente, o criador é o organizador
+        Attendee[] attendees = new Attendee[1];
+        attendees[0] = new Attendee(user.getAsCalendarPerson(), true);
+        eventResource.setAttendees(attendees); // Adicionando o criador como participante
         eventResource.setStatus("confirmed"); // Definindo o status do evento como confirmado
 
         return eventsRepository.insert(eventResource);
+    }
+
+    @Override
+    public EventsResource addCalendarToEvent(String calendarId, String eventId, String userId) {
+        if (calendarId == null || calendarId.isEmpty() || eventId == null || eventId.isEmpty() || userId == null
+                || userId.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "ID do calendário, ID do evento ou ID do usuário não podem ser nulos ou vazios.");
+        }
+        findUser(userId);
+
+        CalendarListResource calResource = findCalendarList(userId, calendarId);
+
+        String accessRole = calResource.getAccessRole();
+        if (accessRole == null || (!accessRole.equals("owner") && !accessRole.equals("writer"))) {
+            throw new IllegalArgumentException(
+                    "Acesso negado: o usuário não tem permissão para adicionar este calendário ao evento.");
+        }
+
+        EventsResource event = eventsRepository
+                .findEventByEventIdAndUserId(eventId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId
+                        + "' não encontrado para o usuário de ID '" + userId + "'."));
+        
+
+        event.addCalendarId(calendarId); // Adiciona o ID do calendário ao evento
+        event.increaseLinks();
+
+        eventsRepository.save(event);
+        return eventsRepository.save(event);
+    }
+
+    @Override
+    public EventsResource addAtendeeToEvent(String eventId, String calendarId, String userId, String atendeeUserId) {
+        if (eventId == null || eventId.isEmpty() || calendarId == null || calendarId.isEmpty() || userId == null
+                || userId.isEmpty() || atendeeUserId == null) {
+            throw new IllegalArgumentException(
+                    "ID do evento, ID do calendário, ID do usuário ou do participante não podem ser nulos ou vazios.");
+        }
+        findUser(userId);
+
+        CalendarListResource calListResource = findCalendarList(userId, calendarId);;
+
+        EventsResource event = eventsRepository
+                .findEventsResourceByEventIdAndCalendarId(eventId, calListResource.getCalendarId())
+                .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId
+                        + "' não encontrado para o calendário com ID '" + calendarId + "'."));
+
+        Attendee[] attendees = event.getAttendees();
+        for (Attendee attendee : attendees) {
+            if (attendee.getCalendarPerson().id().equals(atendeeUserId)) {
+                throw new IllegalArgumentException("Pessoa já está convidada para este evento.");
+            }
+        }
+
+        User person = findUser(atendeeUserId);
+
+        Attendee newAttendee = new Attendee(person.getAsCalendarPerson(), false);
+        event.addAttendee(newAttendee);
+        event.addCalendarId(person.getCalendarList().get(0).getCalendarId());
+        return eventsRepository.save(event);
     }
 
     @Override
@@ -194,13 +255,10 @@ public class DataController extends AbstractDataController {
         }
         findUser(userId);
 
-        CalendarListResource calResource = userRepository
-                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
-                .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId
-                        + "' não encontrado para o usuário de ID '" + userId + "'."));
+        CalendarListResource calListResource = findCalendarList(userId, calendarId);
 
         EventsResource event = eventsRepository
-                .findEventsResourceByEventIdAndCalendarId(eventId, calResource.getCalendarId())
+                .findEventsResourceByEventIdAndCalendarId(eventId, calListResource.getCalendarId())
                 .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId
                         + "' não encontrado para o calendário com ID '" + calendarId + "'."));
 
@@ -218,7 +276,7 @@ public class DataController extends AbstractDataController {
             throw new IllegalArgumentException("Evento com ID '" + eventId + "' não encontrado.");
         }
         eventResource.setId(eventId);
-        eventResource.setCalendarId(calendarId);
+        eventResource.setMainCalendarId(calendarId); // FIX
         eventsRepository.save(eventResource);
         return eventResource;
     }
@@ -260,12 +318,9 @@ public class DataController extends AbstractDataController {
         }
         findUser(userId);
 
-        CalendarListResource calResource = userRepository
-                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
-                .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId
-                        + "' não encontrado para o usuário de ID '" + userId + "'."));
+        CalendarListResource calListResource = findCalendarList(userId, calendarId);
 
-        ArrayList<EventsResource> events = eventsRepository.findAllByCalendarId(calResource.getCalendarId())
+        ArrayList<EventsResource> events = eventsRepository.findAllByCalendarId(calListResource.getCalendarId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Nenhum evento encontrado para o calendário com ID '" + calendarId + "'."));
 
@@ -281,19 +336,16 @@ public class DataController extends AbstractDataController {
         }
         findUser(userId);
 
-        CalendarListResource calResource = userRepository
-                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
-                .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId
-                        + "' não encontrado para o usuário de ID '" + userId + "'."));
+        CalendarListResource calListResource = findCalendarList(userId, calendarId);
 
-        String accessRole = calResource.getAccessRole();
+        String accessRole = calListResource.getAccessRole();
         if (accessRole == null || (!accessRole.equals("owner") && !accessRole.equals("writer"))) {
             throw new IllegalArgumentException(
                     "Acesso negado: o usuário não tem permissão para remover eventos deste calendário.");
         }
 
         EventsResource event = eventsRepository
-                .findEventsResourceByEventIdAndCalendarId(eventId, calResource.getCalendarId())
+                .findEventsResourceByEventIdAndCalendarId(eventId, calListResource.getCalendarId())
                 .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId
                         + "' não encontrado para o calendário com ID '" + calendarId + "'."));
 
@@ -309,13 +361,10 @@ public class DataController extends AbstractDataController {
         }
         findUser(userId);
 
-        CalendarListResource calResource = userRepository
-                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
-                .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId
-                        + "' não encontrado para o usuário de ID '" + userId + "'."));
+        CalendarListResource calListResource = findCalendarList(userId, calendarId);
 
         EventsResource event = eventsRepository
-                .findEventsResourceByEventIdAndCalendarId(eventId, calResource.getCalendarId())
+                .findEventsResourceByEventIdAndCalendarId(eventId, calListResource.getCalendarId())
                 .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId
                         + "' não encontrado para o calendário com ID '" + calendarId + "'."));
 

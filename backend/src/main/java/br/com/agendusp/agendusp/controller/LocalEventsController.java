@@ -22,14 +22,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class LocalEventsController implements EventsController {
 
     @Autowired
-    private final AbstractDataController dataController;
+    private AbstractDataController dataController;
     @Autowired
-    private final Gson gson;
+    private Gson gson;
 
-    public LocalEventsController(AbstractDataController dataController, Gson gson) {
-        this.dataController = dataController;
-        this.gson = gson;
-    }
+    public LocalEventsController() {}
 
     @DeleteMapping("/events/delete/{calendarId}/{eventId}")
     public ResponseEntity<String> delete(@PathVariable String calendarId, @PathVariable String eventId,
@@ -49,7 +46,7 @@ public class LocalEventsController implements EventsController {
     public String insert(String calendarId, EventsResource event,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        dataController.addEvent(calendarId, event, userId);
+        dataController.createEvent(calendarId, event, userId);
         return gson.toJson(event);
     }
 

@@ -20,6 +20,14 @@ public abstract class AbstractDataController {
                                 .orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + userId + "' não encontrado."));
         }
 
+        protected CalendarListResource findCalendarList(String userId, String calendarId) {
+                CalendarListResource calListResource = userRepository
+                                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
+                                .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId
+                                                + "' não encontrado para o usuário de ID '" + userId + "'."));
+                return calListResource;
+        }
+
         protected String getAccessRole(CalendarResource calResource, String userId) {
                 if (calResource.getOwner().id().equals(userId)) 
                         return "owner";
@@ -45,8 +53,12 @@ public abstract class AbstractDataController {
 
         public abstract void removeCalendar(String calendarId, String userId);
 
-        public abstract EventsResource addEvent(String calendarId, EventsResource eventResource,
+        public abstract EventsResource createEvent(String calendarId, EventsResource eventResource,
                         String userId);
+
+        public abstract EventsResource addCalendarToEvent(String calendarId, String eventId, String userId);
+
+        public abstract EventsResource addAtendeeToEvent(String eventId, String calendarId, String userId, String atendeeUserId);
 
         public abstract EventsResource getEvent(String eventId, String calendarId,
                         String userId);
