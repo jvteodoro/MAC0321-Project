@@ -10,6 +10,8 @@ import com.google.api.services.calendar.model.Event.ExtendedProperties;
 import br.com.agendusp.agendusp.dataobjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 import br.com.agendusp.agendusp.calendar.EventDate;
+import br.com.agendusp.agendusp.dataobjects.Attendee;
+import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
 @Document
 public class EventsResource {
