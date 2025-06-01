@@ -49,7 +49,7 @@ public class LocalCalendarListController implements CalendarListController {
     public String insert(@RequestBody CalendarListResource calendar,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        dataController.addCalendarListResource(calendar, userId);
+        dataController.addCalendarListResource(calendar.getCalendarId(), userId);
         return gson.toJson(calendar);
     }
 
