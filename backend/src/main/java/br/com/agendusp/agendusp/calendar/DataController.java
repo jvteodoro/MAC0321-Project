@@ -8,68 +8,71 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.google.api.services.calendar.model.Event;
 
 import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
-import br.com.agendusp.agendusp.repositories.CalendarListRepository;
+import br.com.agendusp.agendusp.documents.UserCalendarRelation;
+import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
 import br.com.agendusp.agendusp.repositories.UserCalendarListResourceAccessRelationRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
 public class DataController implements AbstractDataController {
 
-    private final CalendarListRepository calendarListRepository;
+    private final CalendarRepository calendarRepository;
     private final EventsRepository eventsRepository;
     private final UserCalendarListResourceAccessRelationRepository userCalendarListResourceAccessRelationRepository;
     @Autowired
     private UserRepository userRepository;
 
-    public DataController(CalendarListRepository calendarListRepository, EventsRepository eventsRepository,
+    public DataController(CalendarRepository calendarRepository, EventsRepository eventsRepository,
             UserCalendarListResourceAccessRelationRepository userCalendarListResourceAccessRelationRepository) {
-        this.calendarListRepository = calendarListRepository;
+        this.calendarRepository = calendarRepository;
         this.eventsRepository = eventsRepository;
         this.userCalendarListResourceAccessRelationRepository = userCalendarListResourceAccessRelationRepository;
     }
 
     // Calendars
     @Override
-    public void addCalendar(CalendarListResource calResource, String userId, String accessRole) {
+    public void addCalendarListResource(CalendarListResource calResource, String userId, String accessRole) {
         if (calResource == null || userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("Calendário ou ID do usuário não podem ser nulos ou vazios.");
         }
-        else if (calendarListRepository.existsById(calResource.getId())) {
+        else if (userRepository.existsById(userId)) {
             throw new IllegalArgumentException("Calendário com ID '" + calResource.getId() + "' já existe.");
         }
         else {
-            UserCalendarListRelation relation = new UserCalendarListRelation(userId, calResource.getId(), calResource.getAccessRole());
-            calendarListRepository.save(calResource);
-            if (userRepository.existsById(userId)) {
-                userRepository.updateUserCalendarList(userId, relation);
-            } else {
-                User user = new User();
-            }
+            userRepository.addUserCalendarList(userId, calResource);
         }
     }
-
     @Override
-    public CalendarListResource getCalendar(String calendarId, String userId) {
-        List<UserCalendarListRelation> relations = userCalendarListResourceAccessRelationRepository
-                .findAllByUserId(userId) //coloca em relations todas asa relaçoes do usurio com algum calendarion
-                .orElseThrow(() -> new IllegalArgumentException("O usuário não possui calendários"));
-        for (UserCalendarListRelation relation : relations) {
-            CalendarListResource calendar = calendarListRepository.findById(relation.getCalendarId()).orElse(null);
-            if (calendar.getId().equals(calendarId)) {
-                return calendar; // Retorna o calendário se encontrado
-            }
+    public void addCalendar(CalendarResource calResource, String userId) {
+        if (calResource == null || userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("Calendário ou ID do usuário não podem ser nulos ou vazios.");
         }
-        throw new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado.");
+        if (calendarRepository.existsById(calResource.getId())) {
+            throw new IllegalArgumentException("Calendário com ID '" + calResource.getId() + "' já existe.");
+        } else {
+            calendarRepository.save(calResource);
+            CalendarListResource calListResource = new CalendarListResource();
+            calListResource.setAccessRole("owner");
+            userRepository.addUserCalendarList(userId, calListResource);        }
+    }
+    @Override
+    public CalendarListResource getCalendar(String calendarId, String userId){
+        if (calendarId == null || calendarId.isEmpty() || userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("ID do calendário ou ID do usuário não podem ser nulos ou vazios.");
+        }
+        CalendarListResource calendar = userRepository.findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
+        .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado para o usuário de ID '" + userId + "'."));
+        return calendar;
     }
 
     @Override
     public CalendarListResource updateCalendar(String calendarId, CalendarListResource calResource, String userId) {
 
-        UserCalendarListRelation userRelation = userRepository.findRelationByUserIdAndCalendarId(userId, calendarId)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não tem acesso ao calendário com ID '" + calendarId + "'."));
-        if (userRelation.acessRole != "owner" && userRelation.acessRole != "writer") {
+        UserCalendarRelation userRelation = userRepository.findRelationByUserIdAndCalendarId(userId, calendarId);//orElseThrow(() -> new IllegalArgumentException("Usuário não tem acesso ao calendário com ID '" + calendarId + "'."));
+        if (userRelation.getAccessRole() != "owner" && userRelation.getAccessRole() != "writer") {
             throw new IllegalArgumentException("Acesso negado: o usuário não tem permissão para atualizar este calendário.");
         }
 
@@ -85,10 +88,9 @@ public class DataController implements AbstractDataController {
     @Override
     public CalendarListResource patchCalendar(String calendarId, CalendarListResource calResource, String userId) {
 
-        UserCalendarListRelation userRelation = userRepository.findRelationByUserIdAndCalendarId(userId, calendarId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Usuário não tem acesso ao calendário com ID '" + calendarId + "'."));
-        if (userRelation.acessRole != "owner" && userRelation.acessRole != "writer") {
+        UserCalendarRelation userRelation = userRepository.findRelationByUserIdAndCalendarId(userId, calendarId);
+        //orElseThrow(() -> new IllegalArgumentException("Usuário não tem acesso ao calendário com ID '" + calendarId + "'."));
+        if (userRelation.getAccessRole() != "owner" && userRelation.getAccessRole() != "writer") {
             throw new IllegalArgumentException(
                     "Acesso negado: o usuário não tem permissão para atualizar este calendário.");
         }
@@ -118,11 +120,11 @@ public class DataController implements AbstractDataController {
 
     @Override
     public CalendarListResource[] getCalendars(String userId) throws Exception {
-        List<UserCalendarListRelation> relations = userCalendarListResourceAccessRelationRepository
+        List<UserCalendarRelation> relations = userCalendarListResourceAccessRelationRepository
                 .findAllByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("O usuário não possui calendários"));
         List<CalendarListResource> calendars = new ArrayList<>();
-        for (UserCalendarListRelation relation : relations) {
+        for (UserCalendarRelation relation : relations) {
             CalendarListResource calendar = calendarListRepository.findById(relation.getCalendarId()).orElse(null);
             if (calendar != null) {
                 calendars.add(calendar);
@@ -152,7 +154,7 @@ public class DataController implements AbstractDataController {
         } else {
             eventResource.increaseLinks();
             eventsRepository.save(eventResource);
-            UserCalendarListRelation relation = new UserCalendarListRelation(userId, calendarId, accessRole);
+            UserCalendarRelation relation = new UserCalendarRelation(userId, calendarId, accessRole);
             userCalendarListResourceAccessRelationRepository.save(relation);
         }
     }

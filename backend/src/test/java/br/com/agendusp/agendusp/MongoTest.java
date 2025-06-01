@@ -5,14 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import br.com.agendusp.agendusp.documents.CalendarListResource;
-import br.com.agendusp.agendusp.repositories.CalendarListRepository;
+import br.com.agendusp.agendusp.repositories.CalendarRepository;
 
 
 @SpringBootTest
 public class MongoTest extends MongoTestContainer {
   
     @Autowired
-    private CalendarListRepository calendarListRepository;
+    private CalendarRepository calendarListRepository;
 
     @Test
     public void test(){

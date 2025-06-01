@@ -1,6 +1,6 @@
 package br.com.agendusp.agendusp.config;
 
-import br.com.agendusp.agendusp.repositories.CalendarListRepository;
+import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
 import br.com.agendusp.agendusp.repositories.UserCalendarListResourceAccessRelationRepository;
 
@@ -13,9 +13,9 @@ public class DataConfig {
 
     private final UserCalendarListResourceAccessRelationRepository userCalendarListResourceAccessRelationRepository;
     private final EventsRepository eventsRepository;
-    private final CalendarListRepository calendarListRepository;
+    private final CalendarRepository calendarListRepository;
 
-    DataConfig(CalendarListRepository calendarListRepository, 
+    DataConfig(CalendarRepository calendarListRepository, 
             EventsRepository eventsRepository, 
             UserCalendarListResourceAccessRelationRepository userCalendarListResourceAccessRelationRepository) {
         this.calendarListRepository = calendarListRepository;

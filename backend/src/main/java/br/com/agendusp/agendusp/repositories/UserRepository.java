@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 
-import br.com.agendusp.agendusp.calendar.UserCalendarListRelation;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 
 public interface UserRepository extends MongoRepository<User, String> {
@@ -16,8 +16,11 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     @Query("{'name' : ?0}")
     @Update("$addToSet: {'calendarList' : ?1}")
-    User updateUserCalendarList(String name, UserCalendarListRelation calendarId);
+    User addUserCalendarList(String name, CalendarListResource calendarListResource);
     
-    @Query("{ 'userId' : ?0, 'calendarList.calendarId': ?1 }")
-    UserCalendarListRelation findRelationByUserIdAndCalendarId(String userId, String calendarId);
+    @Query("{ 'userId' : ?0, 'calendarList.id': ?1 }")
+    Optional<CalendarListResource> findCalendarListResourceByUserIdAndCalendarId(String userId, String calendarId);
+
+    @Query("{ 'userId' : ?0, 'calendarList.id': ?1 }")
+    Boolean existsByCalendarId(String userId, String calendarId);
 }

@@ -6,9 +6,10 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.documents.CalendarResource;
 
 @Repository
-public interface CalendarListRepository extends MongoRepository<CalendarListResource, String> {
+public interface CalendarRepository extends MongoRepository<CalendarResource, String> {
     //public Optional<CalendarListResource> findById(String id);
     //public CalendarListResource insert(CalendarListResource calendarListResource);
     // public CalendarListResource insert(CalendarListResource

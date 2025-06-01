@@ -115,6 +115,13 @@ public class EventsResource {
         this.extendedProperties = gson.fromJson(json.get("extendedProperties"), ExtendedProperties.class);
         this.hangoutLink = json.get("hangoutLink").getAsString();
     }
+
+    public void setCalendarId(String calendarId) {
+        this.mainCalendarId = calendarId;
+    }
+    public String getCalendarId() {
+        return this.mainCalendarId;
+    }
     public void increaseLinks(){
         this.links++;
     }

@@ -14,8 +14,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import br.com.agendusp.agendusp.calendar.UserCalendarListRelation;
-
 
 @Document(collection = "users")
 public class User implements UserDetails {
@@ -25,7 +23,7 @@ public class User implements UserDetails {
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
-    private ArrayList<UserCalendarListRelation> calendarList;
+    private ArrayList<CalendarListResource> calendarList;
 
     public User() {
     }
@@ -67,20 +65,19 @@ public class User implements UserDetails {
     public void setUsername(String name) {
         this.name = name;
     }
-    public void setUserCalendarListRelation(ArrayList<UserCalendarListRelation> calendarList) {
-        this.calendarList = calendarList;
+
+    public ArrayList<CalendarListResource> getCalendarList() {
+        return calendarList;
     }
-    public void addUserCalendarListRelation(UserCalendarListRelation calendarListRelation) {
+    public CalendarListResource addCalendarListResource(CalendarListResource calendarListResource) {
         if (this.calendarList == null) {
-            this.calendarList = new ArrayList<UserCalendarListRelation>();
-            this.calendarList.add(calendarListRelation);
-        } else {
-            this.calendarList.add(calendarListRelation);
+            this.calendarList = new ArrayList<>();
         }
+        this.calendarList.add(calendarListResource);
+        return calendarListResource;
     }
-    public ArrayList<UserCalendarListRelation> getUserCalendarListRelation() {
-        return this.calendarList;
-    }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -98,9 +95,9 @@ public class User implements UserDetails {
     public String getUsername() {
         // TODO Auto-generated method stub
 
-    public void runArray(){
-        //implementar
-    }
+    // public void runArray(){
+    //     //implementar
+    // }
         
         return this.name;   
     }
