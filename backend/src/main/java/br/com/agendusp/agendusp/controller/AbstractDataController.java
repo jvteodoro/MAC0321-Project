@@ -1,6 +1,7 @@
 package br.com.agendusp.agendusp.controller;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,6 +40,8 @@ public abstract class AbstractDataController {
                 return "freeBusyReader";
         }
 
+        public abstract User createUser(User user);
+
         public abstract CalendarListResource updateCalendar(String calendarId, CalendarResource calResource,
                         String userId);
 
@@ -47,7 +50,7 @@ public abstract class AbstractDataController {
 
         public abstract ArrayList<CalendarListResource> getCalendars(String userId) throws Exception;
 
-        public abstract void addCalendar(CalendarResource calResource, String userId);
+        public abstract CalendarResource addCalendar(CalendarResource calResource, String userId);
 
         public abstract CalendarListResource getCalendar(String calendarId, String userId);
 
@@ -75,5 +78,5 @@ public abstract class AbstractDataController {
 
         public abstract void cancelEvent(String eventId, String calendarId, String userId);
 
-        public abstract void addCalendarListResource(String calendarId, String userId);
+        public abstract Optional<Integer> addCalendarListResource(String calendarId, String userId);
 }

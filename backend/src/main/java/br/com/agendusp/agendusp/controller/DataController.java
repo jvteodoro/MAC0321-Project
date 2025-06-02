@@ -1,9 +1,11 @@
 package br.com.agendusp.agendusp.controller;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import br.com.agendusp.agendusp.dataobjects.Attendee;
@@ -16,7 +18,7 @@ import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
-@Service
+@Component
 public class DataController extends AbstractDataController {
 
     @Autowired
@@ -29,9 +31,21 @@ public class DataController extends AbstractDataController {
     public DataController() {
     }
 
+    // Users
+    @Override
+    public User createUser(User user) {
+        if (user == null || user.getId() == null || user.getId().isEmpty()) {
+            throw new IllegalArgumentException("Usuário ou ID do usuário não podem ser nulos ou vazios.");
+        }
+        if (userRepository.existsById(user.getId())) {
+            throw new IllegalArgumentException("Usuário com ID '" + user.getId() + "' já existe.");
+        }
+        return userRepository.save(user);
+    }
+
     // Calendars
     @Override
-    public void addCalendarListResource(String calendarId, String userId) {
+    public Optional<Integer> addCalendarListResource(String calendarId, String userId) {
         if (calendarId == null || calendarId.isEmpty() || userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("ID do calendário ou ID do usuário não podem ser nulos ou vazios.");
         }
@@ -46,11 +60,11 @@ public class DataController extends AbstractDataController {
         String accessRole = getAccessRole(calResource, userId);
 
         calListResource.setAccessRole(accessRole);
-        userRepository.updateOneByUserId(userId, calListResource);
+        return userRepository.updateOneByUserId(userId, calListResource);
     }
 
     @Override
-    public void addCalendar(CalendarResource calResource, String userId) {
+    public CalendarResource addCalendar(CalendarResource calResource, String userId) {
         if (calResource == null || userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("Calendário ou ID do usuário não podem ser nulos ou vazios.");
         }
@@ -60,8 +74,9 @@ public class DataController extends AbstractDataController {
             throw new IllegalArgumentException("Calendário com ID '" + calResource.getCalendarId() + "' já existe.");
         }
 
-        calendarRepository.save(calResource);
+        CalendarResource savedCalendar = calendarRepository.save(calResource);
         this.addCalendarListResource(calResource.getCalendarId(), userId);
+        return savedCalendar;
     }
 
     @Override
