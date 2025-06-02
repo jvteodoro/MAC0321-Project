@@ -9,3 +9,5 @@
 
 ## Descrição do Projeto
 Escolhemos o projeto A1 - Assistente para Organização Pessoal. O programa sera desenvolvido pensando no caso de uso dos docentes da usp
+## Branch Atual
+O branch atual mais desenvolvido é o feature/129, por favor usar ele como base
