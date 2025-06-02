@@ -16,7 +16,7 @@ public class CalendarListUserItem {
     boolean selected;
     String accessRole;
 
-    CalendarListUserItem() {}
+    public CalendarListUserItem() {}
 
     public CalendarListUserItem(String calendarId, String colorId, String backgroundColor, String foregroundColor, boolean hidden, boolean selected, String accessRole) {
         this.calendarId = calendarId;

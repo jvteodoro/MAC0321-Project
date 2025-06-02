@@ -2,12 +2,10 @@ package br.com.agendusp.agendusp;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.github.dockerjava.api.model.Event;
 
 import br.com.agendusp.agendusp.controller.DataController;
 import br.com.agendusp.agendusp.documents.CalendarResource;

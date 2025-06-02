@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import com.google.gson.Gson;
 
@@ -39,7 +38,7 @@ public class DataControllerOperationsMockTest {
 
     private CalendarListResource createCalendar() {
         CalendarListResource calendar = new CalendarListResource();
-        calendar.setId(calendarID);
+        calendar.setCalendarId(calendarID);
         calendar.setSummary("Bolo de Chocolate");
         calendar.setDescription("Caldinha de brigadeiro");
         calendar.setLocation("China");
@@ -77,7 +76,7 @@ public class DataControllerOperationsMockTest {
     @Test
     public void testInsert() throws Exception {
         CalendarListResource calendar = new CalendarListResource();
-        calendar.setId("novoId");
+        calendar.setCalendarId("novoId");
         calendar.setSummary("Novo");
         calendar.setAccessRole("reader");
 
@@ -93,7 +92,7 @@ public class DataControllerOperationsMockTest {
                 .andReturn().getResponse().getContentAsString();
 
         CalendarListResource[] calendars = gson.fromJson(listJson, CalendarListResource[].class);
-        assertTrue(java.util.Arrays.stream(calendars).anyMatch(c -> "novoId".equals(c.getId())));
+        assertTrue(java.util.Arrays.stream(calendars).anyMatch(c -> "novoId".equals(c.getCalendarId())));
     }
 
     @Test
@@ -105,7 +104,7 @@ public class DataControllerOperationsMockTest {
 
         CalendarListResource[] calendars = gson.fromJson(listJson, CalendarListResource[].class);
         assertTrue(calendars.length > 0);
-        assertTrue(java.util.Arrays.stream(calendars).anyMatch(c -> calendarID.equals(c.getId())));
+        assertTrue(java.util.Arrays.stream(calendars).anyMatch(c -> calendarID.equals(c.getCalendarId())));
     }
 
     @Test
@@ -120,7 +119,7 @@ public class DataControllerOperationsMockTest {
                 .andReturn().getResponse().getContentAsString();
 
         CalendarListResource[] calendars = gson.fromJson(listJson, CalendarListResource[].class);
-        assertFalse(java.util.Arrays.stream(calendars).anyMatch(c -> calendarID.equals(c.getId())));
+        assertFalse(java.util.Arrays.stream(calendars).anyMatch(c -> calendarID.equals(c.getCalendarId())));
     }
 
     @Test

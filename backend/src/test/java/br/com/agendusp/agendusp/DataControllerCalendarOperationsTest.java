@@ -11,13 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithSecurityContext;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import com.google.gson.Gson;
 
 import br.com.agendusp.agendusp.controller.DataController;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.documents.CalendarListUserItem;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
 
@@ -67,7 +66,7 @@ public class DataControllerCalendarOperationsTest extends MongoTestContainer {
         calendar.setTimeZone("UTC");
         CalendarResource createdCalendar = dataController.addCalendar(calendar, "testuser2");
         //Necessário mudar para CalendarResource
-        CalendarListResource fetchedCalendar = dataController.getCalendar(createdCalendar.getId(), "testuser2");
+        CalendarListResource fetchedCalendar = dataController.getCalendarListResource(createdCalendar.getCalendarId(), "testuser2");
         assertEquals(gson.toJson(calendar), gson.toJson(fetchedCalendar));
     }   
 
@@ -76,16 +75,22 @@ public class DataControllerCalendarOperationsTest extends MongoTestContainer {
         User user = new User();
         user.setId("testuser3");
         dataController.createUser(user);
-        CalendarResource calendar = new CalendarResource();
-        calendar.setCalendarId("test-calendar-id-3");
-        calendar.setSummary("Test Calendar 3");
-        calendar.setDescription("This is a test calendar 3");
-        calendar.setLocation("Test Location 3");
-        calendar.setTimeZone("UTC");
-        CalendarResource createdCalendar = dataController.addCalendar(calendar, "testuser3");
+        CalendarResource calResource = new CalendarResource();
+        calResource.setCalendarId("test-calendar-id-3");
+        calResource.setSummary("Test Calendar 3");
+        calResource.setDescription("This is a test calendar 3");
+        calResource.setLocation("Test Location 3");
+        calResource.setTimeZone("UTC");
+        calResource.setOwner(user.getAsCalendarPerson());
+        CalendarResource createdCalendar = dataController.addCalendar(calResource, "testuser3");
+
+        CalendarListUserItem calListUserItem = new CalendarListUserItem(calResource.getCalendarId(), "", "", "", false, false, "owner");
+
+        boolean primary = calResource.getOwner().id().equals("testuser3");
+        CalendarListResource createdCalListResource = new CalendarListResource(calResource.getCalendarId(), primary, calListUserItem, calResource);
 
         createdCalendar.setSummary("Updated Test Calendar 3");
-        CalendarListResource updatedCalendar = dataController.updateCalendar(createdCalendar.getId(), createdCalendar, "testuser3");
+        CalendarListResource updatedCalendar = dataController.updateCalendar(createdCalendar.getCalendarId(), createdCalListResource, "testuser3");
         
         assertEquals("Updated Test Calendar 3", updatedCalendar.getSummary());
     }
@@ -129,7 +134,7 @@ public class DataControllerCalendarOperationsTest extends MongoTestContainer {
         calendar.setTimeZone("UTC");
         CalendarResource createdCalendar = dataController.addCalendar(calendar, "testuser4");
 
-        dataController.removeCalendar(createdCalendar.getId(), "testuser4");
+        dataController.removeCalendar(createdCalendar.getCalendarId(), "testuser4");
 
         ArrayList<CalendarListResource> removedCalendar = dataController.getCalendars("testuser4");
         
