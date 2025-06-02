@@ -26,7 +26,7 @@ import br.com.agendusp.agendusp.documents.CalendarListResource;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class DataControllerTest {
+public class DataControllerOperationsMockTest {
 
     @Autowired
     private MockMvc mockMvc;

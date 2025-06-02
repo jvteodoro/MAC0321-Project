@@ -30,6 +30,8 @@ public abstract class AbstractDataController {
                 return calListUserItemResource;
         }
 
+        public abstract User createUser(User user);
+
         protected String getAccessRole(CalendarResource calResource, String userId) {
                 if (calResource.getOwner().id().equals(userId)) 
                         return "owner";
@@ -53,7 +55,7 @@ public abstract class AbstractDataController {
 
         public abstract ArrayList<CalendarListResource> getCalendars(String userId) throws Exception;
 
-        public abstract void addCalendar(CalendarResource calResource, String userId);
+        public abstract CalendarResource addCalendar(CalendarResource calResource, String userId);
 
         public abstract CalendarListResource getCalendarListResource(String calendarId, String userId);
 

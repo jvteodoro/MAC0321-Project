@@ -1,8 +1,10 @@
 package br.com.agendusp.agendusp.controller;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import br.com.agendusp.agendusp.dataobjects.Attendee;
@@ -15,7 +17,7 @@ import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
-@Service
+@Component
 public class DataController extends AbstractDataController {
 
     @Autowired
@@ -26,6 +28,18 @@ public class DataController extends AbstractDataController {
     private EventsRepository eventsRepository;
 
     public DataController() {
+    }
+
+    // Users
+    @Override
+    public User createUser(User user) {
+        if (user == null || user.getId() == null || user.getId().isEmpty()) {
+            throw new IllegalArgumentException("Usuário ou ID do usuário não podem ser nulos ou vazios.");
+        }
+        if (userRepository.existsById(user.getId())) {
+            throw new IllegalArgumentException("Usuário com ID '" + user.getId() + "' já existe.");
+        }
+        return userRepository.save(user);
     }
 
     // Calendars
@@ -45,7 +59,7 @@ public class DataController extends AbstractDataController {
     }
 
     @Override
-    public void addCalendar(CalendarResource calResource, String userId) {
+    public CalendarResource addCalendar(CalendarResource calResource, String userId) {
         if (calResource == null || userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("Calendário ou ID do usuário não podem ser nulos ou vazios.");
         }
@@ -55,8 +69,8 @@ public class DataController extends AbstractDataController {
             throw new IllegalArgumentException("Calendário com ID '" + calResource.getCalendarId() + "' já existe.");
         }
 
-        calendarRepository.save(calResource);
         this.addCalendarListUserItem(calResource, userId);
+        return calendarRepository.save(calResource);
     }
 
     @Override
