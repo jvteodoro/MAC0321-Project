@@ -1,11 +1,9 @@
 package br.com.agendusp.agendusp.controller;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import br.com.agendusp.agendusp.dataobjects.Attendee;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
@@ -51,7 +49,6 @@ public class DataController extends AbstractDataController {
         findUser(userId);
 
         CalendarListUserItem calListUserItem = new CalendarListUserItem(calResource.getCalendarId(), "", "", "", false, true, getAccessRole(calResource, userId)); // Inicialmente, o usuário é o dono do calendário
-
 
         userRepository.updateOneByUserId(userId, calListUserItem);
 
