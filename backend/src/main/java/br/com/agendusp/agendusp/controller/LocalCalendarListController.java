@@ -40,17 +40,17 @@ public class LocalCalendarListController implements CalendarListController {
     @GetMapping("/calendarList/get")
     public String get(@RequestParam String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        return gson.toJson(dataController.getCalendar(calendarId, userId));
+        return gson.toJson(dataController.getCalendarListResource(calendarId, userId));
     }
 
     @PostMapping("/calendarList/insert")
     public String insert(@RequestBody CalendarListResource calendar,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        dataController.addCalendarListResource(calendar.getCalendarId(), userId);
+        dataController.addCalendarListUserItem(calendar.extractCalendarResource(), userId);
         return gson.toJson(calendar);
     }
-
+    
     @GetMapping("/calendarList/list")
     public String list(@AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
@@ -65,33 +65,32 @@ public class LocalCalendarListController implements CalendarListController {
     public String update(@RequestBody CalendarListResource calendar,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        return gson.toJson(null);
-        // return gson.toJson(dataController.updateCalendar(calendar.getCalendarId(), calendar, userId));
+        return gson.toJson(dataController.updateCalendar(calendar.getCalendarId(), calendar, userId));
     }
 
-    @PatchMapping("/calendarList/patch")
-    public String patch(@RequestBody CalendarListResource calListResource,
-            @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
-        JsonObject body = new JsonObject(); // atualização parcial (dos atributos nao nulos)
-        if (calListResource.getDescription() != null) {
-            body.addProperty("description", calListResource.getDescription());
-        }
-        if (calListResource.getLocation() != null) {
-            body.addProperty("location", calListResource.getLocation());
-        }
-        if (calListResource.getSummary() != null) {
-            body.addProperty("summary", calListResource.getSummary());
-        }
-        if (calListResource.getTimeZone() != null) {
-            body.addProperty("timeZone", calListResource.getTimeZone());
-        }
-        if (calListResource.getAccessRole() != null) {
-            body.addProperty("acessRole", calListResource.getAccessRole());
-        }
+    // @PatchMapping("/calendarList/patch")
+    // public String patch(@RequestBody CalendarListResource calListResource,
+    //         @AuthenticationPrincipal CustomOAuth2User customUser) {
+    //     String userId = customUser.getUser().getId();
+    //     JsonObject body = new JsonObject(); // atualização parcial (dos atributos nao nulos)
+    //     if (calListResource.getDescription() != null) {
+    //         body.addProperty("description", calListResource.getDescription());
+    //     }
+    //     if (calListResource.getLocation() != null) {
+    //         body.addProperty("location", calListResource.getLocation());
+    //     }
+    //     if (calListResource.getSummary() != null) {
+    //         body.addProperty("summary", calListResource.getSummary());
+    //     }
+    //     if (calListResource.getTimeZone() != null) {
+    //         body.addProperty("timeZone", calListResource.getTimeZone());
+    //     }
+    //     if (calListResource.getAccessRole() != null) {
+    //         body.addProperty("acessRole", calListResource.getAccessRole());
+    //     }
 
-        return gson.toJson(null);
-        // return gson.toJson(dataController.patchCalendar(calListResource.getCalendarId(),
-        //         gson.fromJson(body, CalendarListResource.class), userId));
-    }
+    //     return gson.toJson(null);
+    //     // return gson.toJson(dataController.patchCalendar(calListResource.getCalendarId(),
+    //     //         gson.fromJson(body, CalendarListResource.class), userId));
+    // }
 }

@@ -15,7 +15,7 @@ public interface CalendarListController {
 
     public String list(@AuthenticationPrincipal CustomOAuth2User customUser);
 
-    public String patch(CalendarListResource calendar, @AuthenticationPrincipal CustomOAuth2User customUser);
+    // public String patch(CalendarListResource calendar, @AuthenticationPrincipal CustomOAuth2User customUser);
 
     public String update(CalendarListResource calendar, @AuthenticationPrincipal CustomOAuth2User customUser);
 

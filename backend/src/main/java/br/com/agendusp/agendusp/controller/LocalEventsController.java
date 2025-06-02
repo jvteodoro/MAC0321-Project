@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 
 import br.com.agendusp.agendusp.CustomOAuth2User;
 import br.com.agendusp.agendusp.documents.EventsResource;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,8 +43,15 @@ public class LocalEventsController implements EventsController {
         return gson.toJson(dataController.getEvent(eventId, calendarId, userId));
     }
 
+    @PostMapping("/events/addAttendee/{calendarId}/{attendeeId}")
+    public String addAttendee(String calendarId, String attendeeId, @RequestBody EventsResource event,
+            @AuthenticationPrincipal CustomOAuth2User customUser) {
+        String userId = customUser.getUser().getId();
+        return gson.toJson(dataController.addAtendeeToEvent(event.getEventId(), calendarId, userId, attendeeId));
+    }
+
     @PostMapping("/events/insert/{calendarId}")
-    public String insert(String calendarId, EventsResource event,
+    public String insert(String calendarId, @RequestBody EventsResource event,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
         dataController.createEvent(calendarId, event, userId);
@@ -64,7 +72,7 @@ public class LocalEventsController implements EventsController {
     }
 
     @PatchMapping("/events/patch/{calendarId}")
-    public String patch(String calendarId, EventsResource event, @AuthenticationPrincipal CustomOAuth2User customUser) {
+    public String patch(String calendarId, @RequestBody EventsResource event, @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
         JsonObject body = new JsonObject(); // atualizacão parcial (dos atributos nao nulos)
 

@@ -1,76 +1,72 @@
 package br.com.agendusp.agendusp.documents;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-@Document
 public class CalendarListResource {
-
-    @Id
-    String id;
     String calendarId;
     String kind = "calendar#calendarListEntry";
-    String etag;
+    // String etag;
     String summary;
     String description;
     String location;
     String timeZone;
-    String summaryOverride;
     String colorId;
     String backgroundColor;
     String foregroundColor;
     boolean hidden;
     boolean selected;
     String accessRole;
-    // ArrayList<DefaultReminder> defaultReminders;
-    // ArrayList<> notificationSettings;
     boolean primary;
     boolean deleted;
-    // ConferenceProperties conferenceProperties;
-    // ArrayList<Calendar> calendars;
+    CalendarPerson owner;
 
     public CalendarListResource() {
     }
 
-    public CalendarListResource(String calendarId, String summary, String description, String location, String timeZone) {
+    public CalendarListResource(String calendarId, boolean primary, CalendarListUserItem calendarListUserItem, CalendarResource calendarResource) {
         this.calendarId = calendarId;
-        this.summary = summary;
-        this.description = description;
-        this.location = location;
-        this.timeZone = timeZone;
+        this.primary = primary;
+
+        this.summary = calendarResource.getSummary();
+        this.description = calendarResource.getDescription();
+        this.location = calendarResource.getLocation();
+        this.timeZone = calendarResource.getTimeZone();
+        this.deleted = calendarResource.isDeleted();
+        this.owner = calendarResource.getOwner();
+        
+        this.colorId = calendarListUserItem.getColorId();
+        this.backgroundColor = calendarListUserItem.getBackgroundColor();
+        this.foregroundColor = calendarListUserItem.getForegroundColor();
+        this.hidden = calendarListUserItem.isHidden();
+        this.selected = calendarListUserItem.isSelected();
+        this.accessRole = calendarListUserItem.getAccessRole();
     }
 
-    public CalendarListResource(Gson gson) {
-        JsonObject json = gson.toJsonTree(this).getAsJsonObject();
-        this.id = json.get("id").getAsString();
-        this.summary = json.get("summary").getAsString();
-        this.description = json.get("description").getAsString();
-        this.location = json.get("location").getAsString();
-        this.timeZone = json.get("timeZone").getAsString();
-        this.summaryOverride = json.get("summaryOverride").getAsString();
-        this.colorId = json.get("colorId").getAsString();
-        this.backgroundColor = json.get("backgroundColor").getAsString();
-        this.foregroundColor = json.get("foregroundColor").getAsString();
-        this.hidden = json.get("hidden").getAsBoolean();
-        this.selected = json.get("selected").getAsBoolean();
-        this.accessRole = json.get("accessRole").getAsString();
-        this.primary = json.get("primary").getAsBoolean();
-        this.deleted = json.get("deleted").getAsBoolean();
+    public CalendarListUserItem extractCalendarListUserItem() {
+        CalendarListUserItem item = new CalendarListUserItem();
+        item.setCalendarId(this.calendarId);
+        item.setColorId(this.colorId);
+        item.setBackgroundColor(this.backgroundColor);
+        item.setForegroundColor(this.foregroundColor);
+        item.setHidden(this.hidden);
+        item.setSelected(this.selected);
+        item.setAccessRole(this.accessRole);
+        return item;
+    }
+    public CalendarResource extractCalendarResource() {
+        CalendarResource resource = new CalendarResource();
+        resource.setCalendarId(this.calendarId);
+        resource.setSummary(this.summary);
+        resource.setDescription(this.description);
+        resource.setLocation(this.location);
+        resource.setTimeZone(this.timeZone);
+        resource.setDeleted(this.deleted);
+        resource.setOwner(this.owner);
+        return resource;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getAcessRole(){
+    public String getAcessRole() {
         return this.accessRole;
-    }
-
-    public String getId() {
-        return this.id;
     }
 
     public String getKind() {
@@ -79,14 +75,6 @@ public class CalendarListResource {
 
     public void setKind(String kind) {
         this.kind = kind;
-    }
-
-    public String getEtag() {
-        return etag;
-    }
-
-    public void setEtag(String etag) {
-        this.etag = etag;
     }
 
     public String getCalendarId() {
@@ -127,14 +115,6 @@ public class CalendarListResource {
 
     public void setTimeZone(String timeZone) {
         this.timeZone = timeZone;
-    }
-
-    public String getSummaryOverride() {
-        return summaryOverride;
-    }
-
-    public void setSummaryOverride(String summaryOverride) {
-        this.summaryOverride = summaryOverride;
     }
 
     public String getColorId() {
@@ -191,6 +171,14 @@ public class CalendarListResource {
 
     public void setPrimary(boolean primary) {
         this.primary = primary;
+    }
+
+    public CalendarPerson getOwner() {
+        return owner;
+    }
+
+    public void setOwner(CalendarPerson owner) {
+        this.owner = owner;
     }
 
     public boolean isDeleted() {

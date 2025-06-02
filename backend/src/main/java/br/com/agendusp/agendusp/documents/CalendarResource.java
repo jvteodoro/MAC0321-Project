@@ -12,24 +12,72 @@ public class CalendarResource {
     String id;
     String calendarId;
     String kind = "calendar#calendar";
-    String calendarResource;
     String etag;
     String summary;
     String description;
     String location;
     String timeZone;
-    String summaryOverride;
-    boolean hidden;
-    boolean selected;
     CalendarPerson owner;
     ArrayList<CalendarPerson> writers;
     ArrayList<CalendarPerson> readers;
     ArrayList<CalendarPerson> freeBusyReaders;
-
-    // ArrayList<DefaultReminder> defaultReminders;
-    // ArrayList<> notificationSettings;
-    boolean primary;
     boolean deleted;
+
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
+    }
+
+    public String getEtag() {
+        return etag;
+    }
+
+    public void setEtag(String etag) {
+        this.etag = etag;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
     
     public String getCalendarId() {
         return calendarId;

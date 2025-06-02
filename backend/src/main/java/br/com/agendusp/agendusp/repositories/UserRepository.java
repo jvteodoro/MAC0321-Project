@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 import org.springframework.stereotype.Repository;
 
-import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.documents.CalendarListUserItem;
 import br.com.agendusp.agendusp.documents.User;
 
 @Repository
@@ -18,7 +18,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByEmail(String email);
     @Query("{'userId' : ?0}")
     @Update("{$push: {'calendarList' : ?1}}")
-    Optional<Integer> updateOneByUserId(String userId, CalendarListResource calendarListResource);
+    Optional<Integer> updateOneByUserId(String userId, CalendarListUserItem calendarListUserItem);
 
     @Query(value = "{ 'userId' : ?0 }")  // Explicit query without projection
     public Optional<User> findByUserId(String userId);
@@ -30,7 +30,7 @@ public interface UserRepository extends MongoRepository<User, String> {
         "{ $replaceRoot: { newRoot: '$calendarList' } }",
         "{ $limit: 1 }"
     })    
-    Optional<CalendarListResource> findCalendarListResourceByUserIdAndCalendarId(String userId, String calendarId);
+    Optional<CalendarListUserItem> findCalendarListUserItemByUserIdAndCalendarId(String userId, String calendarId);
 
     
     @Query(value = "{ 'userId': ?0, 'calendarList.calendarId': ?1 }", exists = true)

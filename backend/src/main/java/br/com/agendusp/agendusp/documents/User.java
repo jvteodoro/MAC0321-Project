@@ -27,7 +27,7 @@ public class User implements UserDetails {
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
-    private ArrayList<CalendarListResource> calendarList; // Índice 0 é o calendário principal do usuário
+    private ArrayList<CalendarListUserItem> calendarList; // Índice 0 é o calendário principal do usuário
     private CalendarPerson calendarPerson;
 
     public User() {
@@ -91,15 +91,15 @@ public class User implements UserDetails {
         updateCalendarPerson();
     }
 
-    public ArrayList<CalendarListResource> getCalendarList() {
+    public ArrayList<CalendarListUserItem> getCalendarList() {
         return calendarList;
     }
-    public CalendarListResource addCalendarListResource(CalendarListResource calendarListResource) {
+    public CalendarListUserItem addCalendarListUserItem(CalendarListUserItem calendarListUserItem) {
         if (this.calendarList == null) {
             this.calendarList = new ArrayList<>();
         }
-        this.calendarList.add(calendarListResource);
-        return calendarListResource;
+        this.calendarList.add(calendarListUserItem);
+        return calendarListUserItem;
     }
 
 
