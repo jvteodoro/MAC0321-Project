@@ -178,9 +178,7 @@ public class DataController extends AbstractDataController {
         eventResource.addCalendarId(calendarId);
         eventResource.setCreator(user.getAsCalendarPerson());
         eventResource.setOrganizer(user.getAsCalendarPerson()); // Inicialmente, o criador é o organizador
-        Attendee[] attendees = new Attendee[1];
-        attendees[0] = new Attendee(user.getAsCalendarPerson(), true);
-        eventResource.setAttendees(attendees); // Adicionando o criador como participante
+        eventResource.addAttendee(new Attendee(user.getAsCalendarPerson(), true)); // Adicionando o criador como participante
         eventResource.setStatus("confirmed"); // Definindo o status do evento como confirmado
 
         return eventsRepository.insert(eventResource);
@@ -212,7 +210,6 @@ public class DataController extends AbstractDataController {
         event.addCalendarId(calendarId); // Adiciona o ID do calendário ao evento
         event.increaseLinks();
 
-        eventsRepository.save(event);
         return eventsRepository.save(event);
     }
 
@@ -225,7 +222,7 @@ public class DataController extends AbstractDataController {
         }
         findUser(userId);
 
-        CalendarListResource calListResource = findCalendarList(userId, calendarId);;
+        CalendarListResource calListResource = findCalendarList(userId, calendarId);
 
         EventsResource event = eventsRepository
                 .findEventsResourceByEventIdAndCalendarId(eventId, calListResource.getCalendarId())
@@ -244,6 +241,7 @@ public class DataController extends AbstractDataController {
         Attendee newAttendee = new Attendee(person.getAsCalendarPerson(), false);
         event.addAttendee(newAttendee);
         event.addCalendarId(person.getCalendarList().get(0).getCalendarId());
+        event.increaseLinks();
         return eventsRepository.save(event);
     }
 
