@@ -3,7 +3,7 @@ package br.com.agendusp.agendusp.calendar;
 // import com.google.api.services.calendar.model.ConferenceProperties;
 import com.google.gson.Gson;
 
-public class GoogleCalendar implements Calendar{
+public class GoogleCalendar {
 
     String kind = "calendar#calendar";
     String etag;
@@ -29,8 +29,6 @@ public class GoogleCalendar implements Calendar{
         this.timeZone = gson.toJsonTree(this).getAsJsonObject().get("timeZone").getAsString();
 
     }
-
-    @Override
     public org.springframework.http.HttpStatusCode clear() {
         return null;
     }

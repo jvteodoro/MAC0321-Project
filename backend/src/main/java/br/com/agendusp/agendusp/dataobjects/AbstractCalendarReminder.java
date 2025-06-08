@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.calendar;
+package br.com.agendusp.agendusp.dataobjects;
 
 public class AbstractCalendarReminder {
     String method;

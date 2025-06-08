@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.calendar;
+package br.com.agendusp.agendusp.dataobjects;
 
 import java.lang.IllegalArgumentException;
 
