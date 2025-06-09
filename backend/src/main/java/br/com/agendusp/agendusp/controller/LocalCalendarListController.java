@@ -3,10 +3,12 @@ package br.com.agendusp.agendusp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.nimbusds.jose.proc.SecurityContext;
 
 import br.com.agendusp.agendusp.CustomOAuth2User;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
@@ -52,8 +54,9 @@ public class LocalCalendarListController implements CalendarListController {
     }
     
     @GetMapping("/calendarList/list")
-    public String list(@AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
+    public String list(@Autowired SecurityContextHolder securityContextHolder) {
+        String userId = securityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        System.out.println("USER ID:"+userId);
         try {
             return gson.toJson(dataController.getCalendars(userId));
         } catch (Exception e) {

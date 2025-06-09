@@ -4,6 +4,9 @@ import com.google.api.services.calendar.model.Event.ExtendedProperties;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import br.com.agendusp.agendusp.dataobjects.Attendee;
+import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
+
 public class EventsResource {
 
     int links; // It's necessary to know how many calendars links this event.

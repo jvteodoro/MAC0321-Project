@@ -2,6 +2,8 @@ package br.com.agendusp.agendusp.calendar;
 
 import java.util.ArrayList;
 
+import br.com.agendusp.agendusp.documents.CalendarListResource;
+
 
 public interface AbstractDataController {
     public CalendarListResource updateCalendar(String calendarId, CalendarListResource calResource);
