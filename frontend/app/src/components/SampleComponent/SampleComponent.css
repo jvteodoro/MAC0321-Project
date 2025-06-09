@@ -1,3 +1,5 @@
+@import url('../../App.css');
+
 h1 {
-    background-color: black;
+    background-color: var(--main-color);
 }

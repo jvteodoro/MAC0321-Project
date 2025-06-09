@@ -1,0 +1,52 @@
+@import url('../../App.css');
+
+.modal {
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#menu-wrapper {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 0 0.2em var(--main-highlight-color);
+}
+
+#login-menu {
+    padding: 1rem;
+    box-shadow: 0 0 0.2em var(--secondary-hoverselect-color);
+}
+
+#login-form {
+    display: grid;
+    grid-template-rows: 2fr 1fr 1fr;
+    gap: 0.5em;
+}
+
+#form-inputs {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.5em;
+}
+
+#login-form > button {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#googleSignIn {
+    background-color: var(--secondary-color);
+}
+
+#googleSignIn:hover {
+    background-color: var(--secondary-hoverselect-color);
+}
+
+#googleSignIn > img {
+    max-height: 1.5em;
+}

@@ -1,12 +1,14 @@
 import logo from './logo.svg';
 import './App.css';
-import SampleComponent from './components/SampleComponent';
+import CalendarMenu from './components/CalendarMenu/CalendarMenu';
+import LoginMenu from './components/LoginMenu/LoginMenu'
+import PageHeader from './components/PageHeader/PageHeader';
+import EventMenu from './components/EventMenu';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+      {/* <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
@@ -17,9 +19,12 @@ function App() {
           rel="noopener noreferrer"
         >
           Learn React
-        </a>
-        <SampleComponent/>
-      </header>
+        </a> */}
+      <LoginMenu/>
+      {/* <PageHeader title="Calendário" />
+        <CalendarMenu /> */}
+      {/* <PageHeader title="EventoNOME" />
+      <EventMenu color="#123456" /> */}
     </div>
   );
 }

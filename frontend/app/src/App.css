@@ -1,38 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap");
+
+* {
+  --main-font-color: #effafd;
+  --main-color: #43a4ff;
+  --main-hoverselect-color: #2c87dd;
+  --main-highlight-color: #008cff;
+  --secondary-color: #21282c;
+  --secondary-hoverselect-color: #161d20;
+
+  --main-font-color-light: #171a1b;
+  --main-color-light: #076dc0;
+  --main-hoverselect-color-light: #017ce0;
+  --main-highlight-color-light: #008cff;
+  --secondary-color-light: #d8e6eb;
+  --secondary-hoverselect-color-light: #b7d0da;
+
+  color: var(--main-font-color);
+  font-family: "Zain", sans-serif;
+}
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: var(--secondary-color);
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--main-font-color);
 }
 
-.App-link {
+.App *:not(input) {
+  transition: 0.15s ease-in-out;
+}
+
+/* .App-link {
   color: #61dafb;
+} */
+
+h1 {
+  font-size: 4rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+h2 {
+  font-size: 3rem;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+input,
+button,
+select,
+option {
+  border-color: var(--main-highlight-color);
+  font-size: 2rem;
+  border-radius: 10px;
+  padding: 0.25em;
+}
+
+input {
+  background-color: var(--secondary-color);
+}
+
+button {
+  background-color: var(--main-color);
+}
+
+button:hover {
+  background-color: var(--main-hoverselect-color);
+}
+
+/* button > i {
+  color: var(--secondary-color);
+} */
+
+:focus-visible {
+  outline: var(--main-highlight-color) auto 1px;
 }
