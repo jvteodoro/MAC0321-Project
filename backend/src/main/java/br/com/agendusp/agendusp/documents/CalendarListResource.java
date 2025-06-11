@@ -65,6 +65,13 @@ public class CalendarListResource {
         return resource;
     }
 
+    public String getId() {
+        return calendarId;
+    }
+    public void setId(String calendarId){
+        this.calendarId = calendarId;
+    }
+
     public String getAcessRole() {
         return this.accessRole;
     }

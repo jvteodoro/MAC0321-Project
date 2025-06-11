@@ -23,6 +23,9 @@ public class CalendarResource {
     ArrayList<CalendarPerson> freeBusyReaders;
     boolean deleted;
 
+    public String getId(){
+        return id;
+    }
     public String getKind() {
         return kind;
     }
