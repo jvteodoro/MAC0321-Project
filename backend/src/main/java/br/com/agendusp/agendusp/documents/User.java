@@ -15,7 +15,7 @@ import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
 
 @Document(collection = "users")
-public class User implements UserDetails {
+public class User {//implements UserDetails {
 
     @Autowired
     private SecurityContext securityContext; // Para acessar o contexto de segurança
@@ -104,26 +104,26 @@ public class User implements UserDetails {
 
 
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
-    }
-
-    @Override
-    public String getPassword() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
-    }
-
-    @Override
-    public String getUsername() {
-        // TODO Auto-generated method stub
-
-    // public void runArray(){
-    //     //implementar
+    // @Override
+    // public Collection<? extends GrantedAuthority> getAuthorities() {
+    //     // TODO Auto-generated method stub
+    //     throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
     // }
+
+    // @Override
+    // public String getPassword() {
+    //     // TODO Auto-generated method stub
+    //     throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
+    // }
+
+    // @Override
+    // public String getUsername() {
+    //     // TODO Auto-generated method stub
+
+    // // public void runArray(){
+    // //     //implementar
+    // // }
         
-        return this.name;   
-    }
+    //     return this.name;   
+    // }
 }

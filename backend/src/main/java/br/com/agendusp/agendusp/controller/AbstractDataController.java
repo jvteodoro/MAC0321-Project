@@ -1,9 +1,12 @@
 package br.com.agendusp.agendusp.controller;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestClient;
 
+import br.com.agendusp.agendusp.controller.google.GoogleCalendarListController;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarListUserItem;
 import br.com.agendusp.agendusp.documents.CalendarResource;
@@ -16,10 +19,34 @@ public abstract class AbstractDataController {
         //Funçoes gerais para manipular dados de usuários e calendários
         @Autowired
         private UserRepository userRepository;
+        @Autowired
+        RestClient restClient;
+          // Users
+        public User createUser(User user) {
+                if (user == null ){//|| user.getUserId() == null || user.getUserId().isEmpty()) {
+                throw new IllegalArgumentException("Usuário ou ID do usuário não podem ser nulos ou vazios.");
+                }
+                if (userRepository.existsById(user.getId())) {
+                throw new IllegalArgumentException("Usuário com ID '" + user.getId() + "' já existe.");
+                }
+                return userRepository.save(user);
+        }
+
 
         protected User findUser(String userId) {
-                return userRepository.findById(userId)
-                                .orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + userId + "' não encontrado."));
+                Optional<User> user = userRepository.findById(userId);//   .orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + userId + "' não encontrado."));
+                if (user.isEmpty()){
+                     //   gCalController.getUserInfo();
+                     //   restClient.get().uri("http://localhost")
+                        User newUser = new User();
+                        newUser.setGoogleId(userId);
+                        newUser.setEmail(userId);
+                        newUser.setUsername(userId);
+                        createUser(newUser);
+                        return newUser;
+                } else {
+                        return user.get();
+                }
         }
 
         protected CalendarListUserItem findCalendarListUserItem(String userId, String calendarId) {
@@ -47,7 +74,7 @@ public abstract class AbstractDataController {
 
         public abstract CalendarListResource updateCalendar(String calendarId, CalendarListResource calListResource, String userId);
 
-        public abstract User createUser(User user);
+        //public abstract User createUser(User user);
 
         // public abstract CalendarListResource patchCalendar(String calendarId, CalendarResource calResource,
         //                 String userId);

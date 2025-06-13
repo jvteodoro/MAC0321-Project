@@ -2,6 +2,8 @@ package br.com.agendusp.agendusp.controller;
 
 import java.util.ArrayList;
 
+import javax.print.AttributeException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,18 +28,6 @@ public class DataController extends AbstractDataController {
     private EventsRepository eventsRepository;
 
     public DataController() {
-    }
-
-    // Users
-    @Override
-    public User createUser(User user) {
-        if (user == null || user.getId() == null || user.getId().isEmpty()) {
-            throw new IllegalArgumentException("Usuário ou ID do usuário não podem ser nulos ou vazios.");
-        }
-        if (userRepository.existsById(user.getId())) {
-            throw new IllegalArgumentException("Usuário com ID '" + user.getId() + "' já existe.");
-        }
-        return userRepository.save(user);
     }
 
     // Calendars

@@ -18,22 +18,26 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
-import com.google.api.client.json.Json;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import br.com.agendusp.agendusp.CustomOAuth2User;
 import br.com.agendusp.agendusp.controller.CalendarListController;
+import br.com.agendusp.agendusp.controller.DataController;
+import br.com.agendusp.agendusp.dataobjects.UserInfo;
 import br.com.agendusp.agendusp.dataobjects.WatchRequest;
 import br.com.agendusp.agendusp.dataobjects.WatchResponse;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
+import br.com.agendusp.agendusp.documents.User;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,14 +51,26 @@ public class GoogleCalendarListController {
 
     private final RestClient restClient;
     private final Gson gson;
-    
+    @Autowired
+    private DataController dataController;
+    @Autowired
+    ObjectMapper objMapper;
     public GoogleCalendarListController(RestClient restClient, Gson gson) {
+        
         this.restClient = restClient;
         //authToken.getAcess
-
+    //     this.userInfo = restClient.get()
+    //     .uri("https://www.googleapis.com/oauth2/v2/userinfo")
+    //   //  .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
+    //     .retrieve().toEntity(String.class).getBody();
         this.gson = gson;
 
     }
+
+    // @PostMapping()
+    // public ResponseEntity<Void> fetch(OAuth2AuthorizedClient authorizedClient){
+    //     authorizedClient.getPrincipalName()
+    // }
 
     /**
      * Remove uma agenda da lista de agendas do usuário.
@@ -85,6 +101,24 @@ public class GoogleCalendarListController {
      * public ArrayList<Calendar> get(Calendar calendar){}
      * public CalendarList insert(Calendar calendar){}
      */
+
+    @GetMapping("/google/userInfo")
+    public String getUserInfo(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) throws Exception{
+        ResponseEntity<UserInfo> response = restClient.get()
+        .uri("https://www.googleapis.com/oauth2/v2/userinfo")
+        .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
+        .retrieve().toEntity(UserInfo.class);
+        UserInfo inf = response.getBody();
+        User user = new User();
+        user.setEmail(inf.getEmail());
+        user.setGoogleId(inf.getId());
+        user.setId(inf.getId());
+        user.setUsername(inf.getName());
+        //user.setId(inf.getId());
+        dataController.createUser(user);
+
+        return objMapper.writeValueAsString(user);
+    }
 
      @GetMapping("/google/calendarList/get")
     public CalendarListResource get(
@@ -136,7 +170,7 @@ public class GoogleCalendarListController {
     // .retrieve().toEntity(Json.class);
     // CalendarListResource calendarListResource = new CalendarListResource();
 
-    // quem fez esse acho legal verificar eses campos
+    // quemz esse acho legal verificar eses campos
 
     @PatchMapping("/calendar/{calendarId}")
     public CalendarListResource patch(@PathVariable String calendarId, @RequestBody CalendarListResource calendar) {
