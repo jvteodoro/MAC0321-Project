@@ -5,19 +5,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
+import com.google.gson.Gson;
+
+import br.com.agendusp.agendusp.dataobjects.AIRequest;
+import br.com.agendusp.agendusp.dataobjects.AIResponse;
+
+
 @RestController //para poder fazer requisicoes http 
 public class AIControler {
 
     @Autowired
     RestClient restClient; //coisa do spring para gerar requisicoes http com java de modo facil
 
-    public String gerarInforme(/*requisicao http*/){
-        ResponseEntity<String> response = restClient.post()
+    public AIControler(RestClient restClient) {
+        this.restClient = restClient;
+    }
+
+    public AIResponse gerarInforme(AIRequest airequest){ //a requisicao da ia precisa mandar isso {"model" : "llama3.2:1b", "prompt": "prompt pra ia", "stream": false}
+        ResponseEntity<Gson> response = restClient.post()
             .uri("http://localhost:11434/api/generate")
-            .body(/*alguma coisa ou a requisicao*/);
-
-
-
-        return response.getBody();
+            .body(airequest);
+        return new AIResponse(response.getBody());
     }
 }
