@@ -42,7 +42,14 @@ public abstract class AbstractDataController {
                         return user.get();
                 }
         }
-        public User findUserByName(String name);
+        public User findUserByName(String name) {
+                Optional<User> optUser = userRepository.findByName(name);
+                User user = optUser.get();
+                if (optUser.isEmpty()){
+                         user = new User();
+                }
+                return user;
+        }
 
         protected User findUser(String userId) {
                 Optional<User> user = userRepository.findById(userId);//   .orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + userId + "' não encontrado."));

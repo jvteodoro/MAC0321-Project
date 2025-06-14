@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.nimbusds.jose.proc.SecurityContext;
 
@@ -17,7 +18,7 @@ public interface CalendarListController {
 
     public String insert(CalendarListResource calendar, @AuthenticationPrincipal CustomOAuth2User customUser);
 
-    public String list(SecurityContextHolder securityContextHolder);
+    public String list(OAuth2User loggedUser);
 
     // public String patch(CalendarListResource calendar, @AuthenticationPrincipal CustomOAuth2User customUser);
 

@@ -55,9 +55,9 @@ public class LocalCalendarListController implements CalendarListController {
     }
     
     @GetMapping("/calendarList/list")
-    public String list(@Autowired OAuth2User logedUser) {
-        String userName = logedUser.getName();
-        String userId = dataController.findUserByName(userName).getId();
+    public String list(@Autowired OAuth2User loggedUser) {
+        String userName = loggedUser.getName();
+        String userId = dataController.findUserByName(userName).getGoogleId();
         System.out.println("USER ID:"+userId);
         try {
             return gson.toJson(dataController.getCalendars(userId));
