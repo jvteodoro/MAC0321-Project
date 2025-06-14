@@ -31,7 +31,18 @@ public abstract class AbstractDataController {
                 }
                 return userRepository.save(user);
         }
-
+        public User findUserOrCreate(User userGiven){
+                Optional<User> user  = userRepository.findById(userGiven.getId());
+                     if (user.isEmpty()){
+                     //   gCalController.getUserInfo();
+                     //   restClient.get().uri("http://localhost")
+                        createUser(userGiven);
+                        return userGiven;
+                } else {
+                        return user.get();
+                }
+        }
+        public User findUserByName(String name);
 
         protected User findUser(String userId) {
                 Optional<User> user = userRepository.findById(userId);//   .orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + userId + "' não encontrado."));

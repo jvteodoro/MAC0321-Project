@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
@@ -54,8 +55,9 @@ public class LocalCalendarListController implements CalendarListController {
     }
     
     @GetMapping("/calendarList/list")
-    public String list(@Autowired SecurityContextHolder securityContextHolder) {
-        String userId = securityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+    public String list(@Autowired OAuth2User logedUser) {
+        String userName = logedUser.getName();
+        String userId = dataController.findUserByName(userName).getId();
         System.out.println("USER ID:"+userId);
         try {
             return gson.toJson(dataController.getCalendars(userId));

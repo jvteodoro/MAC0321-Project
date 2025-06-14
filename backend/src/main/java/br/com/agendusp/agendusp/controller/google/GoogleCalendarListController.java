@@ -115,7 +115,7 @@ public class GoogleCalendarListController {
         user.setId(inf.getId());
         user.setUsername(inf.getName());
         //user.setId(inf.getId());
-        dataController.createUser(user);
+        dataController.findUserOrCreate(user);
 
         return objMapper.writeValueAsString(user);
     }
