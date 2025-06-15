@@ -15,16 +15,18 @@ import br.com.agendusp.agendusp.dataobjects.AIResponse;
 public class AIControler {
 
     @Autowired
-    RestClient restClient; //coisa do spring para gerar requisicoes http com java de modo facil
+    RestClient restClient; //para o spring poder gerar requisicoes http com java de modo facil
 
     public AIControler(RestClient restClient) {
         this.restClient = restClient;
     }
 
-    public AIResponse gerarInforme(AIRequest airequest){ //a requisicao da ia precisa mandar isso {"model" : "llama3.2:1b", "prompt": "prompt pra ia", "stream": false}
+    public AIResponse gerarInforme(AIRequest airequest){ //a requisicao da ia precisa mandar isso {"model" : "llama3.2:1b", "prompt": "-prompt para a ia-", "stream": false}
         ResponseEntity<Gson> response = restClient.post()
             .uri("http://localhost:11434/api/generate")
-            .body(airequest);
+            .body(airequest)
+            .retrieve()
+            .toEntity(Gson.class);
         return new AIResponse(response.getBody());
     }
 }
