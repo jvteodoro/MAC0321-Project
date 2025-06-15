@@ -66,8 +66,10 @@ public class LocalEventsController implements EventsController {
             boolean hasExecuted = false;
             int j =0;
             for (int i = difDayStart ; i < endDayLoop; i++){
-                for ( j = (hasExecuted == false )? startDateTime.getMinute(): 0; j < endDateTime.getMinute(); j++){
-                     dateVec[i][endDateTime.getMinute() ] = true;
+                for ( j = (hasExecuted == false )? 
+                startDateTime.getHour()*60+startDateTime.getMinute(): 0;
+                j < endDateTime.getHour()*60+endDateTime.getMinute(); j++){
+                     dateVec[i][j] = true;
                      hasExecuted = true;
                 } 
             }
