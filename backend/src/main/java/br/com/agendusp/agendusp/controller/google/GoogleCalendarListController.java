@@ -34,6 +34,7 @@ import com.google.gson.GsonBuilder;
 import br.com.agendusp.agendusp.CustomOAuth2User;
 import br.com.agendusp.agendusp.controller.CalendarListController;
 import br.com.agendusp.agendusp.controller.DataController;
+import br.com.agendusp.agendusp.dataobjects.CalendarListList;
 import br.com.agendusp.agendusp.dataobjects.UserInfo;
 import br.com.agendusp.agendusp.dataobjects.WatchRequest;
 import br.com.agendusp.agendusp.dataobjects.WatchResponse;
@@ -134,7 +135,7 @@ public class GoogleCalendarListController {
         @RequestParam String calendarId, 
         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         ResponseEntity<String> calendarResponse = restClient.get()
-                .uri("https://www.googleapis.com/calendar/v3/users/me/calendarList/joao.v.teodoro@usp.br")
+                .uri("https://www.googleapis.com/calendar/v3/users/me/calendarList/"+calendarId)
                 .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
                 .retrieve().toEntity(String.class);
         CalendarListResource calRes = gson.fromJson(calendarResponse.getBody(), CalendarListResource.class);
@@ -152,14 +153,14 @@ public class GoogleCalendarListController {
 }
 
     @GetMapping("/google/calendarList/list")
-    public String list(
+    public CalendarListList list(
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
-        ResponseEntity<String> calList = restClient.get()
+        ResponseEntity<CalendarListList> calList = restClient.get()
                 .uri("/calendarList")
                 .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
-                .retrieve().toEntity(String.class);
+                .retrieve().toEntity(CalendarListList.class);
         
-        System.out.println("RUNNING, response:"+calList.getBody().toString());
+        //System.out.println("RUNNING, response:"+calList.getBody().toString());
         return calList.getBody();
     }
     // public CalendarListResourceve().toEntity(Json.class);
