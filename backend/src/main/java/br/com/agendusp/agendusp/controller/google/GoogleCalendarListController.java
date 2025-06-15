@@ -22,6 +22,8 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
@@ -103,7 +105,7 @@ public class GoogleCalendarListController {
      */
 
     @GetMapping("/google/userInfo")
-    public String getUserInfo(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) throws Exception{
+    public User getUserInfo(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) throws Exception{
         ResponseEntity<UserInfo> response = restClient.get()
         .uri("https://www.googleapis.com/oauth2/v2/userinfo")
         .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
@@ -117,7 +119,14 @@ public class GoogleCalendarListController {
         //user.setId(inf.getId());
         dataController.findUserOrCreate(user);
 
-        return objMapper.writeValueAsString(user);
+        //return objMapper.writeValueAsString(user);
+        return user;
+    }
+    @GetMapping("/google/test")
+    public boolean[] test(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient){
+        //return authorizedClient.getPrincipalName();
+        boolean[] resp = {false, true, false};
+        return resp;
     }
 
      @GetMapping("/google/calendarList/get")

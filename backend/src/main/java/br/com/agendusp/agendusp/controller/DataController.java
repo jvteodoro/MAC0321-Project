@@ -194,6 +194,12 @@ public class DataController extends AbstractDataController {
     }
 
     // Events
+    public ArrayList<EventsResource> getEventsOnInterval(String calendarId, String endDate) {
+            return eventsRepository.findEventsByEndDate(calendarId, endDate)
+            .orElse(new ArrayList<EventsResource>());
+    }
+
+
     @Override
     public EventsResource createEvent(String calendarId, EventsResource eventResource, String userId) {
         if (eventResource == null || eventResource.getEventId() == null || eventResource.getEventId().isEmpty()) {

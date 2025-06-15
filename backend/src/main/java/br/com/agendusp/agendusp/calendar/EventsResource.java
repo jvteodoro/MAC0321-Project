@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import br.com.agendusp.agendusp.dataobjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.EventDate;
 
 public class EventsResource {
 

@@ -23,7 +23,7 @@ public class User {//implements UserDetails {
     @Id
     private String id; // ID gerada pelo MongoDB
     private String userId;
-
+    
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;

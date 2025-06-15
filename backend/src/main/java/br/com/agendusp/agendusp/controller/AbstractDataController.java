@@ -128,4 +128,5 @@ public abstract class AbstractDataController {
         public abstract void cancelEvent(String eventId, String calendarId, String userId);
 
         public abstract CalendarListUserItem addCalendarListUserItem(CalendarResource calResource, String userId);
+        public abstract ArrayList<EventsResource> getEventsOnInterval(String calendarId, String endDate);
 }

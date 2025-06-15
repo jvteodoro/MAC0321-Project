@@ -24,4 +24,7 @@ public interface EventsRepository extends MongoRepository<EventsResource, String
     @Query("{ 'eventId': ?0, 'attendees': { $elemMatch: { 'calendarPerson.id': ?1 } } }")
     public Optional<EventsResource> findEventByEventIdAndUserId(String eventId, String userId);
 
+    @Query("{ 'calendarIds': {$elemMatch: ?0}, 'end.date' : { $elemMatch: ?1}}")
+    public Optional<ArrayList<EventsResource>> findEventsByEndDate(String calendarId, String endDate);
+
 }

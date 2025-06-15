@@ -1,5 +1,11 @@
 package br.com.agendusp.agendusp.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import br.com.agendusp.agendusp.CustomOAuth2User;
+import br.com.agendusp.agendusp.dataobjects.EventDate;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
@@ -18,6 +25,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 public class LocalEventsController implements EventsController {
@@ -28,6 +37,44 @@ public class LocalEventsController implements EventsController {
     private Gson gson;
 
     public LocalEventsController() {}
+
+    @GetMapping("/events/listWindows")
+    public boolean[][] listWindows(@RequestParam String calendarId, @RequestParam String endDate) {
+
+        int divTempo = 24;
+         // Quando 0 então a menor unidade é hora
+        // Quando 1 então a menor unidade é minuto
+        LocalDate today = LocalDate.now();
+        LocalDate dateEndObj = LocalDate.parse(endDate);
+        int dayNum = ((int)ChronoUnit.DAYS.between(today, dateEndObj));
+        ArrayList<EventsResource> eventsOnInterval = dataController.getEventsOnInterval(calendarId, endDate);
+        boolean[][] dateVec = new boolean[dayNum][divTempo];
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (EventsResource ev: eventsOnInterval){
+            EventDate end = ev.getEnd();
+            EventDate start = ev.getStart();
+            LocalDateTime startDateTime = LocalDateTime.parse(start.getDateTime(), formatter);
+            LocalDateTime endDateTime = LocalDateTime.parse(end.getDateTime(), formatter);
+            int endDayLoop = 1;
+            
+            int difDayStart = (int)ChronoUnit.DAYS.between(today, startDateTime);
+
+            if (startDateTime.getDayOfYear() != endDateTime.getDayOfYear()){
+                endDayLoop = (int)ChronoUnit.DAYS.between(today, endDateTime);
+            }
+            boolean hasExecuted = false;
+            int j =0;
+            for (int i = difDayStart ; i < endDayLoop; i++){
+                for ( j = (hasExecuted == false )? startDateTime.getMinute(): 0; j < endDateTime.getMinute(); j++){
+                     dateVec[i][endDateTime.getMinute() ] = true;
+                     hasExecuted = true;
+                } 
+            }
+        }
+        return dateVec;
+    }
+    
 
     @DeleteMapping("/events/delete/{calendarId}/{eventId}")
     public ResponseEntity<String> delete(@PathVariable String calendarId, @PathVariable String eventId,
