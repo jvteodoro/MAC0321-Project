@@ -86,7 +86,7 @@ public class DataControllerCalendarOperationsTest extends MongoTestContainer {
 
         CalendarListUserItem calListUserItem = new CalendarListUserItem(calResource.getCalendarId(), "", "", "", false, false, "owner");
 
-        boolean primary = calResource.getOwner().id().equals("testuser3");
+        boolean primary = calResource.getOwner().getId().equals("testuser3");
         CalendarListResource createdCalListResource = new CalendarListResource(calResource.getCalendarId(), primary, calListUserItem, calResource);
 
         createdCalendar.setSummary("Updated Test Calendar 3");

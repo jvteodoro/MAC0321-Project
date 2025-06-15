@@ -73,7 +73,7 @@ public class DataController extends AbstractDataController {
 
         CalendarResource calResource = calendarRepository.findByCalendarId(calendarId)
                 .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado."));
-        boolean primary = calResource.getOwner().id().equals(userId);
+        boolean primary = calResource.getOwner().getId().equals(userId);
 
         return new CalendarListResource(calendarId, primary, calListUserItem, calResource);
     }
@@ -169,7 +169,7 @@ public class DataController extends AbstractDataController {
                 .findByCalendarId(calListUserItem.getCalendarId())
                 .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calListUserItem.getCalendarId()
                         + "' não encontrado."));
-            primary = calResource.getOwner().id().equals(userId);
+            primary = calResource.getOwner().getId().equals(userId);
             outputList.add(new CalendarListResource(calListUserItem.getCalendarId(), primary, calListUserItem, calResource));
         }
 
@@ -277,7 +277,7 @@ public class DataController extends AbstractDataController {
 
         Attendee[] attendees = event.getAttendees();
         for (Attendee attendee : attendees) {
-            if (attendee.getCalendarPerson().id().equals(atendeeUserId)) {
+            if (attendee.getCalendarPerson().getId().equals(atendeeUserId)) {
                 throw new IllegalArgumentException("Pessoa já está convidada para este evento.");
             }
         }
@@ -414,7 +414,7 @@ public class DataController extends AbstractDataController {
                 .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId
                         + "' não encontrado para o calendário com ID '" + calendarId + "'."));
 
-        if (event.getOrganizer().id() != userId) {
+        if (event.getOrganizer().getId() != userId) {
             throw new IllegalArgumentException("Acesso negado: o usuário não é o organizador deste evento.");
         }
 

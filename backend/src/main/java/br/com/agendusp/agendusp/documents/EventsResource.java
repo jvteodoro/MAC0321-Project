@@ -296,7 +296,7 @@ public class EventsResource {
         if (this.attendees != null) {
             ArrayList<Attendee> attendeesList = new ArrayList<>();
             for (Attendee a : this.attendees) {
-                if (!a.getCalendarPerson().id().equals(attendee.getCalendarPerson().id())) {
+                if (!a.getCalendarPerson().getId().equals(attendee.getCalendarPerson().getId())) {
                     attendeesList.add(a);
                 }
             }

@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 import org.springframework.stereotype.Repository;
 
+import br.com.agendusp.agendusp.dataobjects.EventPool;
 import br.com.agendusp.agendusp.documents.CalendarListUserItem;
 import br.com.agendusp.agendusp.documents.User;
 
@@ -42,4 +43,21 @@ public interface UserRepository extends MongoRepository<User, String> {
     @Query("{'calendarList.calendarId': ?0}")
     @Update("{$pull : {'calendarList.calendarId' : ?0} ")
     void refreshLinks(String calendarId);
+
+    @Query("{'userId': ?0}")
+    @Update("{$push : {'eventPoolNotification' : ?1}}")
+    void addEventPoolNotification(String userId, EventPool eventPool);
+    
+    @Query("{'userId': ?0}")
+    @Update("{$push : {'eventPoolList' : ?1}}")
+    void addEventPool(String userId, EventPool eventPool);
+
+    @Aggregation(pipeline = {
+        "{ $match: { 'userId': ?0 } }",
+        "{ $unwind: '$eventPoolNotification' }",
+        "{ $match: { 'eventPoolNotification.id': ?1 } }",
+        "{ $replaceRoot: { newRoot: '$eventPoolNotification' } }",
+        "{ $limit: 1 }"
+    })    
+    EventPool findByEventPoolId(String userId, String eventPoolId);
 }

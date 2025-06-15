@@ -76,11 +76,11 @@ public abstract class AbstractDataController {
         }
 
         protected String getAccessRole(CalendarResource calResource, String userId) {
-                if (calResource.getOwner().id().equals(userId)) 
+                if (calResource.getOwner().getId().equals(userId)) 
                         return "owner";
-                if (calResource.getWriters().stream().anyMatch(writer -> writer.id().equals(userId)))
+                if (calResource.getWriters().stream().anyMatch(writer -> writer.getId().equals(userId)))
                         return "writer";
-                if (calResource.getReaders().stream().anyMatch(reader -> reader.id().equals(userId)))
+                if (calResource.getReaders().stream().anyMatch(reader -> reader.getId().equals(userId)))
                         return "reader";
 
                 return "freeBusyReader";

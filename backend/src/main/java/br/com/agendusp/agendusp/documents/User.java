@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.EventPool;
 
 
 @Document(collection = "users")
@@ -27,6 +28,8 @@ public class User {//implements UserDetails {
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
+    private ArrayList<EventPool> eventPoolList;
+    private ArrayList<EventPool> eventPoolNotifications;
     private ArrayList<CalendarListUserItem> calendarList; // Índice 0 é o calendário principal do usuário
     private CalendarPerson calendarPerson;
 
@@ -50,6 +53,28 @@ public class User {//implements UserDetails {
 
     private void updateCalendarPerson() {
         this.calendarPerson = new CalendarPerson(this.googleId, this.email, this.name);
+    }
+    
+
+    public ArrayList<EventPool> getEventPoolList() {
+        return eventPoolList;
+    }
+
+    public void setEventPoolList(ArrayList<EventPool> eventPoolList) {
+        this.eventPoolList = eventPoolList;
+    }
+
+    
+
+    public ArrayList<EventPool> getEventPoolNotifications() {
+        return eventPoolNotifications;
+    }
+    public void addEventPoolNotifications(EventPool eventPoolNotification){
+        this.eventPoolNotifications.add(eventPoolNotification);
+    }
+
+    public void setEventPoolNotifications(ArrayList<EventPool> eventPoolNotifications) {
+        this.eventPoolNotifications = eventPoolNotifications;
     }
 
     public String getId() {
