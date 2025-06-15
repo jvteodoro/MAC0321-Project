@@ -30,7 +30,9 @@ public class SecurityConfig {
             auth.requestMatchers("/").permitAll();
             auth.anyRequest().authenticated();
         })
-                .oauth2Login(withDefaults())
+                .oauth2Login(oauth2 -> oauth2
+                        .defaultSuccessUrl("http://localhost:3000/",
+                                true))
                 .oauth2Client(withDefaults())
                 .formLogin(withDefaults())
                 .build();
