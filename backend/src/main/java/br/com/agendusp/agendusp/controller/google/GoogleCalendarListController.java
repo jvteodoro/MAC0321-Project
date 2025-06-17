@@ -34,6 +34,7 @@ import com.google.gson.GsonBuilder;
 import br.com.agendusp.agendusp.CustomOAuth2User;
 import br.com.agendusp.agendusp.controller.CalendarListController;
 import br.com.agendusp.agendusp.controller.DataController;
+import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.dataobjects.UserInfo;
 import br.com.agendusp.agendusp.dataobjects.WatchRequest;
 import br.com.agendusp.agendusp.dataobjects.WatchResponse;
@@ -51,13 +52,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 public class GoogleCalendarListController {
 
+    private final UserDataController userDataController;
+
     private final RestClient restClient;
     private final Gson gson;
     @Autowired
     private DataController dataController;
     @Autowired
     ObjectMapper objMapper;
-    public GoogleCalendarListController(RestClient restClient, Gson gson) {
+    public GoogleCalendarListController(RestClient restClient, Gson gson, UserDataController userDataController) {
         
         this.restClient = restClient;
         //authToken.getAcess
@@ -66,6 +69,12 @@ public class GoogleCalendarListController {
     //   //  .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
     //     .retrieve().toEntity(String.class).getBody();
         this.gson = gson;
+        //authToken.getAcess
+    //     this.userInfo = restClient.get()
+    //     .uri("https://www.googleapis.com/oauth2/v2/userinfo")
+    //   //  .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
+    //     .retrieve().toEntity(String.class).getBody();
+        this.userDataController = userDataController;
 
     }
 
@@ -117,7 +126,7 @@ public class GoogleCalendarListController {
         user.setId(inf.getId());
         user.setUsername(inf.getName());
         //user.setId(inf.getId());
-        dataController.findUserOrCreate(user);
+        userDataController.findUserOrCreate(user);
 
         //return objMapper.writeValueAsString(user);
         return user;
