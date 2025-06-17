@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.dataobjects;
+package br.com.agendusp.agendusp.services;
 import java.util.List;
 
 public class PromptBuilder {
