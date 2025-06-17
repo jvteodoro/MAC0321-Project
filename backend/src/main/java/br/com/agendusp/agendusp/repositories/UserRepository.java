@@ -21,6 +21,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     @Update("{$push: {'calendarList' : ?1}}")
     Optional<Integer> updateOneByUserId(String userId, CalendarListUserItem calendarListUserItem);
 
+    
     @Query(value = "{ 'userId' : ?0 }")  // Explicit query without projection
     public Optional<User> findByUserId(String userId);
     

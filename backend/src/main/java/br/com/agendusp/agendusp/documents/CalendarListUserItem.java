@@ -27,6 +27,7 @@ public class CalendarListUserItem {
         this.selected = selected;
         this.accessRole = accessRole;
     }
+    
 
     public String getCalendarId() {
         return calendarId;
@@ -69,5 +70,13 @@ public class CalendarListUserItem {
     }
     public void setAccessRole(String accessRole) {
         this.accessRole = accessRole;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
