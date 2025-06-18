@@ -3,6 +3,7 @@ package br.com.agendusp;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import java.util.Calendar;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -22,10 +23,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.services.calendar.Calendar.CalendarList;
 
 import br.com.agendusp.agendusp.AgendUspApplication;
 import br.com.agendusp.agendusp.calendar.EventsResource;
+import br.com.agendusp.agendusp.controller.CalendarDataController;
 import br.com.agendusp.agendusp.controller.HomeController;
+import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.documents.CalendarListUserItem;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
@@ -60,6 +64,12 @@ public class NewTest {
     EventsRepository eventsRepository;
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    CalendarDataController calendarDataController;
+    @Autowired
+    EventsDataController eventsDataController;
+    @Autowired
+    UserDataController userDataController;
     
     
     @Test
@@ -164,4 +174,78 @@ public class NewTest {
         
     }
 
+    @Test
+    @WithMockUser
+    public void testCalendarDataController(){
+        User user1 = new User();
+        user1.setUsername("user");
+        user1.setId("12");
+
+        CalendarListUserItem calItem = new CalendarListUserItem();
+        calItem.setCalendarId("teste@gmail.com");
+        calItem.setId("1");
+
+        CalendarResource calResource = new CalendarResource();
+        calResource.setId("1");
+        
+        CalendarListResource calListResource = new CalendarListResource();
+        calListResource.setId("1");
+
+        String userId = user1.getId();
+        String calendarId = calItem.getCalendarId();
+        String calendarResourceId = calResource.getId();
+        String calendarListResourceId = calListResource.getId();
+
+        userRepository.updateOneByUserId(user1.getUserId(), calItem);
+        
+        //adiciona o calendarlistusaritem
+        Optional<CalendarListUserItem> findedCalItem = calendarDataController.addCalendarListUserItem(calResource, userId);
+        if (!findedCalItem.isEmpty()){
+            System.out.println(objectMapper.writeValueAsString(findedCalItem));
+        }
+
+        //adiciona o calendar 
+        Optional<CalendarResource> calRes = calendarDataController.addCalendar(calResource, userId);
+        if (!calRes.isEmpty()) {
+            System.out.println(objectMapper.writeValueAsString(calRes));
+        }
+       
+        //pega lista de calendarios
+
+        Optional<CalendarListResource> calListResource1 =  calendarDataController.getCalendarListResource(calendarListResourceId, userId);
+        if (!calListResource1.isEmpty()) {
+            System.out.println(objectMapper.writeValueAsString(calRes));
+        }
+        //atualiza o calendar
+
+        Optional<CalendarListResource> calListResource2 = calendarDataController.updateCalendar(calendarId, calListResource, userId);
+        if (!calListResource2.isEmpty()) {
+            System.out.println(objectMapper.writeValueAsString(calRes));
+        }
+
+        // pega lista de calendarios do usuario
+        Optional<ArrayList<CalendarListResource>> calListResource3 = calendarDataController.getCalendars(userId);
+        if (!calListResource3.isEmpty()) {
+                System.out.println(objectMapper.writeValueAsString(calRes));
+        }
+
+        //deleta e vê se apagou
+        calendarDataController.deleteCalendar(calendarId, userId);
+
+        Optional<CalendarListResource> calListDelete = calendarDataController.getCalendarListResource(calendarId, userId);
+        if (calListDelete.isEmpty()) {
+            System.out.println("DELETADO COM SUCESSO");
+        } else {
+            System.out.println(objectMapper.writeValueAsString(calListUserItem));
+
+        
+        userRepository.deleteById("12");
+        CalendarListUserItem.deleteById("1");
+        CalendarResource.deleteById("1");
+        CalendarListResource.deleteById("1");
+
+        
+    }
+
+   
 }
