@@ -74,7 +74,7 @@ public class NewTest {
     EventsDataController eventsDataController;
     @Autowired
     UserDataController userDataController;
-    
+}
     
     @Test
     public void testHome() throws Exception{
@@ -245,5 +245,73 @@ public class NewTest {
         
     }
 
-   
+    @Test
+    @WithMockUser
+    public void testEventsDataController() throws Exception{
+        User user1 = new User();
+        user1.setUsername("user");
+        user1.setId("12");
+        String userId = user1.getId();
+
+        CalendarListUserItem calItem = new CalendarListUserItem();
+        calItem.setCalendarId("teste@gmail.com");
+        calItem.setId("1");
+        String calendarId = calItem.getCalendarId();
+
+        EventsResource eventsResource = new EventsResource();
+        eventsResource.setId("1");
+        String endDate = eventsResource.getEnd();
+        String eventId = eventsResource.getId();
+
+        userRepository.updateOneByUserId(user1.getUserId(), calItem);
+
+        String atendeeUserId = "3"; 
+
+        // pega eventos em um intervalo
+        ArrayList<EventsResource> eventsResource1 = eventsDataController.getEventsOnInterval(calendarId, endDate);
+        System.out.println(objectMapper.writeValueAsString(eventsResource1));
+
+        //cria um evento
+        EventsResource eventsResource2 = eventsDataController.createEvent(calendarId, eventsResource, userId);
+        System.out.println(objectMapper.writeValueAsString(eventsResource2));
+        
+        //adiciona um calendario ao evento
+        EventsResource eventsResource3 = eventsDataController.addCalendarToEvent(calendarId, eventId, userId);
+        System.out.println(objectMapper.writeValueAsString(eventsResource3));
+        
+        //adiciona um calendario ao evento
+        EventsResource eventsResource4 = eventsDataController.addAtendeeToEvent(eventId, calendarId, userId, atendeeUserId);
+        System.out.println(objectMapper.writeValueAsString(eventsResource4));
+
+        //pega o evento
+        EventsResource eventsResource5 = eventsDataController.getEvent(eventId, calendarId, userId);
+        System.out.println(objectMapper.writeValueAsString(eventsResource5));
+
+        //atualiza o evento
+        EventsResource eventsResource6 = eventsDataController.updateEvent(calendarId, eventId, eventsResource, userId);
+        System.out.println(objectMapper.writeValueAsString(eventsResource6));
+
+        //atualiza parcialmente a lista de eventos do calendario
+        EventsResource eventsResource7 = eventsDataController.patchEvent(calendarId, eventId, eventsResource, userId);
+        System.out.println(objectMapper.writeValueAsString(eventsResource7));
+
+        //pega a lista de eventos do calendario
+        ArrayList<EventsResource> eventsResource8 = eventsDataController.getEvents(calendarId, userId);
+        System.out.println(objectMapper.writeValueAsString(eventsResource8));
+
+        //deleta o evento e verifica se apagou
+        removeEvent(eventId, calendarId, userId);
+
+        ArrayList<String> eventsRemove = eventsResource.getCalendarIds();
+        System.out.println(objectMapper.writeValueAsString(eventsRemove));
+        System.out.println("Veja se o calendário com id " + calendarId +  " foi removido");
+
+
+        //cancela o totalmente o evento
+        cancelEvent( eventId, calendarId, userId);
+
+        EventsResource eventsRemove = eventsDataController.getEvent(eventId, calendarId, userId);
+        System.out.println(objectMapper.writeValueAsString(eventsRemove));
+
+        userRepository.deleteById("12");
 }
