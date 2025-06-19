@@ -23,36 +23,24 @@ public class CalendarListResource {
     public CalendarListResource() {
     }
 
-    public CalendarListResource(String calendarId, boolean primary, CalendarListUserItem calendarListUserItem, CalendarResource calendarResource) {
-        this.calendarId = calendarId;
-        this.primary = primary;
+    // public CalendarListResource(String calendarId, boolean primary, CalendarListUserItem calendarListUserItem, CalendarResource calendarResource) {
+    //     this.calendarId = calendarId;
+    //     this.primary = primary;
 
-        this.summary = calendarResource.getSummary();
-        this.description = calendarResource.getDescription();
-        this.location = calendarResource.getLocation();
-        this.timeZone = calendarResource.getTimeZone();
-        this.deleted = calendarResource.isDeleted();
-        this.owner = calendarResource.getOwner();
+    //     this.summary = calendarResource.getSummary();
+    //     this.description = calendarResource.getDescription();
+    //     this.location = calendarResource.getLocation();
+    //     this.timeZone = calendarResource.getTimeZone();
+    //     this.deleted = calendarResource.isDeleted();
+    //     this.owner = calendarResource.getOwner();
         
-        this.colorId = calendarListUserItem.getColorId();
-        this.backgroundColor = calendarListUserItem.getBackgroundColor();
-        this.foregroundColor = calendarListUserItem.getForegroundColor();
-        this.hidden = calendarListUserItem.isHidden();
-        this.selected = calendarListUserItem.isSelected();
-        this.accessRole = calendarListUserItem.getAccessRole();
-    }
-
-    public CalendarListUserItem extractCalendarListUserItem() {
-        CalendarListUserItem item = new CalendarListUserItem();
-        item.setCalendarId(this.calendarId);
-        item.setColorId(this.colorId);
-        item.setBackgroundColor(this.backgroundColor);
-        item.setForegroundColor(this.foregroundColor);
-        item.setHidden(this.hidden);
-        item.setSelected(this.selected);
-        item.setAccessRole(this.accessRole);
-        return item;
-    }
+    //     this.colorId = calendarListUserItem.getColorId();
+    //     this.backgroundColor = calendarListUserItem.getBackgroundColor();
+    //     this.foregroundColor = calendarListUserItem.getForegroundColor();
+    //     this.hidden = calendarListUserItem.isHidden();
+    //     this.selected = calendarListUserItem.isSelected();
+    //     this.accessRole = calendarListUserItem.getAccessRole();
+    // }
     public CalendarResource extractCalendarResource() {
         CalendarResource resource = new CalendarResource();
         resource.setCalendarId(this.calendarId);

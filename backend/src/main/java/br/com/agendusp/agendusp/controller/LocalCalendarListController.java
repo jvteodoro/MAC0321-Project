@@ -1,21 +1,23 @@
 package br.com.agendusp.agendusp.controller;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.nimbusds.jose.proc.SecurityContext;
+
 
 import br.com.agendusp.agendusp.CustomOAuth2User;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.documents.User;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +28,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 public class LocalCalendarListController implements CalendarListController {
 
     @Autowired
-    private AbstractDataController dataController;
+    CalendarDataController calendarDataController;
+    @Autowired
+    UserDataController userDataController;
+    @Autowired
+    EventsDataController eventsDataController;
     @Autowired
     private Gson gson;
 
@@ -36,41 +42,49 @@ public class LocalCalendarListController implements CalendarListController {
     public ResponseEntity<Void> delete(@RequestParam String calendarId,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        dataController.removeCalendar(calendarId, userId);
+        calendarDataController.removeCalendar(calendarId, userId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/calendarList/getUser")
+    public User getUser(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient){
+        return userDataController.findUser(authorizedClient.getPrincipalName());
     }
 
     @GetMapping("/calendarList/get")
     public String get(@RequestParam String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        return gson.toJson(dataController.getCalendarListResource(calendarId, userId));
+        return gson.toJson(calendarDataController.getCalendarListResource(calendarId, userId));
     }
 
+
     @PostMapping("/calendarList/insert")
-    public String insert(@RequestBody CalendarListResource calendar,
+    public CalendarListResource insert(@RequestBody CalendarListResource calendar,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        dataController.addCalendarListUserItem(calendar.extractCalendarResource(), userId);
-        return gson.toJson(calendar);
+        userDataController.insertCalendarListResource(userId, calendar);
+        return calendar;
     }
     
     @GetMapping("/calendarList/list")
-    public String list(@Autowired OAuth2User loggedUser) {
-        String userName = loggedUser.getName();
-        String userId = dataController.findUserByName(userName).getGoogleId();
+    public ArrayList<CalendarListResource> list(
+        @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userName = authorizedClient.getPrincipalName();
+        String userId = userDataController.findUser(userName).getGoogleId();
         System.out.println("USER ID:"+userId);
-        try {
-            return gson.toJson(dataController.getCalendars(userId));
-        } catch (Exception e) {
-            return gson.toJson("Error fetching calendars: " + e.getMessage());
-        }
+        return calendarDataController.getCalendarList(userId);
+        // try {
+        //     return gson.toJson(dataController.getCalendars(userId));
+        // } catch (Exception e) {
+        //     return gson.toJson("Error fetching calendars: " + e.getMessage());
+        // }
     }
 
     @PutMapping("/calendarList/update")
-    public String update(@RequestBody CalendarListResource calendar,
+    public CalendarListResource update(@RequestBody CalendarListResource calendar,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        return gson.toJson(dataController.updateCalendar(calendar.getCalendarId(), calendar, userId));
+        return calendarDataController.updateCalendarListResource(calendar.getId(), calendar, userId);
     }
 
     // @PatchMapping("/calendarList/patch")

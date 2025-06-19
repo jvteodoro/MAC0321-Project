@@ -32,9 +32,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LocalEventsController implements EventsController {
 
     @Autowired
-    private AbstractDataController dataController;
-    @Autowired
     private Gson gson;
+    @Autowired
+    private EventsDataController eventsDataController;
 
     public LocalEventsController() {}
 
@@ -47,7 +47,7 @@ public class LocalEventsController implements EventsController {
         LocalDate today = LocalDate.now();
         LocalDate dateEndObj = LocalDate.parse(endDate);
         int dayNum = ((int)ChronoUnit.DAYS.between(today, dateEndObj));
-        ArrayList<EventsResource> eventsOnInterval = dataController.getEventsOnInterval(calendarId, endDate);
+        ArrayList<EventsResource> eventsOnInterval = eventsDataController.getEventsOnInterval(calendarId, endDate);
         boolean[][] dateVec = new boolean[dayNum][divTempo];
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -82,42 +82,42 @@ public class LocalEventsController implements EventsController {
     public ResponseEntity<String> delete(@PathVariable String calendarId, @PathVariable String eventId,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        dataController.removeEvent(eventId, calendarId, userId);
+        eventsDataController.removeEvent(eventId, calendarId, userId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/events/get")
     public String get(String calendarId, String eventId, @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        return gson.toJson(dataController.getEvent(eventId, calendarId, userId));
+        return gson.toJson(eventsDataController.getEvent(eventId, calendarId, userId));
     }
 
     @PostMapping("/events/addAttendee/{calendarId}/{attendeeId}")
     public String addAttendee(String calendarId, String attendeeId, @RequestBody EventsResource event,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        return gson.toJson(dataController.addAtendeeToEvent(event.getEventId(), calendarId, userId, attendeeId));
+        return gson.toJson(eventsDataController.addAtendeeToEvent(event.getEventId(), calendarId, userId, attendeeId));
     }
 
     @PostMapping("/events/insert/{calendarId}")
     public String insert(String calendarId, @RequestBody EventsResource event,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        dataController.createEvent(calendarId, event, userId);
+        eventsDataController.createEvent(calendarId, event, userId);
         return gson.toJson(event);
     }
 
     @GetMapping("/events/list")
     public String list(String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
-        return gson.toJson(dataController.getEvents(calendarId, userId));
+        return gson.toJson(eventsDataController.getEvents(calendarId, userId));
     }
 
     @PutMapping("/events/update/{calendarId}")
     public String update(String calendarId, EventsResource event,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userID = customUser.getUser().getId();
-        return gson.toJson(dataController.updateEvent(calendarId, event.getId(), event, userID));
+        return gson.toJson(eventsDataController.updateEvent(calendarId, event.getId(), event, userID));
     }
 
     @PatchMapping("/events/patch/{calendarId}")
@@ -141,7 +141,7 @@ public class LocalEventsController implements EventsController {
             body.add("attendees", gson.toJsonTree(event.getAttendees()));
         }
 
-        return gson.toJson(dataController.patchEvent(calendarId, event.getId(),
+        return gson.toJson(eventsDataController.patchEvent(calendarId, event.getId(),
                 gson.fromJson(body, EventsResource.class), userId));
     }
 }

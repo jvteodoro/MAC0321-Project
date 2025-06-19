@@ -24,13 +24,14 @@ public class User {//implements UserDetails {
     @Id
     private String id; // ID gerada pelo MongoDB
     private String userId;
+    private String DisplayName;
     
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
     private ArrayList<EventPool> eventPoolList;
     private ArrayList<EventPool> eventPoolNotifications;
-    private ArrayList<CalendarListUserItem> calendarList; // Índice 0 é o calendário principal do usuário
+    private ArrayList<CalendarListResource> calendarList; // Índice 0 é o calendário principal do usuário
     private CalendarPerson calendarPerson;
 
     public User() {
@@ -77,6 +78,16 @@ public class User {//implements UserDetails {
         this.eventPoolNotifications = eventPoolNotifications;
     }
 
+    
+
+    public String getDisplayName() {
+        return DisplayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        DisplayName = displayName;
+    }
+
     public String getId() {
         return this.id;
     }
@@ -116,15 +127,15 @@ public class User {//implements UserDetails {
         updateCalendarPerson();
     }
 
-    public ArrayList<CalendarListUserItem> getCalendarList() {
+    public ArrayList<CalendarListResource> getCalendarList() {
         return calendarList;
     }
-    public CalendarListUserItem addCalendarListUserItem(CalendarListUserItem calendarListUserItem) {
+    public CalendarListResource addCalendarListResource(CalendarListResource calendarListResource) {
         if (this.calendarList == null) {
             this.calendarList = new ArrayList<>();
         }
-        this.calendarList.add(calendarListUserItem);
-        return calendarListUserItem;
+        this.calendarList.add(calendarListResource);
+        return calendarListResource;
     }
 
 

@@ -1,11 +1,13 @@
 package br.com.agendusp.agendusp.controller;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestClient;
 
-import br.com.agendusp.agendusp.documents.CalendarListUserItem;
+import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.UserRepository;
@@ -47,7 +49,20 @@ public class UserDataController {
                 return user;
         }
 
-        protected User findUser(String userId) {
+        public ArrayList<CalendarListResource> insertCalendarListResource(String userId, CalendarListResource item){
+                userRepository.addCalendarListResource(userId, item);
+                return userRepository.getCalendarList(userId);
+        }
+        public CalendarPerson getCalendarPerson(String userId){
+                User user = findUser(userId);
+                CalendarPerson calPerson = new CalendarPerson();
+                calPerson.setId(user.getUserId());
+                calPerson.setEmail(user.getEmail());
+                calPerson.setDisplayName(user.getDisplayName());
+                return calPerson;
+        }
+
+        public User findUser(String userId) {
                 Optional<User> user = userRepository.findById(userId);//   .orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + userId + "' não encontrado."));
                 if (user.isEmpty()){
                      //   gCalController.getUserInfo();
@@ -63,12 +78,12 @@ public class UserDataController {
                 }
         }
 
-        protected CalendarListUserItem findCalendarListUserItem(String userId, String calendarId) {
-                CalendarListUserItem calListUserItemResource = userRepository
-                                .findCalendarListUserItemByUserIdAndCalendarId(userId, calendarId)
+        protected CalendarListResource findCalendarListResource(String userId, String calendarId) {
+                CalendarListResource calListResource = userRepository
+                                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
                                 .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId
                                                 + "' não encontrado para o usuário de ID '" + userId + "'."));
-                return calListUserItemResource;
+                return calListResource;
         }
 
         protected String getAccessRole(CalendarResource calResource, String userId) {

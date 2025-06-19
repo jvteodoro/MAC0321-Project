@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.agendusp.agendusp.documents.CalendarListResource;
-import br.com.agendusp.agendusp.documents.CalendarListUserItem;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
@@ -20,23 +19,18 @@ public class CalendarDataController {
     @Autowired
     UserDataController userDataController;
 
-    public CalendarListUserItem addCalendarListUserItem(CalendarResource calResource, String userId) {
+    public CalendarListResource addCalendarListResource(CalendarResource calResource, String userId) {
         if (calResource == null || userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("Calendário ou ID do usuário não podem ser nulos ou vazios.");
         }
         userDataController.findUser(userId);
 
-        CalendarListUserItem calListUserItem = new CalendarListUserItem(calResource.getCalendarId(), 
-        "",
-        "", 
-        "", 
-        false, 
-        true, 
-        userDataController.getAccessRole(calResource, userId)); // Inicialmente, o usuário é o dono do calendário
+        CalendarListResource calListResource = new CalendarListResource(); // Inicialmente, o usuário é o dono do calendário
+        calListResource.setId(calResource.getCalendarId());
+        calListResource.setOwner(userDataController.getCalendarPerson(userId));
+        userRepository.updateOneByUserId(userId, calListResource);
 
-        userRepository.updateOneByUserId(userId, calListUserItem);
-
-        return calListUserItem;
+        return calListResource;
     }
 
     public CalendarResource addCalendar(CalendarResource calResource, String userId) {
@@ -49,7 +43,7 @@ public class CalendarDataController {
             throw new IllegalArgumentException("Calendário com ID '" + calResource.getCalendarId() + "' já existe.");
         }
 
-        this.addCalendarListUserItem(calResource, userId);
+        this.addCalendarListResource(calResource, userId);
         return calendarRepository.save(calResource);
     }
 
@@ -59,18 +53,14 @@ public class CalendarDataController {
         }
         userDataController.findUser(userId);
 
-        CalendarListUserItem calListUserItem = userRepository.findCalendarListUserItemByUserIdAndCalendarId(userId, calendarId)
+        CalendarListResource calListResource = userRepository.findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
                 .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId
                         + "' não encontrado para o usuário de ID '" + userId + "'."));
 
-        CalendarResource calResource = calendarRepository.findByCalendarId(calendarId)
-                .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado."));
-        boolean primary = calResource.getOwner().getId().equals(userId);
-
-        return new CalendarListResource(calendarId, primary, calListUserItem, calResource);
+        return calListResource;
     }
 
-    protected CalendarListUserItem updateCalendarListUserItem(String calendarId, CalendarListUserItem calListUserItem, String userId) {
+    protected CalendarListResource updateCalendarListResource(String calendarId, CalendarListResource calListUserItem, String userId) {
         if (calListUserItem.getAccessRole() == "owner" || calListUserItem.getAccessRole() == "writer") {
             userRepository.updateOneByUserId(userId, calListUserItem);
             return calListUserItem;
@@ -92,17 +82,17 @@ public class CalendarDataController {
     }
 
     public CalendarListResource updateCalendar(String calendarId, CalendarListResource calListResource, String userId) {
-        CalendarListUserItem registeredCalListUserItem = userRepository
-                .findCalendarListUserItemByUserIdAndCalendarId(userId, calendarId)
+        CalendarListResource registeredCalListUserItem = userRepository
+                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "CalendarListResource com ID '" + calendarId + "' não encontrado para o usuário de ID '"
                                 + userId + "'"));
 
-        CalendarListUserItem calListUserItem = calListResource.extractCalendarListUserItem();
+        CalendarListResource calListUserItem = calListResource;
         CalendarResource calResource = calListResource.extractCalendarResource();
 
         if (registeredCalListUserItem.getAccessRole() == "owner" || registeredCalListUserItem.getAccessRole() == "writer") {
-            updateCalendarListUserItem(calendarId, calListUserItem, userId);
+            updateCalendarListResource(calendarId, calListUserItem, userId);
             updateCalendarResource(calendarId, calResource, userId, userId);
         }
         throw new IllegalArgumentException(
@@ -113,7 +103,7 @@ public class CalendarDataController {
     // @Override
     // public CalendarListResource patchCalendar(String calendarId, CalendarResource calResource, String userId) {
     //     CalendarListResource calListResource = userRepository
-    //             .findCalendarListUserItemByUserIdAndCalendarId(userId, calendarId)
+    //             .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
     //             .orElseThrow(() -> new IllegalArgumentException(
     //                     "CalendarListResource com ID '" + calendarId + "' não encontrado para o usuário de ID '"
     //                             + userId));
@@ -142,24 +132,25 @@ public class CalendarDataController {
     //     throw new IllegalArgumentException(
     //             "Acesso negado: o usuário não tem permissão para atualizar este calendário.");
     // }
+    public ArrayList<CalendarListResource> getCalendarList(String userId){
+        return userRepository.getCalendarList(userId);
+    }
 
-    public ArrayList<CalendarListResource> getCalendars(String userId) throws Exception {
+    public ArrayList<CalendarResource> getCalendars(String userId) throws Exception {
         if (userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("ID do usuário não pode ser nulo ou vazio.");
         }
 
         User user = userDataController.findUser(userId);
-        ArrayList<CalendarListResource> outputList = new ArrayList<>();
-        boolean primary;
+        ArrayList<CalendarResource> outputList = new ArrayList<>();
 
-        ArrayList<CalendarListUserItem> calendarList = user.getCalendarList();
-        for (CalendarListUserItem calListUserItem : calendarList) {
+        ArrayList<CalendarListResource> calendarList = user.getCalendarList();
+        for (CalendarListResource calListUserItem : calendarList) {
             CalendarResource calResource = calendarRepository
                 .findByCalendarId(calListUserItem.getCalendarId())
                 .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calListUserItem.getCalendarId()
                         + "' não encontrado."));
-            primary = calResource.getOwner().getId().equals(userId);
-            outputList.add(new CalendarListResource(calListUserItem.getCalendarId(), primary, calListUserItem, calResource));
+            outputList.add(calResource);
         }
 
         return outputList;
@@ -172,7 +163,7 @@ public class CalendarDataController {
         }
         userDataController.findUser(userId);
 
-        CalendarListUserItem calListResource = userDataController.findCalendarListUserItem(userId, calendarId);
+        CalendarListResource calListResource = userDataController.findCalendarListResource(userId, calendarId);
 
         if (calListResource.getAccessRole() == "owner") {
             calendarRepository.deleteById(calendarId);

@@ -6,7 +6,7 @@ import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.agendusp.agendusp.dataobjects.Attendee;
-import br.com.agendusp.agendusp.documents.CalendarListUserItem;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
@@ -35,7 +35,7 @@ public class EventsDataController {
         }
         User user = userDataController.findUser(userId);
 
-        CalendarListUserItem calResource = userDataController.findCalendarListUserItem(userId, calendarId);
+        CalendarListResource calResource = userDataController.findCalendarListResource(userId, calendarId);
 
         String accessRole = calResource.getAccessRole();
 
@@ -67,7 +67,7 @@ public class EventsDataController {
         }
         userDataController.findUser(userId);
 
-        CalendarListUserItem calendarListUserItem = userDataController.findCalendarListUserItem(userId, calendarId);
+        CalendarListResource calendarListUserItem = userDataController.findCalendarListResource(userId, calendarId);
 
         String accessRole = calendarListUserItem.getAccessRole();
         if (accessRole == null || (!accessRole.equals("owner") && !accessRole.equals("writer"))) {
@@ -95,7 +95,7 @@ public class EventsDataController {
         }
         userDataController.findUser(userId);
 
-        CalendarListUserItem calListResource = userDataController.findCalendarListUserItem(userId, calendarId);
+        CalendarListResource calListResource = userDataController.findCalendarListResource(userId, calendarId);
 
         EventsResource event = eventsRepository
                 .findEventsResourceByEventIdAndCalendarId(eventId, calListResource.getCalendarId())
@@ -128,7 +128,7 @@ public class EventsDataController {
         }
         userDataController.findUser(userId);
 
-        CalendarListUserItem calListUserItem = userDataController.findCalendarListUserItem(userId, calendarId);
+        CalendarListResource calListUserItem = userDataController.findCalendarListResource(userId, calendarId);
 
         EventsResource event = eventsRepository
                 .findEventsResourceByEventIdAndCalendarId(eventId, calListUserItem.getCalendarId())
@@ -191,7 +191,7 @@ public class EventsDataController {
         }
         userDataController.findUser(userId);
 
-        CalendarListUserItem calListUserItem = userDataController.findCalendarListUserItem(userId, calendarId);
+        CalendarListResource calListUserItem = userDataController.findCalendarListResource(userId, calendarId);
 
         ArrayList<EventsResource> events = eventsRepository.findAllByCalendarId(calListUserItem.getCalendarId())
                 .orElseThrow(() -> new IllegalArgumentException(
@@ -209,7 +209,7 @@ public class EventsDataController {
         }
         userDataController.findUser(userId);
 
-        CalendarListUserItem calListUserItem = userDataController.findCalendarListUserItem(userId, calendarId);
+        CalendarListResource calListUserItem = userDataController.findCalendarListResource(userId, calendarId);
 
         String accessRole = calListUserItem.getAccessRole();
         if (accessRole == null || (!accessRole.equals("owner") && !accessRole.equals("writer"))) {
@@ -234,7 +234,7 @@ public class EventsDataController {
         }
         userDataController.findUser(userId);
 
-        CalendarListUserItem calListUserItem = userDataController.findCalendarListUserItem(userId, calendarId);
+        CalendarListResource calListUserItem = userDataController.findCalendarListResource(userId, calendarId);
 
         EventsResource event = eventsRepository
                 .findEventsResourceByEventIdAndCalendarId(eventId, calListUserItem.getCalendarId())

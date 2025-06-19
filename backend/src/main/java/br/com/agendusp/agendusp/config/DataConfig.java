@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import br.com.agendusp.agendusp.controller.CalendarDataController;
-import br.com.agendusp.agendusp.controller.DataController;
 import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
 
@@ -29,10 +28,5 @@ public class DataConfig {
     @Bean
     public UserDataController userDataController(){
         return new UserDataController();
-    }
-
-    @Bean
-    public DataController dataController() {
-        return new DataController();
     }
 }
