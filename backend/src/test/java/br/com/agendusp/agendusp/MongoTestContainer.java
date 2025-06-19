@@ -19,6 +19,7 @@ public abstract class MongoTestContainer {
 
     static {
         mongoDBContainer = new MongoDBContainer("mongo:latest").withExposedPorts(27017);
+        mongoDBContainer.start();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (mongoDBContainer != null) {
                 mongoDBContainer.stop();

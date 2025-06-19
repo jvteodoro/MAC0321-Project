@@ -1,5 +1,6 @@
 package br.com.agendusp.agendusp.dataobjects;
 
+import java.util.ArrayList;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 
 public class CalendarListList {
@@ -7,7 +8,8 @@ public class CalendarListList {
     String etag;
     String nextPageToken;
     String nextSyncToken;
-    CalendarListResource[] items;
+    ArrayList<CalendarListResource> items;
+
     
     public String getKind() {
         return kind;
@@ -33,14 +35,11 @@ public class CalendarListList {
     public void setNextSyncToken(String nextSyncToken) {
         this.nextSyncToken = nextSyncToken;
     }
-    public CalendarListResource[] getItems() {
+    public ArrayList<CalendarListResource> getItems() {
         return items;
     }
-    public void setItems(CalendarListResource[] items) {
+    public void setItems(ArrayList<CalendarListResource> items) {
+
         this.items = items;
     }
-
-    
-
-
 }

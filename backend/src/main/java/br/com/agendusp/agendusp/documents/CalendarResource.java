@@ -23,6 +23,10 @@ public class CalendarResource {
     ArrayList<CalendarPerson> freeBusyReaders;
     boolean deleted;
 
+    public void setId(String id){
+        this.id = id;
+    }
+
     public String getId(){
         return id;
     }

@@ -1,5 +1,6 @@
 package br.com.agendusp.agendusp.repositories;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.Aggregation;
@@ -8,8 +9,10 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 import org.springframework.stereotype.Repository;
 
+import com.google.api.services.calendar.Calendar.CalendarList;
+
 import br.com.agendusp.agendusp.dataobjects.EventPool;
-import br.com.agendusp.agendusp.documents.CalendarListUserItem;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 
 @Repository
@@ -19,8 +22,9 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByEmail(String email);
     @Query("{'userId' : ?0}")
     @Update("{$push: {'calendarList' : ?1}}")
-    Optional<Integer> updateOneByUserId(String userId, CalendarListUserItem calendarListUserItem);
+    Optional<Integer> updateOneByUserId(String userId, CalendarListResource calendarListResource);
 
+    
     @Query(value = "{ 'userId' : ?0 }")  // Explicit query without projection
     public Optional<User> findByUserId(String userId);
     
@@ -31,7 +35,7 @@ public interface UserRepository extends MongoRepository<User, String> {
         "{ $replaceRoot: { newRoot: '$calendarList' } }",
         "{ $limit: 1 }"
     })    
-    Optional<CalendarListUserItem> findCalendarListUserItemByUserIdAndCalendarId(String userId, String calendarId);
+    Optional<CalendarListResource> findCalendarListResourceByUserIdAndCalendarId(String userId, String calendarId);
 
     
     @Query(value = "{ 'userId': ?0, 'calendarList.calendarId': ?1 }", exists = true)
@@ -60,4 +64,17 @@ public interface UserRepository extends MongoRepository<User, String> {
         "{ $limit: 1 }"
     })    
     EventPool findByEventPoolId(String userId, String eventPoolId);
+
+    @Query(value = "{ 'userId' : ?0}", fields = "{'calendarList': 1}") 
+    ArrayList<CalendarListResource> getCalendarList(String userId);
+
+    @Query("{ 'userId': ?0 }")
+    @Update(" {$push: {'calendarList' : ?1 }}")
+    void addCalendarListResource(String userId, CalendarListResource item);
+    // @Aggregation(pipeline = {
+    //     "{ $match: { 'userId' : ?0 }}",
+    //     "{ $unwind: '$calendarList'}",
+    //     "{ $match: { 'calendarList.'}}"
+    // })
+    // CalendarListUserItem insertCalendarListUserItem();
 }

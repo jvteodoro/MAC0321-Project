@@ -1,40 +1,21 @@
 package br.com.agendusp.agendusp.controller.google;
 // package br.com.agendusp.agendusp.calendar;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Scanner;
-
-import org.checkerframework.checker.units.qual.s;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import br.com.agendusp.agendusp.CustomOAuth2User;
-import br.com.agendusp.agendusp.controller.CalendarListController;
-import br.com.agendusp.agendusp.controller.DataController;
+import br.com.agendusp.agendusp.controller.CalendarDataController;
+import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.dataobjects.CalendarListList;
+import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
+
 import br.com.agendusp.agendusp.dataobjects.UserInfo;
 import br.com.agendusp.agendusp.dataobjects.WatchRequest;
 import br.com.agendusp.agendusp.dataobjects.WatchResponse;
@@ -55,10 +36,12 @@ public class GoogleCalendarListController {
     private final RestClient restClient;
     private final Gson gson;
     @Autowired
-    private DataController dataController;
+    private CalendarDataController calendarDataController;
+    @Autowired
+    private UserDataController userDataController;
     @Autowired
     ObjectMapper objMapper;
-    public GoogleCalendarListController(RestClient restClient, Gson gson) {
+    public GoogleCalendarListController(RestClient restClient, Gson gson, UserDataController userDataController) {
         
         this.restClient = restClient;
         //authToken.getAcess
@@ -67,6 +50,12 @@ public class GoogleCalendarListController {
     //   //  .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
     //     .retrieve().toEntity(String.class).getBody();
         this.gson = gson;
+        //authToken.getAcess
+    //     this.userInfo = restClient.get()
+    //     .uri("https://www.googleapis.com/oauth2/v2/userinfo")
+    //   //  .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
+    //     .retrieve().toEntity(String.class).getBody();
+        this.userDataController = userDataController;
 
     }
 
@@ -118,7 +107,10 @@ public class GoogleCalendarListController {
         user.setId(inf.getId());
         user.setUsername(inf.getName());
         //user.setId(inf.getId());
-        dataController.findUserOrCreate(user);
+        userDataController.findUserOrCreate(user);
+        System.out.println("Adding user:"+objMapper.writeValueAsString(user));
+        User addedUser = userDataController.findUserByName(user.getName());
+        System.out.println(objMapper.writeValueAsString(addedUser));
 
         //return objMapper.writeValueAsString(user);
         return user;
@@ -134,12 +126,11 @@ public class GoogleCalendarListController {
     public CalendarListResource get(
         @RequestParam String calendarId, 
         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
-        ResponseEntity<String> calendarResponse = restClient.get()
+        return restClient.get()
+
                 .uri("https://www.googleapis.com/calendar/v3/users/me/calendarList/"+calendarId)
                 .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
-                .retrieve().toEntity(String.class);
-        CalendarListResource calRes = gson.fromJson(calendarResponse.getBody(), CalendarListResource.class);
-        return calRes;
+                .retrieve().toEntity(CalendarListResource.class).getBody();
     }
     public String insert(CalendarListResource calendar,
         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
@@ -155,13 +146,19 @@ public class GoogleCalendarListController {
     @GetMapping("/google/calendarList/list")
     public CalendarListList list(
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
-        ResponseEntity<CalendarListList> calList = restClient.get()
+        CalendarListList calList = restClient.get()
                 .uri("/calendarList")
                 .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
-                .retrieve().toEntity(CalendarListList.class);
-        
-        //System.out.println("RUNNING, response:"+calList.getBody().toString());
-        return calList.getBody();
+                .retrieve().toEntity(CalendarListList.class).getBody();
+        for (CalendarListResource resource: calList.getItems()){
+            CalendarResource calendarResource =resource.extractCalendarResource();
+            calendarDataController.addCalendar(calendarResource, authorizedClient.getPrincipalName());
+            userDataController.insertCalendarListResource(authorizedClient.getPrincipalName(), resource);
+
+            System.out.println("RUNNING, response:"+calList.toString());
+
+        }
+        return calList;
     }
     // public CalendarListResourceve().toEntity(Json.class);
     // CalendarListResource calendarListResource = new CalendarListResource();
