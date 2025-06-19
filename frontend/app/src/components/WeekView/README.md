@@ -1,15 +1,15 @@
-# CalendarNavBar
+# WeekView
 
 <!-- STORY -->
 
 ## Introduction
 
-CalendarNavBar is an easy-to-use component.
+WeekView is an easy-to-use component.
 
 ## Usage
 
 ```javascript
-import { CalendarNavBar } from 'some-package-name';
+import { WeekView } from 'some-package-name';
 ```
 
 ## Example use
@@ -18,7 +18,7 @@ import { CalendarNavBar } from 'some-package-name';
 const myPage = props => {
   return (
     <main>
-      <CalendarNavBar />
+      <WeekView />
     </main>
   );
 };

@@ -1,39 +1,39 @@
 import React from 'react';
 import { shallow, render, mount } from 'enzyme';
-import CalendarMenu from './CalendarMenu';
+import Calendar from './CalendarMenu';
 
-describe('CalendarMenu', () => {
+describe('Calendar', () => {
   let props;
-  let shallowCalendarMenu;
-  let renderedCalendarMenu;
-  let mountedCalendarMenu;
+  let shallowCalendar;
+  let renderedCalendar;
+  let mountedCalendar;
 
   const shallowTestComponent = () => {
-    if (!shallowCalendarMenu) {
-      shallowCalendarMenu = shallow(<CalendarMenu {...props} />);
+    if (!shallowCalendar) {
+      shallowCalendar = shallow(<Calendar {...props} />);
     }
-    return shallowCalendarMenu;
+    return shallowCalendar;
   };
 
   const renderTestComponent = () => {
-    if (!renderedCalendarMenu) {
-      renderedCalendarMenu = render(<CalendarMenu {...props} />);
+    if (!renderedCalendar) {
+      renderedCalendar = render(<Calendar {...props} />);
     }
-    return renderedCalendarMenu;
+    return renderedCalendar;
   };
 
   const mountTestComponent = () => {
-    if (!mountedCalendarMenu) {
-      mountedCalendarMenu = mount(<CalendarMenu {...props} />);
+    if (!mountedCalendar) {
+      mountedCalendar = mount(<Calendar {...props} />);
     }
-    return mountedCalendarMenu;
+    return mountedCalendar;
   };  
 
   beforeEach(() => {
     props = {};
-    shallowCalendarMenu = undefined;
-    renderedCalendarMenu = undefined;
-    mountedCalendarMenu = undefined;
+    shallowCalendar = undefined;
+    renderedCalendar = undefined;
+    mountedCalendar = undefined;
   });
 
   // Shallow / unit tests begin here

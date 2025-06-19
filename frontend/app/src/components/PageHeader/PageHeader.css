@@ -4,8 +4,8 @@
     width: 100%;
     padding-inline: 0.5em;
     display: flex;
-    align-items: end;
-    justify-content: start;
+    align-items: center;
+    justify-content: space-between;
     position: relative;
 }
 
@@ -14,4 +14,17 @@
     bottom: 50%;
     left: 50%;
     transform: translate(-50%, 50%);
+}
+
+#nav-buttons {
+    display: flex;
+    gap: 0.5em;
+}
+
+button{
+    font-size: 0.9em;
+    padding: 0.1em 0.4em;
+    border-radius: 15px;
+    font-weight: bold;
+    border: 0;
 }

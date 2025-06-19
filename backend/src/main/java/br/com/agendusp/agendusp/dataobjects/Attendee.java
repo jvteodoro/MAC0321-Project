@@ -5,7 +5,7 @@ public class Attendee {
     private boolean organizer;
     private boolean resource;
     private boolean optional;
-    private CalendarResponseStatus responseStatus;
+    private String responseStatus;
     private String comment;
     private int additionalGuests;
 
@@ -37,11 +37,11 @@ public class Attendee {
         this.optional = optional;
     }
 
-    public CalendarResponseStatus getResponseStatus() {
+    public String getResponseStatus() {
         return responseStatus;
     }
 
-    public void setResponseStatus(CalendarResponseStatus responseStatus) {
+    public void setResponseStatus(String responseStatus) {
         this.responseStatus = responseStatus;
     }
 
@@ -61,12 +61,16 @@ public class Attendee {
         this.additionalGuests = additionalGuests;
     }
 
+    public Attendee(){
+        
+    }
+
     public Attendee(CalendarPerson calendarPerson) {
         this.calendarPerson = calendarPerson;
         this.organizer = false; // defaults to false
         this.resource = false; // defaults to false
         this.optional = false; // defaults to false
-        this.responseStatus = new CalendarResponseStatus(); // defaults to "needsAction"
+        this.responseStatus = "needsAction"; // defaults to "needsAction"
         this.comment = ""; // defaults to empty string
         this.additionalGuests = 0; // defaults to 0
 
@@ -77,7 +81,7 @@ public class Attendee {
         this.organizer = organizer; // defaults to false
         this.resource = false; // defaults to false
         this.optional = false; // defaults to false
-        this.responseStatus = new CalendarResponseStatus(); // defaults to "needsAction"
+        this.responseStatus = "needsAction"; // defaults to "needsAction"
         this.comment = ""; // defaults to empty string
         this.additionalGuests = 0; // defaults to 0
     }

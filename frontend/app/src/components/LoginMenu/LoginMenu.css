@@ -13,6 +13,7 @@
     flex-direction: column;
     gap: 1rem;
     box-shadow: 0 0 0.2em var(--main-highlight-color);
+    text-align: center;
 }
 
 #login-menu {
@@ -20,19 +21,7 @@
     box-shadow: 0 0 0.2em var(--secondary-hoverselect-color);
 }
 
-#login-form {
-    display: grid;
-    grid-template-rows: 2fr 1fr 1fr;
-    gap: 0.5em;
-}
-
-#form-inputs {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    gap: 0.5em;
-}
-
-#login-form > button {
+button {
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -41,6 +30,7 @@
 
 #googleSignIn {
     background-color: var(--secondary-color);
+    outline: 0.1em outset var(--main-highlight-color);
 }
 
 #googleSignIn:hover {

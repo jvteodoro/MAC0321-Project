@@ -15,6 +15,7 @@ import br.com.agendusp.agendusp.controller.CalendarDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.dataobjects.CalendarListList;
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
+
 import br.com.agendusp.agendusp.dataobjects.UserInfo;
 import br.com.agendusp.agendusp.dataobjects.WatchRequest;
 import br.com.agendusp.agendusp.dataobjects.WatchResponse;
@@ -126,6 +127,7 @@ public class GoogleCalendarListController {
         @RequestParam String calendarId, 
         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         return restClient.get()
+
                 .uri("https://www.googleapis.com/calendar/v3/users/me/calendarList/"+calendarId)
                 .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
                 .retrieve().toEntity(CalendarListResource.class).getBody();

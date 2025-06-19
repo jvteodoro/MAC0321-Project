@@ -2,8 +2,8 @@
 
 * {
   --main-font-color: #effafd;
-  --main-color: #43a4ff;
-  --main-hoverselect-color: #2c87dd;
+  --main-color: #3299fa;
+  --main-hoverselect-color: #0271d8;
   --main-highlight-color: #008cff;
   --secondary-color: #21282c;
   --secondary-hoverselect-color: #161d20;
@@ -66,6 +66,7 @@ input {
 
 button {
   background-color: var(--main-color);
+  cursor: pointer;
 }
 
 button:hover {
@@ -78,4 +79,12 @@ button:hover {
 
 :focus-visible {
   outline: var(--main-highlight-color) auto 1px;
+}
+
+i {
+  color: inherit;
+}
+
+a {
+  text-decoration: none;
 }

@@ -1,15 +1,15 @@
-# Calendar
+# PrivateRoute
 
 <!-- STORY -->
 
 ## Introduction
 
-Calendar is an easy-to-use component.
+PrivateRoute is an easy-to-use component.
 
 ## Usage
 
 ```javascript
-import { Calendar } from 'some-package-name';
+import { PrivateRoute } from 'some-package-name';
 ```
 
 ## Example use
@@ -18,7 +18,7 @@ import { Calendar } from 'some-package-name';
 const myPage = props => {
   return (
     <main>
-      <Calendar />
+      <PrivateRoute />
     </main>
   );
 };

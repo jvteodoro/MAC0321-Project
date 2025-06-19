@@ -1,15 +1,15 @@
-# CalendarViewer
+# LoginSuccess
 
 <!-- STORY -->
 
 ## Introduction
 
-CalendarViewer is an easy-to-use component.
+LoginSuccess is an easy-to-use component.
 
 ## Usage
 
 ```javascript
-import { CalendarViewer } from 'some-package-name';
+import { LoginSuccess } from 'some-package-name';
 ```
 
 ## Example use
@@ -18,7 +18,7 @@ import { CalendarViewer } from 'some-package-name';
 const myPage = props => {
   return (
     <main>
-      <CalendarViewer />
+      <LoginSuccess />
     </main>
   );
 };

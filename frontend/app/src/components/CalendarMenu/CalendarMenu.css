@@ -1,10 +1,115 @@
-@import url('../../App.css');
+@import url("../../App.css");
 
 #calendar-menu {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--secondary-color);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.month-title {
+  width: 18%;
+  text-align: center;
+  margin: 0;
+  cursor: pointer;
+  color: var(--main-font-color);
+  position: relative;
+}
+
+.month-title:hover {
+  color: var(--main-highlight-color);
+}
+
+.current-month-indicator {
+  color: var(--main-highlight-color);
+  position: absolute;
+}
+
+.nav-button {
+  border: none;
+  border-radius: 50%;
+  padding: 8px 10px;
+}
+
+#calendar {
+  width: 100%;
+  height: 100%;
+  padding: 0 0.5em 0.5em 0.5em;
+  color: var(--main-font-color);
+  display: grid;
+
+  gap: 0.1em;
+  position: relative;
+}
+
+#weekday-headers {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.weekday-header {
+  margin: 0;
+  text-align: center;
+  padding: 5px 0;
+  font-size: 0.9em;
+  color: var(--main-highlight-color);
+}
+
+.week {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.1em;
+}
+
+.week:hover > * {
+  background: var(--secondary-hoverselect-color);
+}
+
+.calendar-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  border: 1px solid var(--secondary-hoverselect-color);
+  border-radius: 0.2em;
+  padding: 0.2em;
+  cursor: pointer;
+  background: var(--secondary-color);
+  user-select: none;
+  position: relative;
+}
+
+.calendar-day:hover > .day-number {
+  scale: 1.25;
+}
+
+.calendar-day.other-month > * {
+  opacity: 0.5;
+}
+
+.calendar-day.today {
+  background-color: var(--main-highlight-color);
+  color: var(--main-font-color);
+  font-weight: bold;
+  box-shadow: 0 0 0 2px var(--main-color);
+}
+
+.calendar-day.today:hover {
+  background: var(--main-hoverselect-color);
+}
+
+.day-number {
+  position: absolute;
+  top: 0.2em;
+  left: 0.2em;
 }
