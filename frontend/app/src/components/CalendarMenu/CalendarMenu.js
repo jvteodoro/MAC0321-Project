@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import styles from "./CalendarMenu.css";
+import "./CalendarMenu.css";
+import WeekView from "../WeekView/WeekView";
 
 const Calendar = ({ year, month }) => {
   const [currentDate, setCurrentDate] = useState(new Date(year, month));
+  const [selectedWeek, setSelectedWeek] = useState(null);
+
   useEffect(() => {
     resetToCurrent();
   }, []);
@@ -25,6 +28,14 @@ const Calendar = ({ year, month }) => {
     setCurrentDate(new Date());
   };
 
+  const handleWeekClick = (week) => {
+    setSelectedWeek(week);
+  };
+
+  const closeWeekView = () => {
+    setSelectedWeek(null);
+  };
+
   // Get date information
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -44,6 +55,8 @@ const Calendar = ({ year, month }) => {
       day: prevMonthLastDay - startDay + i + 1,
       isCurrentMonth: false,
       isToday: false,
+      monthIndex: currentMonth - 1,
+      year: currentMonth === 0 ? currentYear - 1 : currentYear,
     }));
 
     // Current month days
@@ -54,6 +67,8 @@ const Calendar = ({ year, month }) => {
         i + 1 === today.getDate() &&
         currentMonth === today.getMonth() &&
         currentYear === today.getFullYear(),
+      monthIndex: currentMonth,
+      year: currentYear,
     }));
 
     // Combine all days
@@ -69,6 +84,8 @@ const Calendar = ({ year, month }) => {
       day: i + 1,
       isCurrentMonth: false,
       isToday: false,
+      monthIndex: currentMonth + 1,
+      year: currentMonth === 11 ? currentYear + 1 : currentYear,
     }));
 
     return [...allDays, ...nextMonthDays];
@@ -85,58 +102,69 @@ const Calendar = ({ year, month }) => {
 
   return (
     <div id="calendar-menu">
-      <div className="calendar-header">
-        <button onClick={prevMonth} className="nav-button">
-          <i class="fa-solid fa-arrow-left"></i>
-        </button>
-        <h2 onClick={resetToCurrent} className="month-title">
-          {currentDate.toLocaleDateString("pt-BR", {
-            month: "long",
-            year: "numeric",
-          })}
-          {currentMonth === today.getMonth() &&
-            currentYear === today.getFullYear() && (
-              <span className="current-month-indicator">•</span>
-            )}
-        </h2>
-        <button onClick={nextMonth} className="nav-button">
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
-      </div>
+      {selectedWeek ? (
+        <WeekView week={selectedWeek} onClose={closeWeekView} />
+      ) : (
+        <>
+          <div className="calendar-header">
+            <button onClick={prevMonth} className="nav-button">
+              <i className="fa-solid fa-arrow-left"></i>
+            </button>
+            <h2 onClick={resetToCurrent} className="month-title">
+              {currentDate.toLocaleDateString("pt-BR", {
+                month: "long",
+                year: "numeric",
+              })}
+              {currentMonth === today.getMonth() &&
+                currentYear === today.getFullYear() && (
+                  <span className="current-month-indicator">•</span>
+                )}
+            </h2>
+            <button onClick={nextMonth} className="nav-button">
+              <i className="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
 
-      <div
-        id="calendar"
-        style={{
-          gridTemplateRows: `auto repeat(${numberOfRows}, 1fr)`,
-        }}
-      >
-        {/* Weekday headers */}
-        <div id="weekday-headers">
-          <h3 className="weekday-header">Dom</h3>
-          <h3 className="weekday-header">Seg</h3>
-          <h3 className="weekday-header">Ter</h3>
-          <h3 className="weekday-header">Qua</h3>
-          <h3 className="weekday-header">Qui</h3>
-          <h3 className="weekday-header">Sex</h3>
-          <h3 className="weekday-header">Sáb</h3>
-        </div>
+          <div
+            id="calendar"
+            style={{
+              gridTemplateRows: `auto repeat(${numberOfRows}, 1fr)`,
+            }}
+          >
+            {/* Weekday headers */}
+            <div id="weekday-headers">
+              <h3 className="weekday-header">Dom</h3>
+              <h3 className="weekday-header">Seg</h3>
+              <h3 className="weekday-header">Ter</h3>
+              <h3 className="weekday-header">Qua</h3>
+              <h3 className="weekday-header">Qui</h3>
+              <h3 className="weekday-header">Sex</h3>
+              <h3 className="weekday-header">Sáb</h3>
+            </div>
 
-        {/* Render weeks */}
-        {weeks.map((week, weekIndex) => (
-          <div key={`week-${weekIndex}`} id={`week-${weekIndex}`} className="week">
-            {week.map((dayInfo, dayIndex) => (
+            {/* Render weeks */}
+            {weeks.map((week, weekIndex) => (
               <div
-                key={`day-${weekIndex}-${dayIndex}`}
-                className={`calendar-day 
-                  ${dayInfo.isCurrentMonth ? "" : "other-month"} 
-                  ${dayInfo.isToday ? "today" : ""}`}
+                key={`week-${weekIndex}`}
+                id={`week-${weekIndex}`}
+                className="week"
+                onClick={() => handleWeekClick(week)}
               >
-                <span className="day-number">{dayInfo.day}</span>
+                {week.map((dayInfo, dayIndex) => (
+                  <div
+                    key={`day-${weekIndex}-${dayIndex}`}
+                    className={`calendar-day 
+                      ${dayInfo.isCurrentMonth ? "" : "other-month"} 
+                      ${dayInfo.isToday ? "today" : ""}`}
+                  >
+                    <span className="day-number">{dayInfo.day}</span>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </div>
   );
 };

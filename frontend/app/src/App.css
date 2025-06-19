@@ -80,3 +80,11 @@ button:hover {
 :focus-visible {
   outline: var(--main-highlight-color) auto 1px;
 }
+
+i {
+  color: inherit;
+}
+
+a {
+  text-decoration: none;
+}
