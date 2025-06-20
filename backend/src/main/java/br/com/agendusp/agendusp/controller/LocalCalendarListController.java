@@ -40,8 +40,8 @@ public class LocalCalendarListController implements CalendarListController {
 
     @DeleteMapping("/calendarList/delete")
     public ResponseEntity<Void> delete(@RequestParam String calendarId,
-            @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
+           @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userId = authorizedClient.getPrincipalName();
         calendarDataController.removeCalendar(calendarId, userId);
         return ResponseEntity.ok().build();
     }
@@ -52,16 +52,17 @@ public class LocalCalendarListController implements CalendarListController {
     }
 
     @GetMapping("/calendarList/get")
-    public String get(@RequestParam String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
+    public String get(@RequestParam String calendarId, 
+     @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userId = authorizedClient.getPrincipalName();
         return gson.toJson(calendarDataController.getCalendarListResource(calendarId, userId));
     }
 
 
     @PostMapping("/calendarList/insert")
     public CalendarListResource insert(@RequestBody CalendarListResource calendar,
-            @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
+       @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userId = authorizedClient.getPrincipalName();
         userDataController.insertCalendarListResource(userId, calendar);
         return calendar;
     }
@@ -82,8 +83,8 @@ public class LocalCalendarListController implements CalendarListController {
 
     @PutMapping("/calendarList/update")
     public CalendarListResource update(@RequestBody CalendarListResource calendar,
-            @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
+        @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userId = authorizedClient.getPrincipalName();
         return calendarDataController.updateCalendarListResource(calendar.getId(), calendar, userId);
     }
 
