@@ -11,7 +11,7 @@ import br.com.agendusp.agendusp.dataobjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 import br.com.agendusp.agendusp.dataobjects.EventDate;
 
-@Document
+@Document(collection = "events")
 public class EventsResource {
 
     @Id

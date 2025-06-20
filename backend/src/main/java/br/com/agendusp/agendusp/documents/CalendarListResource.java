@@ -1,7 +1,10 @@
 package br.com.agendusp.agendusp.documents;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
+@Document(collection = "calendarLists")
 public class CalendarListResource {
     String calendarId;
     String kind = "calendar#calendarListEntry";

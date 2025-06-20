@@ -3,9 +3,11 @@ package br.com.agendusp.agendusp.documents;
 import java.util.ArrayList;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
+@Document(collection = "calendars")
 public class CalendarResource {
     
     @Id
