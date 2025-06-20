@@ -20,6 +20,7 @@ public class UserDataController {
         private UserRepository userRepository;
         @Autowired
         RestClient restClient;
+
           // Users
         public User createUser(User user) {
                 if (user == null ){//|| user.getUserId() == null || user.getUserId().isEmpty()) {
@@ -57,7 +58,10 @@ public class UserDataController {
         }
 
         public ArrayList<CalendarListResource> insertCalendarListResource(String userId, CalendarListResource item){
-                userRepository.addCalendarListResource(userId, item);
+                Optional<CalendarListResource> calListR = userRepository.findCalendarListResourceByIdAndCalendarId(userId, item.getCalendarId());
+                if (calListR.isEmpty()) {
+                        userRepository.addCalendarListResource(userId, item);
+                }
                 return userRepository.getCalendarList(userId);
         }
         public CalendarPerson getCalendarPerson(String userId) {
