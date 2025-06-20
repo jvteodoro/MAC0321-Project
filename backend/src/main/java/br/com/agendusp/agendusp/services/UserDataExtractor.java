@@ -1,10 +1,10 @@
 package br.com.agendusp.agendusp.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import br.com.agendusp.agendusp.documents.CalendarListUserItem;
 import br.com.agendusp.agendusp.documents.User;
 
 import br.com.agendusp.agendusp.repositories.EventsRepository;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import java.util.Optional;
 
@@ -21,12 +21,12 @@ public class UserDataExtractor {
     public ArrayList<String> extraiCompromissos(User user) {
         ArrayList<String> compromissos = new ArrayList<>();
 
-        ArrayList<CalendarListUserItem> calendars = user.getCalendarList();
+        ArrayList<CalendarListResource> calendars = user.getCalendarList();
         if (calendars == null || calendars.isEmpty()) {
             return compromissos;  // Retorna lista vazia
         }
 
-        for (CalendarListUserItem calendar : calendars) {
+        for (CalendarListResource calendar : calendars) {
             Optional<ArrayList<EventsResource>> optionalEvents = eventsRepository.findAllByCalendarId(calendar.getCalendarId());
 
             if (optionalEvents.isPresent()) {
@@ -43,7 +43,7 @@ public class UserDataExtractor {
 
     private String eventsResourceToString(EventsResource event) {
         StringBuilder eventString = new StringBuilder();
-        eventString.append(event.getKind() + " no horário " + event.getStart().dateTime() + " do dia " + event.getStart().date());
+        eventString.append(event.getKind()+" no horário " + event.getStart().getDateTime().toString() + " do dia " + event.getStart().getDate().toString());
         //pode ser modificado
         return eventString.toString();
     }

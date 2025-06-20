@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -19,7 +21,8 @@ import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
-@SpringBootTest(classes = AgendUspApplication.class)
+@SpringBootTest(classes=AgendUspApplication.class)
+@AutoConfigureMockMvc
 public class UserRepositoryTest extends MongoTestContainer{
     @Autowired
     UserDataController userDataController;
@@ -29,6 +32,7 @@ public class UserRepositoryTest extends MongoTestContainer{
     ObjectMapper objectMapper;
 
     @Test
+    @WithMockUser
     public void test() throws Exception{
         System.out.println("Teste");
         String userId = "teste@gmail.com";
