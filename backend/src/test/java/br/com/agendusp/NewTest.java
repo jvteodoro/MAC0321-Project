@@ -3,6 +3,8 @@ package br.com.agendusp;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -25,6 +27,7 @@ import br.com.agendusp.agendusp.controller.CalendarDataController;
 import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.HomeController;
 import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.dataobjects.EventDate;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
@@ -260,6 +263,49 @@ public class NewTest {
 
         
     }
+    @Test
+    @WithMockUser
+    public void testAddCalendarListResource(){
+        User user = new User();
+        String userId = "testUser";
+        user.setId(userId);
+        user.setGoogleId(userId);
+        user.setUserId(userId);
+        user.setDisplayName("Usuário de Test");
+        userDataController.createUser(user);
+        
+        CalendarListResource calListR = new CalendarListResource();
+        String calendarId = "calendario@teste.com";
+        calListR.setId(calendarId);
+        calListR.setCalendarId(calendarId);
+        calListR.setOwner(user.getAsCalendarPerson());
+
+        userRepository.addCalendarListResource(userId, calListR);
+    }
+
+    @Test
+    @WithMockUser
+    public void testAddCalendar() throws Exception {
+        User user1 = new User();
+        user1.setUsername("user");
+        user1.setUserId("12");
+        user1.setId("12");
+        userDataController.deleteUser(user1.getId());
+        userDataController.createUser(user1);
+        String userId = user1.getId();
+        String calendarId = "teste4@gmail.com";
+
+        CalendarResource calR = new CalendarResource();
+        calR.setCalendarId(calendarId);
+        calR.setId(calendarId);
+        calR.setOwner(user1.getAsCalendarPerson());
+        calendarDataController.removeCalendar(calendarId, userId);
+        calendarDataController.addCalendar(calR, userId);
+
+        User user2 = userDataController.findUser(userId);
+        System.out.println(objectMapper.writeValueAsString(user2));
+
+    }
 
     @Test
     @WithMockUser
@@ -268,19 +314,40 @@ public class NewTest {
         user1.setUsername("user");
         user1.setId("12");
         String userId = user1.getId();
+        String calendarId = "teste@gmail.com";
 
-        CalendarListResource calItem = new CalendarListResource();
-        calItem.setCalendarId("teste@gmail.com");
-        calItem.setId("1");
-        String calendarId = calItem.getCalendarId();
+        CalendarResource calR = new CalendarResource();
+        calR.setCalendarId(calendarId);
+        calR.setId(calendarId);
+        calendarDataController.removeCalendar(calendarId, userId);
+        calendarDataController.addCalendar(calR, userId);
+
 
         EventsResource eventsResource = new EventsResource();
         eventsResource.setId("1");
-        String endDate = eventsResource.getEnd().getDateTime();
+        eventsResource.addCalendarId(calendarId);
+
+        LocalDateTime start = LocalDateTime.now();
+        ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
+        LocalDateTime end = start.plusDays(3);
+
+        EventDate eventStart = new EventDate();
+        EventDate eventEnd = new EventDate();
+        
+        eventStart.setDate(start.toLocalDate());
+        eventStart.setDateTime(start);
+        eventStart.setTimeZone(zoneId);
+        eventsResource.setStart(eventStart);
+
+        eventEnd.setDate(end.toLocalDate());
+        eventEnd.setDateTime(end);
+        eventEnd.setTimeZone(zoneId);
+        eventsResource.setEnd(eventEnd);
+
+        eventsDataController.createEvent(calendarId, eventsResource, userId);
+
+        LocalDateTime endDate = eventsResource.getEnd().getDateTime();
         String eventId = eventsResource.getId();
-
-        userRepository.insertCalendarListResourceByUserId(user1.getUserId(), calItem);
-
         String atendeeUserId = "3"; 
 
         // pega eventos em um intervalo
