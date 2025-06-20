@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './PageHeader.css';
+import "./PageHeader.css";
 
 const PageHeader = (props) => (
   <header id="page-header">
