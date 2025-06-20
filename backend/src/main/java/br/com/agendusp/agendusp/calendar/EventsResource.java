@@ -41,6 +41,8 @@ public class EventsResource {
     ExtendedProperties extendedProperties;
     String hangoutLink;
 
+    public EventsResource(){}
+
     public EventsResource(int links, String kind, String etag, String id, String status, String htmlLink,
             String created, String updated, String summary, String description, String location, String colorId,
             CalendarPerson creator, CalendarPerson organizer, EventDate start, EventDate end,
