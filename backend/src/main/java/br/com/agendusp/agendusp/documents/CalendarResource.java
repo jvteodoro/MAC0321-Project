@@ -23,6 +23,21 @@ public class CalendarResource {
     ArrayList<CalendarPerson> freeBusyReaders;
     boolean deleted;
 
+    public CalendarListResource toCalendarListResource(){
+        CalendarListResource calR = new CalendarListResource();
+        calR.setId(this.calendarId);
+        calR.setCalendarId(this.calendarId);
+        calR.setLocation(this.location);
+        calR.setTimeZone(this.timeZone);
+        calR.setOwner(this.owner);
+        calR.setSummary(this.summary);
+        calR.setDescription(this.description);
+        calR.setDeleted(this.deleted);
+
+
+        return calR;
+    }
+
     public void setId(String id){
         this.id = id;
     }
