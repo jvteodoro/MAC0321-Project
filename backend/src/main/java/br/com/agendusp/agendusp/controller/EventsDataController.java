@@ -29,6 +29,10 @@ public class EventsDataController {
             return eventsRepository.findEventsByEndDate(calendarId, endDate)
             .orElse(new ArrayList<EventsResource>());
     }
+    public EventsResource addEvent(EventsResource eventResource){
+        eventsRepository.save(eventResource);
+        return eventResource;
+    }
 
     public EventsResource createEvent(String calendarId, EventsResource eventResource, String userId) {
         if (eventResource == null || eventResource.getId() == null || eventResource.getId().isEmpty()) {

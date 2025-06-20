@@ -1,17 +1,64 @@
 package br.com.agendusp.agendusp.controller.google;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClient;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.dataobjects.CalendarListList;
+import br.com.agendusp.agendusp.dataobjects.UserInfo;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.documents.User;
 
 @RestController
 public class GoogleDataToLocalData {
     @Autowired
+    RestClient restClient;
+    @Autowired
+    UserDataController userDataController;
+    @Autowired
     GoogleCalendarListController gCalendarListController;
+    @Autowired
+    GoogleEventsController gEventsController;
+    @Autowired
+    GoogleCalendarsController gCalendarsController;
+    @Autowired
+    ObjectMapper objMapper;
+
+      @GetMapping("/google/userInfo")
+    public User getUserInfo(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        ResponseEntity<UserInfo> response = restClient.get()
+        .uri("https://www.googleapis.com/oauth2/v2/userinfo")
+        .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
+        .retrieve().toEntity(UserInfo.class);
+        UserInfo inf = response.getBody();
+        User user = new User();
+        user.setEmail(inf.getEmail());
+        user.setGoogleId(inf.getId());
+        user.setId(inf.getId());
+        user.setUserId(inf.getId());
+        user.setUsername(inf.getName());
+        userDataController.findUserOrCreate(user);
+        User addedUser = userDataController.findUserByName(user.getName());
+        return addedUser;
+    }
 
     @GetMapping("/google/cloudToLocal")
-    public void cloudToLocal(OAuth2AuthorizedClient authorizedClient){
+    public void cloudToLocal(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) throws Exception{
+        this.getUserInfo(authorizedClient);
+        CalendarListList calList = gCalendarListController.list(authorizedClient);
+        for (CalendarListResource calListResource: calList.getItems()){
+            System.out.println(objMapper.writeValueAsString(calListResource));
+            gEventsController.list(calListResource.getId(), authorizedClient);
+            gCalendarsController.get(calListResource.getId(), authorizedClient);
+        }
+
         
     }
 }

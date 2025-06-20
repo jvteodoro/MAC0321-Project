@@ -60,11 +60,11 @@ public class CalendarDataController {
             throw new IllegalArgumentException("ID do usuário não pode ser vazio.");
 
         }
-        String calendarId = calResource.getCalendarId();
+        String calendarId = calResource.getId();
         User user = userDataController.findUser(userId);
         
         if (calendarRepository.existsById(calendarId)) {
-            throw new IllegalArgumentException("Calendário com ID '" + calResource.getCalendarId() + "' já existe.");
+            throw new IllegalArgumentException("Calendário com ID '" + calResource.getId() + "' já existe.");
         }
         //Como o usuário está criando um calendário, ele é o owner
         calResource.setOwner(user.getAsCalendarPerson());

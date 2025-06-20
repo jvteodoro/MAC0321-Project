@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
+import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.dataobjects.EventListResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -19,6 +20,8 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 public class GoogleEventsController {
     @Autowired
     RestClient restClient;
+    @Autowired
+    EventsDataController eventsDataController;
 
     @DeleteMapping("/google/events/delete")
     public String delete(@RequestParam String calendarId, 
@@ -63,9 +66,14 @@ public class GoogleEventsController {
     @GetMapping("/google/events/list")
     public EventListResource list(@RequestParam String calendarId, 
     @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient){
-        return restClient.get().uri("https://www.googleapis.com/calendar/v3/calendars/"+calendarId+"/events")
+        EventListResource eventListResource = restClient.get().uri("https://www.googleapis.com/calendar/v3/calendars/"+calendarId+"/events")
         .headers(headers ->headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
         .retrieve().toEntity(EventListResource.class).getBody();
+        for (EventsResource resource: eventListResource.getItems()){
+            eventsDataController.addEvent(resource);
+        }
+
+        return eventListResource;
     }
 
     //Pensar no tipo de dado que um Json somente com as partes escolhidas representa
