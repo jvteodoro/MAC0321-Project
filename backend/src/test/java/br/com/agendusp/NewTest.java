@@ -148,8 +148,8 @@ public class NewTest {
             System.out.println(user.get().getName());
         }
 
-        userRepository.updateOneByUserId(user1.getUserId(), calItem);
-        userRepository.updateOneByUserId(user1.getUserId(), calItem2);
+        userRepository.insertCalendarListResourceByUserId(user1.getUserId(), calItem);
+        userRepository.insertCalendarListResourceByUserId(user1.getUserId(), calItem2);
         Optional<User> newUser = userRepository.findById(user1.getId());
         if (!newUser.isEmpty()){
             String str = objectMapper.writeValueAsString(newUser);   
@@ -216,7 +216,7 @@ public class NewTest {
         String calendarResourceId = calResource.getId();
         String calendarListResourceId = calListResource.getId();
 
-        userRepository.updateOneByUserId(user1.getUserId(), calItem);
+        userRepository.insertCalendarListResourceByUserId(user1.getUserId(), calItem);
         
         //adiciona o calendarlistusaritem
         CalendarListResource findedCalItem = calendarDataController.addCalendarListResource(calListResource, userId);
@@ -279,7 +279,7 @@ public class NewTest {
         String endDate = eventsResource.getEnd().getDateTime();
         String eventId = eventsResource.getId();
 
-        userRepository.updateOneByUserId(user1.getUserId(), calItem);
+        userRepository.insertCalendarListResourceByUserId(user1.getUserId(), calItem);
 
         String atendeeUserId = "3"; 
 
@@ -331,4 +331,39 @@ public class NewTest {
 
         userRepository.deleteById("12");
     }
+
+    // User Tests
+     @Test
+    @WithMockUser
+    public void test() throws Exception{
+        System.out.println("Teste");
+        String userId = "teste@gmail.com";
+        User user = new User();
+        user.setId(userId);
+        ArrayList<CalendarListResource> calendarList = new ArrayList<>();
+
+        CalendarListResource calR1 = new CalendarListResource();
+        CalendarListResource calR2 = new CalendarListResource();
+        calR1.setId("calR1");
+        calR1.setCalendarId("calR1");
+        calR2.setId("calR2");
+        calR2.setCalendarId("calR2");
+        
+        calendarList.add(calR1);
+        calendarList.add(calR2);
+
+        user.setCalendarList(calendarList);
+        userDataController.deleteUser(userId);
+        userDataController.createUser(user);
+        User fetchedUser = userDataController.findUser(userId);
+        System.out.println("User: "+objectMapper.writeValueAsString(fetchedUser));
+
+        Optional<CalendarListResource> resp = userRepository.findCalendarListResourceByIdAndCalendarId(user.getUserId(), calR1.getCalendarId());
+        if (resp.isEmpty()) {
+            System.out.println("Resposta vazia");
+        } else {
+            System.out.println(objectMapper.writeValueAsString(resp.get()));
+        }
+    }
+
 }

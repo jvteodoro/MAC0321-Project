@@ -22,7 +22,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByEmail(String email);
     @Query("{'userId' : ?0}")
     @Update("{$push: {'calendarList' : ?1}}")
-    Optional<Integer> updateOneByUserId(String userId, CalendarListResource calendarListResource);
+    Optional<Integer> insertCalendarListResourceByUserId(String userId, CalendarListResource calendarListResource);
 
     
     @Query(value = "{ 'userId' : ?0 }")  // Explicit query without projection

@@ -34,7 +34,7 @@ public class CalendarDataController {
         CalendarListResource calListResource = new CalendarListResource(); // Inicialmente, o usuário é o dono do calendário
         calListResource.setId(calResource.getCalendarId());
         calListResource.setOwner(userDataController.getCalendarPerson(userId));
-        userRepository.updateOneByUserId(userId, calListResource);
+        userRepository.insertCalendarListResourceByUserId(userId, calListResource);
 
         return calListResource;
     }
@@ -85,7 +85,7 @@ public class CalendarDataController {
 
     protected CalendarListResource updateCalendarListResource(String calendarId, CalendarListResource calListUserItem, String userId) {
         if (calListUserItem.getAccessRole() == "owner" || calListUserItem.getAccessRole() == "writer") {
-            userRepository.updateOneByUserId(userId, calListUserItem);
+            userRepository.insertCalendarListResourceByUserId(userId, calListUserItem);
             return calListUserItem;
         }
         throw new IllegalArgumentException(

@@ -53,7 +53,7 @@ public class UserRepositoryTest extends MongoTestContainer{
         CalendarListResource calendarListResource = new CalendarListResource();
         calendarListResource.setCalendarId("test-calendar-id");
 
-        Integer num = userRepository.updateOneByUserId("testuser", calendarListResource)
+        Integer num = userRepository.insertCalendarListResourceByUserId("testuser", calendarListResource)
             .orElseThrow(() -> new RuntimeException("Failed to add calendar list resource"));
 
 
