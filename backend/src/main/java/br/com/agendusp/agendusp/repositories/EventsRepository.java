@@ -2,6 +2,7 @@ package br.com.agendusp.agendusp.repositories;
 
 
 import java.util.Optional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -25,6 +26,6 @@ public interface EventsRepository extends MongoRepository<EventsResource, String
     public Optional<EventsResource> findEventByEventIdAndUserId(String eventId, String userId);
 
     @Query("{ 'calendarIds': {$elemMatch: ?0}, 'end.date' : { $elemMatch: ?1}}")
-    public Optional<ArrayList<EventsResource>> findEventsByEndDate(String calendarId, String endDate);
+    public Optional<ArrayList<EventsResource>> findEventsByEndDate(String calendarId, LocalDateTime endDate);
 
 }

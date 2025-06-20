@@ -46,18 +46,18 @@ public class LocalEventsController implements EventsController {
         int divTempo = 24;
          // Quando 0 então a menor unidade é hora
         // Quando 1 então a menor unidade é minuto
-        LocalDate today = LocalDate.now();
-        LocalDate dateEndObj = LocalDate.parse(endDate);
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime dateEndObj = LocalDateTime.parse(endDate);
         int dayNum = ((int)ChronoUnit.DAYS.between(today, dateEndObj));
-        ArrayList<EventsResource> eventsOnInterval = eventsDataController.getEventsOnInterval(calendarId, endDate);
+        ArrayList<EventsResource> eventsOnInterval = eventsDataController.getEventsOnInterval(calendarId, dateEndObj);
         boolean[][] dateVec = new boolean[dayNum][divTempo];
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         for (EventsResource ev: eventsOnInterval){
             EventDate end = ev.getEnd();
             EventDate start = ev.getStart();
-            LocalDateTime startDateTime = LocalDateTime.parse(start.getDateTime(), formatter);
-            LocalDateTime endDateTime = LocalDateTime.parse(end.getDateTime(), formatter);
+            LocalDateTime startDateTime = start.getDateTime();//LocalDateTime.parse(start.getDateTime(), formatter);
+            LocalDateTime endDateTime = end.getDateTime();//LocalDateTime.parse(end.getDateTime(), formatter);
             int endDayLoop = 1;
             
             int difDayStart = (int)ChronoUnit.DAYS.between(today, startDateTime);

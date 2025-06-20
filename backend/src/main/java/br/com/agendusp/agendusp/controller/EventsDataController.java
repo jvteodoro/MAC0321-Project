@@ -1,5 +1,6 @@
 package br.com.agendusp.agendusp.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -24,13 +25,13 @@ public class EventsDataController {
     @Autowired
     CalendarRepository calendarRepository;
 
-    public ArrayList<EventsResource> getEventsOnInterval(String calendarId, String endDate) {
+    public ArrayList<EventsResource> getEventsOnInterval(String calendarId, LocalDateTime endDate) {
             return eventsRepository.findEventsByEndDate(calendarId, endDate)
             .orElse(new ArrayList<EventsResource>());
     }
 
     public EventsResource createEvent(String calendarId, EventsResource eventResource, String userId) {
-        if (eventResource == null || eventResource.getEventId() == null || eventResource.getEventId().isEmpty()) {
+        if (eventResource == null || eventResource.getId() == null || eventResource.getId().isEmpty()) {
             throw new IllegalArgumentException("Evento não pode ser nulo e deve ter um ID.");
         }
         User user = userDataController.findUser(userId);
@@ -44,8 +45,8 @@ public class EventsDataController {
                     "Acesso negado: o usuário não tem permissão para adicionar eventos a este calendário.");
         }
 
-        if (eventsRepository.existsById(eventResource.getEventId())) {
-            throw new IllegalArgumentException("Evento com ID '" + eventResource.getEventId() + "' já existe.");
+        if (eventsRepository.existsById(eventResource.getId())) {
+            throw new IllegalArgumentException("Evento com ID '" + eventResource.getId() + "' já existe.");
         }
 
         eventResource.setMainCalendarId(calendarId);
