@@ -1,6 +1,7 @@
 package br.com.agendusp.agendusp.controller;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,7 +20,7 @@ public class CalendarDataController {
     @Autowired
     UserDataController userDataController;
 
-    public CalendarListResource addCalendarListResource(CalendarResource calResource, String userId) {
+    public CalendarListResource addCalendarListResource(CalendarListResource calResource, String userId) {
         if (calResource == null || userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("Calendário ou ID do usuário não podem ser nulos ou vazios.");
         }
@@ -33,17 +34,33 @@ public class CalendarDataController {
         return calListResource;
     }
 
+    public CalendarListResource addCalendarListResourceFromCalendar(String userId, String calendarId) throws Exception{
+        Optional<CalendarResource> cal = calendarRepository.findByCalendarId(calendarId);
+        if (cal.isEmpty()){
+            throw new Exception("Calendário não existe");
+        }
+         userRepository.addCalendarListResource(userId, cal.get().toCalendarListResource());
+         return cal.get().toCalendarListResource();
+    
+    }
+
     public CalendarResource addCalendar(CalendarResource calResource, String userId) {
-        if (calResource == null || userId == null || userId.isEmpty()) {
-            throw new IllegalArgumentException("Calendário ou ID do usuário não podem ser nulos ou vazios.");
+        if (calResource == null ) {
+            throw new IllegalArgumentException("Calendário não pode ser nulo");
+        } else if (userId == null){
+            throw new IllegalArgumentException("ID do usuário não pode ser nulo");
+
+        } else if (userId.isEmpty()){
+            throw new IllegalArgumentException("ID do usuário não pode ser vazio.");
+
         }
         userDataController.findUser(userId);
 
         if (calendarRepository.existsById(calResource.getCalendarId())) {
             throw new IllegalArgumentException("Calendário com ID '" + calResource.getCalendarId() + "' já existe.");
         }
-
-        this.addCalendarListResource(calResource, userId);
+        
+        this.addCalendarListResource(calResource.toCalendarListResource(), userId);
         return calendarRepository.save(calResource);
     }
 
@@ -133,7 +150,8 @@ public class CalendarDataController {
     //             "Acesso negado: o usuário não tem permissão para atualizar este calendário.");
     // }
     public ArrayList<CalendarListResource> getCalendarList(String userId){
-        return userRepository.getCalendarList(userId);
+        User user = userDataController.findUser(userId);
+        return user.getCalendarList();
     }
 
     public ArrayList<CalendarResource> getCalendars(String userId) throws Exception {
