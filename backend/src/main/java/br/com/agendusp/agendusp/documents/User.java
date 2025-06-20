@@ -1,10 +1,8 @@
 package br.com.agendusp.agendusp.documents;
 
 import java.util.ArrayList;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.context.SecurityContext;
 
 
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
@@ -13,9 +11,6 @@ import br.com.agendusp.agendusp.dataobjects.EventPool;
 
 @Document(collection = "users")
 public class User {//implements UserDetails {
-
-    @Autowired
-    private SecurityContext securityContext; // Para acessar o contexto de segurança
 
     @Id
     private String id; // ID gerada pelo MongoDB

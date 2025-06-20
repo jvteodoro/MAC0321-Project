@@ -1,6 +1,5 @@
 package br.com.agendusp.agendusp.controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -8,7 +7,6 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import br.com.agendusp.agendusp.CustomOAuth2User;
 import br.com.agendusp.agendusp.dataobjects.EventDate;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
