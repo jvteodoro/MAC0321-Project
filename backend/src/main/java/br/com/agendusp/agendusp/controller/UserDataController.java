@@ -1,6 +1,7 @@
 package br.com.agendusp.agendusp.controller;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,12 @@ public class UserDataController {
                 }
                 return userRepository.save(user);
         }
+        public void deleteUser(String id) {
+                Optional<User> user = userRepository.findById(id);
+                if (user.isPresent()){
+                        userRepository.delete(user.get());
+                }
+        }
         public User findUserOrCreate(User userGiven){
                 Optional<User> user  = userRepository.findById(userGiven.getId());
                      if (user.isEmpty()){
@@ -53,7 +60,7 @@ public class UserDataController {
                 userRepository.addCalendarListResource(userId, item);
                 return userRepository.getCalendarList(userId);
         }
-        public CalendarPerson getCalendarPerson(String userId){
+        public CalendarPerson getCalendarPerson(String userId) {
                 User user = findUser(userId);
                 CalendarPerson calPerson = new CalendarPerson();
                 calPerson.setId(user.getUserId());
@@ -62,21 +69,9 @@ public class UserDataController {
                 return calPerson;
         }
 
-        public User findUser(String userId) {
-                Optional<User> user = userRepository.findByGoogleId(userId);//   .orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + userId + "' não encontrado."));
-                if (user.isEmpty()){
-                     //   gCalController.getUserInfo();
-                     //   restClient.get().uri("http://localhost")
-                        User newUser = new User();
-                        newUser.setGoogleId(userId);
-                        newUser.setEmail(userId);
-                        newUser.setId(userId);
-                        newUser.setUsername(userId);
-                        createUser(newUser);
-                        return newUser;
-                } else {
-                        return user.get();
-                }
+        public User findUser(String id) {
+                return userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuário não encontrado"));//   .orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + id + "' não encontrado."));
+             
         }
 
         protected CalendarListResource findCalendarListResource(String userId, String calendarId) {
