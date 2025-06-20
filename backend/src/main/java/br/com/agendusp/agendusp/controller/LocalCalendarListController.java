@@ -4,16 +4,10 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
-
-
-import br.com.agendusp.agendusp.CustomOAuth2User;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 
@@ -33,8 +27,6 @@ public class LocalCalendarListController implements CalendarListController {
     UserDataController userDataController;
     @Autowired
     EventsDataController eventsDataController;
-    @Autowired
-    private Gson gson;
 
     public LocalCalendarListController() {}
 
@@ -52,10 +44,10 @@ public class LocalCalendarListController implements CalendarListController {
     }
 
     @GetMapping("/calendarList/get")
-    public String get(@RequestParam String calendarId, 
+    public CalendarListResource get(@RequestParam String calendarId, 
      @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         String userId = authorizedClient.getPrincipalName();
-        return gson.toJson(calendarDataController.getCalendarListResource(calendarId, userId));
+        return calendarDataController.getCalendarListResource(calendarId, userId);
     }
 
 
@@ -71,8 +63,8 @@ public class LocalCalendarListController implements CalendarListController {
     public ArrayList<CalendarListResource> list(
         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         String userName = authorizedClient.getPrincipalName();
-        String userId = userDataController.findUser(userName).getGoogleId();
-        System.out.println("USER ID:"+userId);
+        User user = userDataController.findUser(userName);
+        String userId = user.getGoogleId();
         return calendarDataController.getCalendarList(userId);
         // try {
         //     return gson.toJson(dataController.getCalendars(userId));

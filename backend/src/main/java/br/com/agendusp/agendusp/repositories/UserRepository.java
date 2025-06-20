@@ -29,13 +29,13 @@ public interface UserRepository extends MongoRepository<User, String> {
     public Optional<User> findByUserId(String userId);
     
 @Aggregation(pipeline = {
-        "{ $match: { 'userId': ?0 } }",
+        "{ $match: { 'id': ?0 } }",
         "{ $unwind: '$calendarList' }",
         "{ $match: { 'calendarList.calendarId': ?1 } }",
         "{ $replaceRoot: { newRoot: '$calendarList' } }",
         "{ $limit: 1 }"
     })    
-    Optional<CalendarListResource> findCalendarListResourceByUserIdAndCalendarId(String userId, String calendarId);
+    Optional<CalendarListResource> findCalendarListResourceByIdAndCalendarId(String userId, String calendarId);
 
     
     @Query(value = "{ 'userId': ?0, 'calendarList.calendarId': ?1 }", exists = true)

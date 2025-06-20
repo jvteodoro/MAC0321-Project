@@ -156,7 +156,7 @@ public class NewTest {
             System.out.println(str);
         }
 
-        Optional<CalendarListResource> findedCalItem =userRepository.findCalendarListResourceByUserIdAndCalendarId(user1.getUserId(), calItem.getCalendarId());
+        Optional<CalendarListResource> findedCalItem =userRepository.findCalendarListResourceByIdAndCalendarId(user1.getUserId(), calItem.getCalendarId());
         if (!findedCalItem.isEmpty()){
             System.out.println(objectMapper.writeValueAsString(findedCalItem));
         }
@@ -175,9 +175,16 @@ public class NewTest {
         User user1 = new User();
         user1.setId("afadsfsf@ajodjf.com");
         user1.setGoogleId(user1.getId());
+        user1.setUserId(user1.getGoogleId());
+        userRepository.delete(user1);
+        userRepository.insert(user1);
+        System.out.println(objectMapper.writeValueAsString(user1));
         CalendarResource calR = new CalendarResource();
         calR.setCalendarId("1231233@gmail.com");
         calR.setId(calR.getCalendarId());
+        System.out.println("Usuario: "+user1.getUserId());
+        System.out.println("\n\nCalendário passado para addCalendar: "+objectMapper.writeValueAsString(calR));
+        calendarDataController.removeCalendar(calR.getCalendarId(), user1.getUserId());
         calendarDataController.addCalendar(calR, user1.getUserId());
 
         CalendarListResource response = calendarDataController.addCalendarListResourceFromCalendar(user1.getUserId(), calR.getCalendarId());

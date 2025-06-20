@@ -62,7 +62,7 @@ public class UserRepositoryTest extends MongoTestContainer{
 
 
         CalendarListResource fetchedCalendarListResource = userRepository
-        .findCalendarListResourceByUserIdAndCalendarId("testuser", "test-calendar-id")
+        .findCalendarListResourceByIdAndCalendarId("testuser", "test-calendar-id")
         .orElseThrow(() -> new RuntimeException("Calendar not found"));
         
         assertEquals(calendarListResource.getCalendarId(), fetchedCalendarListResource.getCalendarId());

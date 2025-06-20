@@ -63,13 +63,14 @@ public class UserDataController {
         }
 
         public User findUser(String userId) {
-                Optional<User> user = userRepository.findById(userId);//   .orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + userId + "' não encontrado."));
+                Optional<User> user = userRepository.findByGoogleId(userId);//   .orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + userId + "' não encontrado."));
                 if (user.isEmpty()){
                      //   gCalController.getUserInfo();
                      //   restClient.get().uri("http://localhost")
                         User newUser = new User();
                         newUser.setGoogleId(userId);
                         newUser.setEmail(userId);
+                        newUser.setId(userId);
                         newUser.setUsername(userId);
                         createUser(newUser);
                         return newUser;
@@ -80,7 +81,7 @@ public class UserDataController {
 
         protected CalendarListResource findCalendarListResource(String userId, String calendarId) {
                 CalendarListResource calListResource = userRepository
-                                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
+                                .findCalendarListResourceByIdAndCalendarId(userId, calendarId)
                                 .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId
                                                 + "' não encontrado para o usuário de ID '" + userId + "'."));
                 return calListResource;

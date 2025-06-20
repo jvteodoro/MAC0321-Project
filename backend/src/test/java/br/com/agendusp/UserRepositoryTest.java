@@ -49,7 +49,7 @@ public class UserRepositoryTest extends MongoTestContainer{
         user.setCalendarList(calendarList);
         userDataController.createUser(user);
         
-        Optional<CalendarListResource> resp = userRepository.findCalendarListResourceByUserIdAndCalendarId(user.getUserId(), calR1.getCalendarId());
+        Optional<CalendarListResource> resp = userRepository.findCalendarListResourceByIdAndCalendarId(user.getUserId(), calR1.getCalendarId());
         if (resp.isEmpty()) {
             System.out.println("Resposta vazia");
         } else {

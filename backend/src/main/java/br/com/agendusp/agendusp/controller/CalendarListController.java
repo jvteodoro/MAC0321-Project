@@ -8,7 +8,7 @@ import br.com.agendusp.agendusp.documents.CalendarListResource;
 public interface CalendarListController {
     public ResponseEntity<Void> delete(String calendarId, OAuth2AuthorizedClient authorizedClient);
 
-    public String get(String calendarId, OAuth2AuthorizedClient authorizedClient);
+    public CalendarListResource get(String calendarId, OAuth2AuthorizedClient authorizedClient);
 
     public CalendarListResource insert(CalendarListResource calendar,  OAuth2AuthorizedClient authorizedClient);
 

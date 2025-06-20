@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
@@ -19,6 +21,9 @@ public class CalendarDataController {
     CalendarRepository calendarRepository;
     @Autowired
     UserDataController userDataController;
+    @Autowired
+    ObjectMapper objectMapper;
+
 
     public CalendarListResource addCalendarListResource(CalendarListResource calResource, String userId) {
         if (calResource == null || userId == null || userId.isEmpty()) {
@@ -54,9 +59,10 @@ public class CalendarDataController {
             throw new IllegalArgumentException("ID do usuário não pode ser vazio.");
 
         }
+        String calendarId = calResource.getCalendarId();
         userDataController.findUser(userId);
-
-        if (calendarRepository.existsById(calResource.getCalendarId())) {
+        
+        if (calendarRepository.existsById(calendarId)) {
             throw new IllegalArgumentException("Calendário com ID '" + calResource.getCalendarId() + "' já existe.");
         }
         
@@ -70,7 +76,7 @@ public class CalendarDataController {
         }
         userDataController.findUser(userId);
 
-        CalendarListResource calListResource = userRepository.findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
+        CalendarListResource calListResource = userRepository.findCalendarListResourceByIdAndCalendarId(userId, calendarId)
                 .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId
                         + "' não encontrado para o usuário de ID '" + userId + "'."));
 
@@ -100,7 +106,7 @@ public class CalendarDataController {
 
     public CalendarListResource updateCalendar(String calendarId, CalendarListResource calListResource, String userId) {
         CalendarListResource registeredCalListUserItem = userRepository
-                .findCalendarListResourceByUserIdAndCalendarId(userId, calendarId)
+                .findCalendarListResourceByIdAndCalendarId(userId, calendarId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "CalendarListResource com ID '" + calendarId + "' não encontrado para o usuário de ID '"
                                 + userId + "'"));
