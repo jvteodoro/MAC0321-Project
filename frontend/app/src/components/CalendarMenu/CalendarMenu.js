@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import "./CalendarMenu.css";
 import WeekView from "../WeekView/WeekView";
 import EventBlock from "../EventBlock/EventBlock";
-import axios from 'axios';
+import axios from "axios";
 
 const Calendar = ({ year, month }) => {
   // Estados para armazenar os calendários e eventos
@@ -11,26 +11,37 @@ const Calendar = ({ year, month }) => {
   const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date(year, month));
   const [selectedWeek, setSelectedWeek] = useState(null);
+  const [calendarId, setCalendarId] = useState(null);
 
-  // Busca os eventos quando o componente é montado ou quando o mês muda
+  // Busca os eventos quando o componente é montado
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Busca a lista de calendários
-        const calendarsResponse = await axios.get("http://localhost:12003/calendarList/list");
-        // setCalendars(calendarsResponse.data);
-        
+        const calendarsResponse = await axios.get(
+          "http://localhost:12003/calendarList/list",
+          { withCredentials: true }
+        );
+
         // Usa o ID do primeiro calendário para buscar os eventos
         if (calendarsResponse.data.length > 0) {
-          const calendarId = calendarsResponse.data[0].calendarId;
-          const eventsResponse = await axios.get(`http://localhost:12003/events/list?calendarId=${calendarId}`);
-          setEvents(eventsResponse.data);
+          const newCalendarId =
+            calendarsResponse.data[calendarsResponse.data.length - 1]
+              .id;
+          setCalendarId(newCalendarId);
+
+          // Use the local variable here instead of the state
+          const eventsResponse = await axios.get(
+            `http://localhost:12003/google/events/list?calendarId=${newCalendarId}`,
+            { withCredentials: true }
+          );
+          setEvents(eventsResponse.data.items);
         }
       } catch (error) {
         console.error("Erro ao buscar eventos:", error);
       }
     };
-    
+
     fetchData();
     resetToCurrent();
   }, []);
@@ -68,10 +79,7 @@ const Calendar = ({ year, month }) => {
   // Função para verificar se um evento ocorre em um dia específico
   const getEventsForDay = (dayInfo) => {
     if (!events || events.length === 0) return [];
-    
-    return events.filter(event => {
-      // Aqui você precisaria implementar a lógica para comparar as datas
-      // Isso é um placeholder - ajuste conforme a estrutura real dos seus eventos
+    return events.filter((event) => {
       const eventDate = new Date(event.start.dateTime || event.start.date);
       return (
         eventDate.getDate() === dayInfo.day &&
@@ -143,7 +151,12 @@ const Calendar = ({ year, month }) => {
   return (
     <div id="calendar-menu">
       {selectedWeek ? (
-        <WeekView week={selectedWeek} onClose={closeWeekView} />
+        <WeekView
+          week={selectedWeek}
+          calendarId={calendarId}
+          events={events}
+          onClose={closeWeekView}
+        />
       ) : (
         <>
           <div className="calendar-header">
@@ -202,15 +215,30 @@ const Calendar = ({ year, month }) => {
                       <span className="day-number">{dayInfo.day}</span>
                       {/* Renderiza um EventBlock para cada evento deste dia */}
                       {dayEvents.map((event, eventIndex) => (
-                        <EventBlock 
+                        <EventBlock
                           key={`event-${weekIndex}-${dayIndex}-${eventIndex}`}
                           eventInfo={{
-                            color: event.backgroundColor || "#007f7f",
+                            colorId: event.colorId,
                             title: event.summary,
-                            time: event.start.dateTime 
-                              ? new Date(event.start.dateTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-                              : "Dia todo"
+                            startTime: event.start.dateTime
+                              ? new Date(
+                                  event.start.dateTime
+                                ).toLocaleTimeString("pt-BR", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                              : "Dia todo",
+                            endTime: event.end.dateTime
+                              ? new Date(event.end.dateTime).toLocaleTimeString(
+                                  "pt-BR",
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )
+                              : "Dia todo",
                           }}
+                          clickable={false}
                         />
                       ))}
                     </div>
