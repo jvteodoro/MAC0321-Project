@@ -108,7 +108,7 @@ public class LocalEventsController implements EventsController {
     }
 
     @GetMapping("/events/list")
-    public String list(String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
+    public String list(@RequestBody String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
         String userId = customUser.getUser().getId();
         return gson.toJson(eventsDataController.getEvents(calendarId, userId));
     }

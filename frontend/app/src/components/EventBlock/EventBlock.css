@@ -1,0 +1,9 @@
+@import url("../../App.css");
+
+.eventBlock {
+    width: 100%;
+    height: 100%;
+    padding: 0.1em;
+    border-radius: 7px;
+    text-align: start;
+}
