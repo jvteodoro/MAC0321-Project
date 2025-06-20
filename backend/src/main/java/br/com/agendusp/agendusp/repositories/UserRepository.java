@@ -20,12 +20,12 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByGoogleId(String googleId);
     Optional<User> findByName(String name);
     Optional<User> findByEmail(String email);
-    @Query("{'userId' : ?0}")
+    @Query("{'id' : ?0}")
     @Update("{$push: {'calendarList' : ?1}}")
     Optional<Integer> insertCalendarListResourceByUserId(String userId, CalendarListResource calendarListResource);
 
     
-    @Query(value = "{ 'userId' : ?0 }")  // Explicit query without projection
+    @Query(value = "{ 'id' : ?0 }")  // Explicit query without projection
     public Optional<User> findByUserId(String userId);
     
 @Aggregation(pipeline = {
@@ -38,26 +38,26 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<CalendarListResource> findCalendarListResourceByIdAndCalendarId(String userId, String calendarId);
 
     
-    @Query(value = "{ 'userId': ?0, 'calendarList.calendarId': ?1 }", exists = true)
+    @Query(value = "{ 'id': ?0, 'calendarList.calendarId': ?1 }", exists = true)
     boolean existsByUserIdAndCalendarId(String userId, String calendarId);
 
-    @Query("{ 'userId' : ?0, 'calendarList.calendarId': ?1 }")
+    @Query("{ 'id' : ?0, 'calendarList.calendarId': ?1 }")
     void deleteCalendarListResourceById(String userId, String calendarId);
 
     @Query("{'calendarList.calendarId': ?0}")
     @Update("{$pull : {'calendarList.calendarId' : ?0} ")
     void refreshLinks(String calendarId);
 
-    @Query("{'userId': ?0}")
+    @Query("{'id': ?0}")
     @Update("{$push : {'eventPoolNotification' : ?1}}")
     void addEventPoolNotification(String userId, EventPool eventPool);
     
-    @Query("{'userId': ?0}")
+    @Query("{'id': ?0}")
     @Update("{$push : {'eventPoolList' : ?1}}")
     void addEventPool(String userId, EventPool eventPool);
 
     @Aggregation(pipeline = {
-        "{ $match: { 'userId': ?0 } }",
+        "{ $match: { 'id': ?0 } }",
         "{ $unwind: '$eventPoolNotification' }",
         "{ $match: { 'eventPoolNotification.id': ?1 } }",
         "{ $replaceRoot: { newRoot: '$eventPoolNotification' } }",
@@ -65,10 +65,10 @@ public interface UserRepository extends MongoRepository<User, String> {
     })    
     EventPool findByEventPoolId(String userId, String eventPoolId);
 
-    @Query(value = "{ 'userId' : ?0}", fields = "{'calendarList': 1}") 
+    @Query(value = "{ 'id' : ?0}", fields = "{'calendarList': 1}") 
     ArrayList<CalendarListResource> getCalendarList(String userId);
 
-    @Query("{ 'userId': ?0 }")
+    @Query("{ 'id': ?0 }")
     @Update(" {$push: {'calendarList' : ?1 }}")
     void addCalendarListResource(String userId, CalendarListResource item);
     // @Aggregation(pipeline = {
