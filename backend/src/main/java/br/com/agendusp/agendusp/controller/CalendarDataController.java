@@ -1,6 +1,7 @@
 package br.com.agendusp.agendusp.controller;
 
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,11 +61,13 @@ public class CalendarDataController {
 
         }
         String calendarId = calResource.getCalendarId();
-        userDataController.findUser(userId);
+        User user = userDataController.findUser(userId);
         
         if (calendarRepository.existsById(calendarId)) {
             throw new IllegalArgumentException("Calendário com ID '" + calResource.getCalendarId() + "' já existe.");
         }
+        //Como o usuário está criando um calendário, ele é o owner
+        calResource.setOwner(user.getAsCalendarPerson());
         
         this.addCalendarListResource(calResource.toCalendarListResource(), userId);
         return calendarRepository.save(calResource);
@@ -180,20 +183,28 @@ public class CalendarDataController {
         return outputList;
     }
 
+    public CalendarResource getCalendarResource (String calendarId) {
+        return calendarRepository.findById(calendarId)
+        .orElseThrow(() -> new NoSuchElementException("Calendário de id: "+calendarId+" não encontrado"));    
+    }
+
     
     public void removeCalendar(String calendarId, String userId) {
         if (calendarId == null || calendarId.isEmpty() || userId == null || userId.isEmpty()) {
             throw new IllegalArgumentException("ID do calendário ou ID do usuário não podem ser nulos ou vazios.");
         }
-        userDataController.findUser(userId);
-
-        CalendarListResource calListResource = userDataController.findCalendarListResource(userId, calendarId);
-
-        if (calListResource.getAccessRole() == "owner") {
-            calendarRepository.deleteById(calendarId);
-            userRepository.refreshLinks(calendarId);
-        } else {
-            userRepository.deleteCalendarListResourceById(userId, calendarId);
+        User user = userDataController.findUser(userId);
+        try {
+            CalendarResource calR = getCalendarResource(calendarId);
+            if (calR.getOwner() == user.getAsCalendarPerson()){
+                calendarRepository.deleteById(calendarId);
+                userRepository.refreshLinks(calendarId);
+            } else {
+                userRepository.deleteCalendarListResourceById(userId, calendarId);
+            }
+            // Se o usuário tentar deletar um calendário que não existe, não precisamos de fazer nada
+        } catch (NoSuchElementException e) {
+            System.err.println("Calendário não existe");
         }
     }
 }
