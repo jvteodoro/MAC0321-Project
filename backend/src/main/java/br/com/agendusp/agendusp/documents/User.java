@@ -1,14 +1,10 @@
 package br.com.agendusp.agendusp.documents;
 
 import java.util.ArrayList;
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.userdetails.UserDetails;
 
 
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
@@ -64,8 +60,17 @@ public class User {//implements UserDetails {
     public void setEventPoolList(ArrayList<EventPool> eventPoolList) {
         this.eventPoolList = eventPoolList;
     }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-    
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCalendarList(ArrayList<CalendarListResource> calendarList) {
+        this.calendarList = calendarList;
+    }
 
     public ArrayList<EventPool> getEventPoolNotifications() {
         return eventPoolNotifications;
