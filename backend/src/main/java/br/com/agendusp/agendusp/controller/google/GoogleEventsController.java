@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
 import br.com.agendusp.agendusp.controller.EventsDataController;
+import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.dataobjects.EventListResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
+import br.com.agendusp.agendusp.documents.User;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
@@ -22,6 +24,8 @@ public class GoogleEventsController {
     RestClient restClient;
     @Autowired
     EventsDataController eventsDataController;
+    @Autowired
+    UserDataController userDataController;
 
     @DeleteMapping("/google/events/delete")
     public String delete(@RequestParam String calendarId, 
@@ -70,6 +74,8 @@ public class GoogleEventsController {
         .headers(headers ->headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
         .retrieve().toEntity(EventListResource.class).getBody();
         for (EventsResource resource: eventListResource.getItems()){
+            resource.setMainCalendarId(resource.getOrganizer().getEmail());
+            resource.addCalendarId(calendarId);
             eventsDataController.addEvent(resource);
         }
 
