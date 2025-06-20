@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,53 +78,53 @@ public class LocalEventsController implements EventsController {
         }
         return dateVec;
     }
-    
 
     @DeleteMapping("/events/delete/{calendarId}/{eventId}")
-    public ResponseEntity<String> delete(@PathVariable String calendarId, @PathVariable String eventId,
-            @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
+    public ResponseEntity<String> delete(@PathVariable String calendarId,@PathVariable String eventId,
+            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userId = authorizedClient.getPrincipalName();
+        
         eventsDataController.removeEvent(eventId, calendarId, userId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/events/get")
-    public String get(String calendarId, String eventId, @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
+    public String get(String calendarId, String eventId, @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userId = authorizedClient.getPrincipalName();
         return gson.toJson(eventsDataController.getEvent(eventId, calendarId, userId));
     }
 
     @PostMapping("/events/addAttendee/{calendarId}/{attendeeId}")
     public String addAttendee(String calendarId, String attendeeId, @RequestBody EventsResource event,
-            @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
+            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userId = authorizedClient.getPrincipalName();
         return gson.toJson(eventsDataController.addAtendeeToEvent(event.getEventId(), calendarId, userId, attendeeId));
     }
 
     @PostMapping("/events/insert/{calendarId}")
     public String insert(String calendarId, @RequestBody EventsResource event,
-            @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
+            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userId = authorizedClient.getPrincipalName();
         eventsDataController.createEvent(calendarId, event, userId);
         return gson.toJson(event);
     }
 
     @GetMapping("/events/list")
-    public String list(@RequestBody String calendarId, @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
+    public String list(@RequestBody String calendarId, @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userId = authorizedClient.getPrincipalName();
         return gson.toJson(eventsDataController.getEvents(calendarId, userId));
     }
 
     @PutMapping("/events/update/{calendarId}")
     public String update(String calendarId, EventsResource event,
-            @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userID = customUser.getUser().getId();
+            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userID = authorizedClient.getPrincipalName();
         return gson.toJson(eventsDataController.updateEvent(calendarId, event.getId(), event, userID));
     }
 
     @PatchMapping("/events/patch/{calendarId}")
-    public String patch(String calendarId, @RequestBody EventsResource event, @AuthenticationPrincipal CustomOAuth2User customUser) {
-        String userId = customUser.getUser().getId();
+    public String patch(String calendarId, @RequestBody EventsResource event, @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        String userId = authorizedClient.getPrincipalName();
         JsonObject body = new JsonObject(); // atualizacão parcial (dos atributos nao nulos)
 
         if (event.getStart() != null) {
