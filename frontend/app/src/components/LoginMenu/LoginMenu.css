@@ -2,7 +2,7 @@
 
 .modal {
     background-color: var(--secondary-color);
-    border-radius: 10px;
+    border-radius: 0.4em;
     display: flex;
     flex-direction: column;
 }
