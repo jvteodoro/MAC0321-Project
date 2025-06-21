@@ -43,6 +43,15 @@ public class EventPool {
         this.event = event;
     }
 
-    
+    @Override
+    public String toString() {
+        return "EventPool{" +
+                "attendees=" + attendees +
+                ", done=" + done +
+                ", id='" + id + '\'' +
+                ", ownerId='" + ownerId + '\'' +
+                ", event=" + event +
+                '}';
+    }
     
 }

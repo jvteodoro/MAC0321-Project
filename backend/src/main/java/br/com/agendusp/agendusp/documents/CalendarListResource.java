@@ -187,4 +187,14 @@ public class CalendarListResource {
         this.deleted = deleted;
     }
 
+    @Override
+    public String toString(){
+        return "CalendarListResource{" +
+                "calendarId='" + calendarId + '\'' +
+                ", summary='" + summary + '\'' +
+                ", description='" + description + '\''
+                '}';
+       
+    }
+
 }

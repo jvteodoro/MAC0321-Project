@@ -279,4 +279,9 @@ public class EventsResource {
     public void setHangoutLink(String hangoutLink) {
         this.hangoutLink = hangoutLink;
     }
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
 }

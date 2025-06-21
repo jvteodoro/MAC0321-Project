@@ -322,4 +322,13 @@ public class EventsResource {
     public void setHangoutLink(String hangoutLink) {
         this.hangoutLink = hangoutLink;
     }
+
+    @Override
+    public String toString() {
+        return "EventsResource{" +
+                "id='" + id + '\'' +
+                ", eventId='" + eventId + '\'' +
+                ", summary=" + summary +
+                ", description='" + description + '\'' 
+    }
 }
