@@ -1,0 +1,107 @@
+#event-menu {
+    width: 100%;
+    height: 100%;
+    padding: 1em 0.5em 0.5em 0.5em;
+    position: relative;
+}
+
+#close-button {
+    width: 1.5em;
+    height: 1.5em;
+    position: absolute;
+    right: 0.5em;
+    top: 0.5em;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+#event-data-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3em;
+    grid-auto-flow: dense;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-field.full-width {
+    grid-column: span 2;
+}
+
+.form-field input,
+.form-field textarea {
+    padding: 0.5em;
+    width: 100%;
+}
+
+.form-field textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.date-input {
+    width: 100%;
+    padding: 0.5em;
+}
+
+.error-input {
+    border-color: #ff4444 !important;
+}
+
+.error-message {
+    color: #ff4444;
+    font-size: 0.8em;
+}
+
+.color-picker-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.color-palette {
+    position: absolute;
+    z-index: 10;
+    top: 2.5em;
+    left: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5em;
+    padding: 0.5em;
+    background: var(--secondary-color);
+    border-radius: 10px;
+    border: 2px var(--main-hoverselect-color) solid;
+}
+
+.color-option {
+    width: 1.8em;
+    height: 1.8em;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+}
+
+.color-preview {
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#create-button, #save-button {
+    grid-column: span 2;
+    padding: 0.5em;
+    margin-top: auto;
+    cursor: pointer;
+    font-size: 1em;
+}

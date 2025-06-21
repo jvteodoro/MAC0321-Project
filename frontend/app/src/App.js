@@ -6,7 +6,8 @@ import LoginSuccess from "./components/LoginSuccess";
 import PrivateRoute from "./components/PrivateRoute";
 import PageHeader from "./components/PageHeader/PageHeader";
 import CalendarMenu from "./components/CalendarMenu/CalendarMenu";
-import EventMenu from "./components/EventMenu";
+import CreateEventMenu from "./components/EventMenus/CreateEventMenu";
+import EditEventMenu from "./components/EventMenus/EditEventMenu";
 
 
 function App() {
@@ -36,11 +37,20 @@ function App() {
             }
           />
           <Route
-            path="/evento"
+            path="/evento/editar"
             element={
               <PrivateRoute>
-                <PageHeader title="EventoNOME" />
-                <EventMenu color="#123456" />
+                <PageHeader title="Editar Evento" />
+                <EditEventMenu/>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/evento/criar"
+            element={
+              <PrivateRoute>
+                <PageHeader title="Criar Evento" />
+                <CreateEventMenu/>
               </PrivateRoute>
             }
           />

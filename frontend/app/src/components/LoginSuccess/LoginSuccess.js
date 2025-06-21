@@ -33,7 +33,7 @@ const LoginSuccess = () => {
         sessionStorage.removeItem("preAuthPath");
 
         // 4. Faz um redirect
-        window.location.assign(window.location.origin + protectedPath);
+        navigate(protectedPath);
       } catch (error) {
         console.error("Login verification failed:", error);
         navigate("/login", {

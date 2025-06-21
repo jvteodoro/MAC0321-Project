@@ -2,8 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./WeekView.css";
 import EventBlock from "../EventBlock/EventBlock";
+import { useNavigate } from "react-router-dom";
 
 const WeekView = ({ week, calendarId, events, onClose }) => {
+  const navigate = useNavigate();
   const getEventsForDay = (dayInfo) => {
     if (!events || events.length === 0) return [];
     return events.filter((event) => {
@@ -23,6 +25,10 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
       dayInfo.day
     ).toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
   };
+
+  const goToCreateMenu = () => {
+    navigate("evento/criar", { state: { calendarId: calendarId } });
+  }
 
   let firstDay = new Date(
     week[0].year,
@@ -101,14 +107,14 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
                           )
                         : "Dia todo",
                       calendarId: calendarId,
-                      // eventId: event.eventId,
                       eventId: event.id,
                     }}
                   />
                 ))}
               </div>
-              <button>
-                <a>Criar reunião</a>
+              <button
+                onClick={() => goToCreateMenu()}>
+                Criar reunião
               </button>
             </div>
           );

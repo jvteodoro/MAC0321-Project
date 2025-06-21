@@ -1,0 +1,45 @@
+/* Estilos específicos para a criação de eventos */
+.convidados-input-container {
+    display: flex;
+    gap: 0.5em;
+}
+
+.convidados-input-container input {
+    flex: 1;
+}
+
+.adicionar-convidado {
+    background-color: #4CAF50;
+    cursor: pointer;
+}
+
+.lista-convidados {
+    height: 3.5em;
+    margin-top: 0.3em;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 0.3em;
+}
+
+.convidado-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3em 0.5em;
+    background-color: var(--secondary-hoverselect-color);
+    border-radius: 7px;
+}
+
+.remover-convidado {
+    width: 1.2em;
+    height: 1.2em;
+    background-color: #ff4444;
+    border-radius: 50%;
+    font-size: 0.6em;
+    cursor: pointer;
+}
+
+.remover-convidado:hover {
+    background-color: #cc0000;
+}

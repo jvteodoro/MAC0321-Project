@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import "./EventBlock.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const EventBlock = ({ eventInfo, clickable }) => {
   const colorMap = {
@@ -18,16 +19,21 @@ const EventBlock = ({ eventInfo, clickable }) => {
     11: "rgb(213, 0, 0)",
   };
 
-  function redirect (shouldRedirect, calendarId, eventId) {
+  const navigate = useNavigate();
+  function goToEditMenu(shouldRedirect, calendarId, eventId) {
     if (shouldRedirect)
-      window.location.assign(window.location.origin + `/evento?calendarId=${calendarId}&eventId=${eventId}`);
-  };
+      navigate("/evento/editar", {
+        state: { calendarId: calendarId, eventId: eventId },
+      });
+  }
 
   return (
     <div
       className={`eventBlock${clickable ? " link" : ""}`}
-      onClick={() => redirect(clickable, eventInfo.calendarId, eventInfo.eventId)}
-      style={{ backgroundColor: colorMap[(eventInfo.colorId || 0)] }}
+      onClick={() =>
+        goToEditMenu(clickable, eventInfo.calendarId, eventInfo.eventId)
+      }
+      style={{ backgroundColor: colorMap[eventInfo.colorId || 0] }}
     >
       <span>
         {eventInfo.title} ({eventInfo.startTime} - {eventInfo.endTime})

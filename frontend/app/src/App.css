@@ -53,14 +53,15 @@ h3 {
 input,
 button,
 select,
-option {
+option,
+textarea {
   border-color: var(--main-highlight-color);
   font-size: 2rem;
   border-radius: 10px;
   padding: 0.25em;
 }
 
-input {
+input, textarea {
   background-color: var(--secondary-color);
 }
 
@@ -87,4 +88,9 @@ i {
 
 a {
   text-decoration: none;
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 0.8em;
 }
