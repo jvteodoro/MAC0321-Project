@@ -36,11 +36,20 @@ const EditarEventoMenu = (props) => {
     local: "",
     convidados: [],
     novoConvidado: "",
+    hangoutLink: "",
   });
 
   const [errosFormulario, setErrosFormulario] = useState({});
   const [mostrarSeletorCor, setMostrarSeletorCor] = useState(false);
   const [carregando, setCarregando] = useState(true);
+  const [dadosCriador, setDadosCriador] = useState({
+    email: "",
+    displayName: "",
+  });
+  const [dadosOrganizador, setDadosOrganizador] = useState({
+    email: "",
+    displayName: "",
+  });
 
   useEffect(() => {
     registerLocale("pt-BR", ptBR);
@@ -61,16 +70,30 @@ const EditarEventoMenu = (props) => {
             dataFim: evento.end?.dateTime
               ? new Date(evento.end.dateTime)
               : null,
-            cor: evento.colorId || 0,
+            cor: evento.colorId ? parseInt(evento.colorId) : 0,
             descricao: evento.description || "",
             local: evento.location || "",
-            convidados: evento.attendees?.map((a) => a.email) || [],
+            convidados: evento.attendees
+              ? evento.attendees.map((a) => a.email)
+              : [],
             novoConvidado: "",
+            hangoutLink: evento.hangoutLink || "",
+          });
+
+          setDadosCriador({
+            email: evento.creator?.email || "",
+            displayName:
+              evento.creator?.displayName || "Criador não identificado",
+          });
+          setDadosOrganizador({
+            email: evento.organizer?.email || "",
+            displayName:
+              evento.organizer?.displayName || "Organizador não identificado",
           });
         }
       } catch (erro) {
-        console.error("Erro ao carregar evento:", erro);
-        alert("Erro ao carregar dados do evento");
+        console.error("Erro ao carregar reunião:", erro);
+        alert("Erro ao carregar dados do reunião");
       } finally {
         setCarregando(false);
       }
@@ -133,12 +156,21 @@ const EditarEventoMenu = (props) => {
     try {
       const dadosEvento = {
         summary: formData.titulo,
-        start: { dateTime: formData.dataInicio.toISOString() },
-        end: { dateTime: formData.dataFim.toISOString() },
-        colorId: formData.cor,
-        description: formData.descricao,
-        location: formData.local,
-        attendees: formData.convidados.map((email) => ({ email })),
+        start: {
+          dateTime: formData.dataInicio.toISOString(),
+          timeZone: "America/Sao_Paulo",
+        },
+        end: {
+          dateTime: formData.dataFim.toISOString(),
+          timeZone: "America/Sao_Paulo",
+        },
+        colorId: formData.cor.toString(),
+        description: formData.descricao || null,
+        location: formData.local || null,
+        attendees:
+          formData.convidados.length > 0
+            ? formData.convidados.map((email) => ({ email }))
+            : null,
       };
 
       await axios.put(
@@ -147,11 +179,11 @@ const EditarEventoMenu = (props) => {
         { withCredentials: true }
       );
 
-      alert("Evento atualizado com sucesso!");
+      alert("Reunião atualizada com sucesso!");
       window.location.href = "http://localhost:3000/";
     } catch (erro) {
-      console.error("Falha ao atualizar evento:", erro);
-      alert(erro.response?.data?.message || "Erro ao atualizar evento");
+      console.error("Falha ao atualizar reunião:", erro);
+      alert(erro.response?.data?.message || "Erro ao atualizar reunião");
     }
   };
 
@@ -162,7 +194,7 @@ const EditarEventoMenu = (props) => {
   if (carregando) {
     return (
       <main id="event-menu">
-        <div className="carregando">Carregando...</div>
+        <div className="carregando">Carregando dados da reunião...</div>
       </main>
     );
   }
@@ -173,9 +205,28 @@ const EditarEventoMenu = (props) => {
         <i className="fa-solid fa-close"></i>
       </button>
 
+      <div id="event-origin-info">
+        <div id="criador-display">
+          <label>Criador:</label>
+          <div className="criador-info">
+            {dadosCriador.displayName} ({dadosCriador.email})
+          </div>
+        </div>
+        <div id="organizador-display">
+          <label>Organizador:</label>
+          <div className="organizador-info">
+            {dadosOrganizador.displayName} ({dadosOrganizador.email})
+          </div>
+        </div>
+      </div>
       <form id="event-data-form" onSubmit={handleSubmit}>
         <label htmlFor="titulo" className="form-field full-width">
-          Nome do Evento*
+          <p>
+            Nome da Reunião*
+            {errosFormulario.titulo && (
+              <span className="error-message">{errosFormulario.titulo}</span>
+            )}
+          </p>
           <input
             type="text"
             id="titulo"
@@ -183,13 +234,17 @@ const EditarEventoMenu = (props) => {
             onChange={handleInputChange}
             className={errosFormulario.titulo ? "error-input" : ""}
           />
-          {errosFormulario.titulo && (
-            <span className="error-message">{errosFormulario.titulo}</span>
-          )}
         </label>
 
         <label htmlFor="dataInicio" className="form-field">
-          Data Inicial*
+          <p>
+            Data Inicial*
+            {errosFormulario.dataInicio && (
+              <span className="error-message">
+                {errosFormulario.dataInicio}
+              </span>
+            )}
+          </p>
           <DatePicker
             id="dataInicio"
             selected={formData.dataInicio}
@@ -206,13 +261,15 @@ const EditarEventoMenu = (props) => {
             placeholderText="dd/mm/aaaa hh:mm"
             locale="pt-BR"
           />
-          {errosFormulario.dataInicio && (
-            <span className="error-message">{errosFormulario.dataInicio}</span>
-          )}
         </label>
 
         <label htmlFor="dataFim" className="form-field">
-          Data Final
+          <p>
+            Data Final
+            {errosFormulario.dataFim && (
+              <span className="error-message">{errosFormulario.dataFim}</span>
+            )}
+          </p>
           <DatePicker
             id="dataFim"
             selected={formData.dataFim}
@@ -228,9 +285,6 @@ const EditarEventoMenu = (props) => {
             locale="pt-BR"
             minDate={formData.dataInicio}
           />
-          {errosFormulario.dataFim && (
-            <span className="error-message">{errosFormulario.dataFim}</span>
-          )}
         </label>
 
         <label htmlFor="cor" className="form-field">
@@ -257,6 +311,20 @@ const EditarEventoMenu = (props) => {
           </div>
         </label>
 
+        {formData.hangoutLink && (
+          <div id="meetLinkHolder" className="form-field">
+            <label>Link do Google Meet</label>
+            <a
+              href={formData.hangoutLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              id="meet-link"
+            >
+              {formData.hangoutLink}
+            </a>
+          </div>
+        )}
+
         <label htmlFor="local" className="form-field full-width">
           Local
           <input
@@ -264,7 +332,7 @@ const EditarEventoMenu = (props) => {
             id="local"
             value={formData.local}
             onChange={handleInputChange}
-            placeholder="Onde o evento acontecerá"
+            placeholder="Onde a reunião acontecerá"
           />
         </label>
 
@@ -287,7 +355,7 @@ const EditarEventoMenu = (props) => {
                 id="novoConvidado"
                 value={formData.novoConvidado}
                 onChange={handleInputChange}
-                placeholder="Adicione e-mails de convidados"
+                placeholder="Adicione emails de convidados"
                 onKeyPress={(e) =>
                   e.key === "Enter" &&
                   (e.preventDefault(), adicionarConvidado())
@@ -295,7 +363,7 @@ const EditarEventoMenu = (props) => {
               />
               <button
                 type="button"
-                className="adicionar-convidado"
+                className="adicionar"
                 onClick={adicionarConvidado}
               >
                 Adicionar
@@ -310,7 +378,7 @@ const EditarEventoMenu = (props) => {
                   {email}
                   <button
                     type="button"
-                    className="remover-convidado"
+                    className="remover"
                     onClick={() => removerConvidado(email)}
                   >
                     <i className="fa-solid fa-close"></i>

@@ -46,7 +46,7 @@ const LoginSuccess = () => {
     };
 
     verifyAndRedirect();
-  }, [navigate]);
+  }, [navigate, location.state?.from]);
 
   return <div>Finalizing authentication...</div>;
 };

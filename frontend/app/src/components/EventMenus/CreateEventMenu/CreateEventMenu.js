@@ -24,43 +24,103 @@ const CriarEventoMenu = (props) => {
   };
 
   const location = useLocation();
-  const { calendarId } = location.state || {};
+  const { calendarId, dayInfo } = location.state || {};
 
   // Estados do componente
   const [formData, setFormData] = useState({
     titulo: "",
-    dataInicio: null,
-    dataFim: null,
-    cor: 0, // Armazena apenas o ID da cor
     descricao: "",
     local: "",
+    cor: 0,
+    criarMeet: false,
     convidados: [],
     novoConvidado: "",
+    timeSlots: [], // Array de { start: Date, end: Date }
+  });
+
+  const [novoTimeSlot, setNovoTimeSlot] = useState({
+    start: null,
+    end: null,
   });
 
   const [errosFormulario, setErrosFormulario] = useState({});
   const [mostrarSeletorCor, setMostrarSeletorCor] = useState(false);
+  const [carregando, setCarregando] = useState(false);
 
   useEffect(() => {
     registerLocale("pt-BR", ptBR);
-    // Define a data inicial como agora + 1 hora
-    const dataPadrao = new Date();
-    dataPadrao.setHours(dataPadrao.getHours() + 1);
+    // Define a data padrão para o dia selecionado
+    const dataPadrao = new Date(dayInfo.year, dayInfo.monthIndex, dayInfo.day);
+    dataPadrao.setHours(9, 0, 0, 0); // 9:00 AM
 
-    setFormData((prev) => ({
-      ...prev,
-      dataInicio: dataPadrao,
-      dataFim: new Date(dataPadrao.getTime() + 60 * 60 * 1000), // +1 hora
-    }));
-  }, []);
+    setNovoTimeSlot({
+      start: dataPadrao,
+      end: new Date(dataPadrao.getTime() + 60 * 60 * 1000), // +1 hora
+    });
+  }, [dayInfo]);
 
   const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    const { id, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: type === "checkbox" ? checked : value,
+    }));
   };
 
-  const handleDateChange = (data, campo) => {
-    setFormData((prev) => ({ ...prev, [campo]: data }));
+  // Helper to create time Date objects
+  const createTime = (hours, minutes = 0) => {
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  };
+
+  // Fixed handler for time changes
+  const handleTimeSlotChange = (time, field) => {
+    if (!time) return;
+
+    setNovoTimeSlot((prev) => {
+      const newValue = {
+        start: prev.start ? new Date(prev.start) : null,
+        end: prev.end ? new Date(prev.end) : null,
+      };
+
+      newValue[field] = new Date(time);
+
+      // Ensure end time is always after start time
+      if (field === "start" && newValue.end && newValue.start > newValue.end) {
+        newValue.end = new Date(newValue.start);
+        newValue.end.setHours(newValue.end.getHours() + 1);
+      }
+
+      return newValue;
+    });
+  };
+
+  const adicionarTimeSlot = () => {
+    if (novoTimeSlot.start && novoTimeSlot.end) {
+      setFormData((prev) => ({
+        ...prev,
+        timeSlots: [
+          ...prev.timeSlots,
+          {
+            start: novoTimeSlot.start,
+            end: novoTimeSlot.end,
+          },
+        ],
+      }));
+      // Reset para o próximo intervalo
+      setNovoTimeSlot((prev) => ({
+        start: new Date(prev.end.getTime() + 30 * 60 * 1000), // +30 minutos
+        end: new Date(prev.end.getTime() + 90 * 60 * 1000), // +1.5 horas
+      }));
+    }
+  };
+
+  const removerTimeSlot = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      timeSlots: prev.timeSlots.filter((_, i) => i !== index),
+    }));
   };
 
   const adicionarConvidado = () => {
@@ -83,19 +143,17 @@ const CriarEventoMenu = (props) => {
     }));
   };
 
-  const validarFormulario = () => {
-    const erros = {};
-    if (!formData.titulo.trim()) erros.titulo = "Nome obrigatório";
-    if (!formData.dataInicio) erros.dataInicio = "Data inicial obrigatória";
-    if (formData.dataFim && formData.dataFim < formData.dataInicio) {
-      erros.dataFim = "Data final inválida";
-    }
-    return erros;
-  };
-
   const selecionarCor = (colorId) => {
     setFormData((prev) => ({ ...prev, cor: colorId }));
     setMostrarSeletorCor(false);
+  };
+
+  const validarFormulario = () => {
+    const erros = {};
+    if (!formData.titulo.trim()) erros.titulo = "Nome obrigatório";
+    if (formData.timeSlots.length === 0)
+      erros.timeSlots = "Adicione pelo menos um horário";
+    return erros;
   };
 
   const handleSubmit = async (e) => {
@@ -103,33 +161,62 @@ const CriarEventoMenu = (props) => {
     const erros = validarFormulario();
     if (Object.keys(erros).length > 0) return setErrosFormulario(erros);
 
+    setCarregando(true);
+
     try {
       const dadosEvento = {
         summary: formData.titulo,
-        start: { dateTime: formData.dataInicio.toISOString() },
-        end: { dateTime: formData.dataFim.toISOString() },
-        colorId: formData.cor,
-        description: formData.descricao,
-        location: formData.local,
+        description: `${
+          formData.descricao || ""
+        }\n\nHorários para votação:\n${formData.timeSlots
+          .map(
+            (slot) =>
+              `${slot.start.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })} - ${slot.end.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}`
+          )
+          .join("\n")}`,
+        location: formData.local || null,
+        colorId: formData.cor.toString(),
+        timeSlots: formData.timeSlots,
         attendees: formData.convidados.map((email) => ({ email })),
+        createMeet: formData.criarMeet,
       };
 
-      await axios.post(
-        `http://localhost:12003/google/events/create?calendarId=${calendarId}`,
+      const resposta = await axios.post(
+        `/api/events/create-with-timeslots?calendarId=${calendarId}`,
         dadosEvento,
         { withCredentials: true }
       );
 
-      alert("Evento criado com sucesso!");
-      window.location.href = "http://localhost:3000/";
+      alert(
+        `Evento criado com sucesso!${
+          resposta.data.hangoutLink
+            ? `\nLink do Meet: ${resposta.data.hangoutLink}`
+            : ""
+        }`
+      );
+      window.location.href = "/";
     } catch (erro) {
-      console.error("Falha ao criar evento:", erro);
+      console.error("Erro:", erro);
       alert(erro.response?.data?.message || "Erro ao criar evento");
+    } finally {
+      setCarregando(false);
     }
   };
 
   const aoFechar = () => {
-    window.location.href = "http://localhost:3000/";
+    window.location.href = "/";
+  };
+
+  const formatTime = (date) => {
+    return (
+      date?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) || ""
+    );
   };
 
   return (
@@ -140,7 +227,12 @@ const CriarEventoMenu = (props) => {
 
       <form id="event-data-form" onSubmit={handleSubmit}>
         <label htmlFor="titulo" className="form-field full-width">
-          Nome do Evento*
+          <p>
+            Nome do Evento*
+            {errosFormulario.titulo && (
+              <span className="error-message">{errosFormulario.titulo}</span>
+            )}
+          </p>
           <input
             type="text"
             id="titulo"
@@ -148,55 +240,102 @@ const CriarEventoMenu = (props) => {
             onChange={handleInputChange}
             className={errosFormulario.titulo ? "error-input" : ""}
           />
-          {errosFormulario.titulo && (
-            <span className="error-message">{errosFormulario.titulo}</span>
-          )}
         </label>
 
-        <label htmlFor="dataInicio" className="form-field">
-          Data Inicial*
-          <DatePicker
-            id="dataInicio"
-            selected={formData.dataInicio}
-            onChange={(date) => handleDateChange(date, "dataInicio")}
-            showTimeSelect
-            timeFormat="HH:mm"
-            timeIntervals={15}
-            dateFormat="dd/MM/yyyy HH:mm"
-            className={
-              errosFormulario.dataInicio
-                ? "error-input date-input"
-                : "date-input"
-            }
-            placeholderText="dd/mm/aaaa hh:mm"
-            locale="pt-BR"
-          />
-          {errosFormulario.dataInicio && (
-            <span className="error-message">{errosFormulario.dataInicio}</span>
-          )}
-        </label>
-
-        <label htmlFor="dataFim" className="form-field">
-          Data Final
-          <DatePicker
-            id="dataFim"
-            selected={formData.dataFim}
-            onChange={(date) => handleDateChange(date, "dataFim")}
-            showTimeSelect
-            timeFormat="HH:mm"
-            timeIntervals={15}
-            dateFormat="dd/MM/yyyy HH:mm"
-            className={
-              errosFormulario.dataFim ? "error-input date-input" : "date-input"
-            }
-            placeholderText="dd/mm/aaaa hh:mm"
-            locale="pt-BR"
-            minDate={formData.dataInicio}
-          />
-          {errosFormulario.dataFim && (
-            <span className="error-message">{errosFormulario.dataFim}</span>
-          )}
-        </label>
+        <div className="form-field full-width">
+          <label>
+            <p>
+              Adicionar Horários*
+              {errosFormulario.timeSlots && (
+                <span className="error-message">
+                  {errosFormulario.timeSlots}
+                </span>
+              )}
+            </p>
+          </label>
+          <div className="timeslot-container">
+            <div className="timeslot-inputs">
+              <div className="time-input-group">
+                <DatePicker
+                  selected={novoTimeSlot.start}
+                  onChange={(time) => handleTimeSlotChange(time, "start")}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="Hora"
+                  dateFormat="HH:mm"
+                  timeFormat="HH:mm"
+                  locale="pt-BR"
+                  className="time-input"
+                  placeholderText="Selecione"
+                  minTime={createTime(0, 0)} // Start of day (00:00)
+                  maxTime={createTime(23, 45)} // End of day (23:45)
+                  selectsStart
+                  startDate={novoTimeSlot.start}
+                  endDate={novoTimeSlot.end}
+                />
+                <span>às</span>
+                <DatePicker
+                  selected={novoTimeSlot.end}
+                  onChange={(time) => handleTimeSlotChange(time, "end")}
+                  showTimeSelect
+                  showTimeSelectOnly
+                  timeIntervals={15}
+                  timeCaption="Hora"
+                  dateFormat="HH:mm"
+                  timeFormat="HH:mm"
+                  locale="pt-BR"
+                  className="time-input"
+                  placeholderText="Selecione"
+                  minTime={novoTimeSlot.start || createTime(0, 0)}
+                  maxTime={createTime(23, 45)}
+                  selectsEnd
+                  startDate={novoTimeSlot.start}
+                  endDate={novoTimeSlot.end}
+                  filterTime={(time) =>
+                    !novoTimeSlot.start ||
+                    time.getTime() >=
+                      novoTimeSlot.start.getTime() + 15 * 60 * 1000
+                  }
+                />
+              </div>
+              {formData.timeSlots.length > 0 && (
+                <div className="timeslot-list">
+                  {formData.timeSlots.map((slot, index) => (
+                    <div key={index} className="timeslot-item">
+                      <span>
+                        {slot.start.toLocaleTimeString("pt-BR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}{" "}
+                        -{" "}
+                        {slot.end.toLocaleTimeString("pt-BR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                      <button
+                        type="button"
+                        className="remover"
+                        onClick={() => removerTimeSlot(index)}
+                      >
+                        <i className="fa-solid fa-close"></i>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <button
+                type="button"
+                id="add-timeslot-button"
+                className="adicionar"
+                onClick={adicionarTimeSlot}
+              >
+                Adicionar Horário
+              </button>
+            </div>
+          </div>
+        </div>
 
         <label htmlFor="cor" className="form-field">
           Cor
@@ -222,6 +361,20 @@ const CriarEventoMenu = (props) => {
           </div>
         </label>
 
+        <div className="form-field">
+          <label className="checkbox-container">
+            <input
+              type="checkbox"
+              id="criarMeet"
+              checked={formData.criarMeet}
+              onChange={handleInputChange}
+            />
+            <span className="checkmark"></span>
+            Criar reunião do Google Meet
+            <i className="fa-solid fa-video meet-icon"></i>
+          </label>
+        </div>
+
         <label htmlFor="local" className="form-field full-width">
           Local
           <input
@@ -239,7 +392,7 @@ const CriarEventoMenu = (props) => {
             id="descricao"
             value={formData.descricao}
             onChange={handleInputChange}
-            rows="1"
+            rows="2"
           />
         </label>
 
@@ -260,7 +413,7 @@ const CriarEventoMenu = (props) => {
               />
               <button
                 type="button"
-                className="adicionar-convidado"
+                className="adicionar"
                 onClick={adicionarConvidado}
               >
                 Adicionar
@@ -275,7 +428,7 @@ const CriarEventoMenu = (props) => {
                   {email}
                   <button
                     type="button"
-                    className="remover-convidado"
+                    className="remover"
                     onClick={() => removerConvidado(email)}
                   >
                     <i className="fa-solid fa-close"></i>
@@ -286,8 +439,13 @@ const CriarEventoMenu = (props) => {
           )}
         </div>
 
-        <button type="submit" id="create-button" className="form-field">
-          Criar Evento
+        <button
+          type="submit"
+          id="create-button"
+          className="form-field"
+          disabled={carregando}
+        >
+          {carregando ? "Criando..." : "Criar Evento com Votação"}
         </button>
       </form>
     </main>

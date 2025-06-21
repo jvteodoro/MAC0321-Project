@@ -26,9 +26,11 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
     ).toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
   };
 
-  const goToCreateMenu = () => {
-    navigate("evento/criar", { state: { calendarId: calendarId } });
-  }
+  const goToCreateMenu = (clickDayInfo) => {
+    navigate("evento/criar", {
+      state: { calendarId: calendarId, dayInfo: clickDayInfo },
+    });
+  };
 
   let firstDay = new Date(
     week[0].year,
@@ -112,8 +114,7 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
                   />
                 ))}
               </div>
-              <button
-                onClick={() => goToCreateMenu()}>
+              <button onClick={() => goToCreateMenu(dayInfo)}>
                 Criar reunião
               </button>
             </div>

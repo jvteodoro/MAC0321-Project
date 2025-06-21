@@ -1,7 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import "./EventBlock.css";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const EventBlock = ({ eventInfo, clickable }) => {

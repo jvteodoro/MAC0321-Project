@@ -40,7 +40,7 @@ function App() {
             path="/evento/editar"
             element={
               <PrivateRoute>
-                <PageHeader title="Editar Evento" />
+                <PageHeader title="Editar Reunião" />
                 <EditEventMenu/>
               </PrivateRoute>
             }
@@ -49,7 +49,7 @@ function App() {
             path="/evento/criar"
             element={
               <PrivateRoute>
-                <PageHeader title="Criar Evento" />
+                <PageHeader title="Criar Reunião" />
                 <CreateEventMenu/>
               </PrivateRoute>
             }

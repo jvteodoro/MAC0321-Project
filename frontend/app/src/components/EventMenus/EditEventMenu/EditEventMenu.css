@@ -1,1 +1,22 @@
-/* empty */
+#event-origin-info {
+    font-size: 0.8em;
+}
+
+#event-origin-info > * {
+    display: flex;
+    gap: 1em;
+}
+
+#meetLinkHolder {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#meet-link {
+    color: var(--main-color);
+}
+
+#meet-link:hover {
+    color: var(--main-hoverselect-color);
+}
