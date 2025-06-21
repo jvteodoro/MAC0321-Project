@@ -181,7 +181,9 @@ const Calendar = ({ year, month }) => {
           <div
             id="calendar"
             style={{
-              gridTemplateRows: `auto repeat(${numberOfRows}, 1fr)`,
+              gridTemplateRows: `auto repeat(${numberOfRows}, ${
+                18.35 * 5 / numberOfRows
+              }%)`,
             }}
           >
             {/* Weekday headers */}

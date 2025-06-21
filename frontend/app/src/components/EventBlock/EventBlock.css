@@ -5,10 +5,9 @@
     min-height: fit-content;
     height: 25%;
     max-height: 100%;
-    padding: 0.1em;
+    padding: 0.15em;
     border-radius: 7px;
     text-align: start;
-    font-size: 1.1rem;
 }
 
 .link {
