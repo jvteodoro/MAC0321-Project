@@ -50,13 +50,13 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
         <h3>Visualização da semana</h3>
         <form action={"" /* INSERIR URL PARA GERAR O RELATÓRIO */}>
           <button
-            id="geraRelatorio"
+            id="gera-relatorio"
             type="submit"
             name="generate"
             value={`${firstDay},${lastDay}`}
           >
             <p>Gerar relatório da semana</p>
-            <span style={{ fontSize: `small` }}>(LLaMA 4)</span>
+            <span>(LLaMA 4)</span>
           </button>
         </form>
         <button onClick={onClose} className="close-button">
