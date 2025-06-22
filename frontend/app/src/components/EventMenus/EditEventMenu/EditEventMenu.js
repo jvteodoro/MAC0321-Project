@@ -175,7 +175,7 @@ const EditarEventoMenu = (props) => {
       };
 
       alert(JSON.stringify(dadosEvento));
-      await axios.put(
+      await axios.post(
         `http://localhost:12003/events/update?calendarId=${calendarId}`,
         dadosEvento,
         { withCredentials: true }

@@ -65,9 +65,16 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**"))
+                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/events/**")) // <-- added "/events/**"
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/", "/login", "/api/auth/**", "/oauth2/**").permitAll();
+                    auth.requestMatchers(
+                        "/", 
+                        "/login", 
+                        "/api/auth/**", 
+                        "/oauth2/**",
+                        "/events/update",
+                        "/events/**"
+                    ).permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> oauth2
