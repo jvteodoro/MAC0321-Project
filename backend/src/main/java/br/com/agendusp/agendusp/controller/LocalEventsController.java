@@ -1,5 +1,6 @@
 package br.com.agendusp.agendusp.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.EventDate;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -36,6 +38,29 @@ public class LocalEventsController implements EventsController {
     private EventsDataController eventsDataController;
 
     public LocalEventsController() {}
+
+    @GetMapping("/events/listWindows2")
+    public ArrayList<DateTimeInterval> listWindows2(@RequestParam String calendarId,
+    @RequestParam String endDateTime,
+    @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient){
+      
+        ArrayList<EventsResource> allEvents = eventsDataController.getEvents(calendarId, authorizedClient.getPrincipalName());
+
+        ArrayList<DateTimeInterval> freeTimeVec = new ArrayList<>();
+        LocalDateTime endDateTimeObj = LocalDateTime.parse(endDateTime, DateTimeFormatter.ISO_DATE);
+        DateTimeInterval freeTime = new DateTimeInterval();
+        
+        freeTime.setStart(LocalDateTime.now());
+        freeTime.setEnd(endDateTimeObj);
+
+        freeTimeVec.add(freeTime);
+
+        for (EventsResource event: allEvents){
+            freeTimeVec = event.freeTime(freeTimeVec);
+        }
+
+        return freeTimeVec;
+    }
 
     @GetMapping("/events/listWindows")
     public boolean[][] listWindows(@RequestParam String calendarId, @RequestParam String endDate) {

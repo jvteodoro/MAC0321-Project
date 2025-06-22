@@ -3,6 +3,7 @@ package br.com.agendusp;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import br.com.agendusp.agendusp.controller.CalendarDataController;
 import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.HomeController;
 import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.EventDate;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
@@ -334,13 +336,13 @@ public class NewTest {
         EventDate eventStart = new EventDate();
         EventDate eventEnd = new EventDate();
         
-        eventStart.setDate(start.toLocalDate());
-        eventStart.setDateTime(start);
+        eventStart.setDateFromObject(start.toLocalDate());
+        eventStart.setDateTimeFromObject(start);
         eventStart.setTimeZone(zoneId);
         eventsResource.setStart(eventStart);
 
-        eventEnd.setDate(end.toLocalDate());
-        eventEnd.setDateTime(end);
+        eventEnd.setDateFromObject(end.toLocalDate());
+        eventEnd.setDateTimeFromObject(end);
         eventEnd.setTimeZone(zoneId);
         eventsResource.setEnd(eventEnd);
 
@@ -430,6 +432,39 @@ public class NewTest {
             System.out.println("Resposta vazia");
         } else {
             System.out.println(objectMapper.writeValueAsString(resp.get()));
+        }
+    }
+
+    @Test
+    @WithMockUser
+    public void testEventResourceFreeTime() throws Exception{
+        EventsResource mockEvent = new EventsResource();
+        EventDate start = new EventDate();
+        EventDate end = new EventDate();
+        ArrayList<DateTimeInterval> freeTimeVec = new ArrayList<>();
+        DateTimeInterval initFreeTime = new DateTimeInterval();
+        DateTimeInterval freeTime2 = new DateTimeInterval();
+
+        initFreeTime.setStart(LocalDateTime.of(2025, 6, 15, 10, 43, 0));
+        initFreeTime.setEnd(LocalDateTime.of(2025, 6, 18, 10, 43, 0));
+        freeTime2.setStart(LocalDateTime.of(2025, 6, 20, 8, 34, 0));
+        freeTime2.setEnd(LocalDateTime.of(2025, 6, 25, 10, 22, 0));
+
+        freeTimeVec.add(initFreeTime);
+        freeTimeVec.add(freeTime2);
+
+        start.setDateTime("2025-06-19T20:23:12.0000Z");
+        end.setDateTime("2025-06-23T20:23:12.0000Z");
+        
+        mockEvent.setStart(start);
+        mockEvent.setEnd(end);
+
+        ArrayList<DateTimeInterval> freeTimeVecNew = mockEvent.freeTime(freeTimeVec);
+
+        //System.out.println(freeTimeVec.toString());
+        for (DateTimeInterval interval: freeTimeVecNew){
+            try{System.out.println(objectMapper.writeValueAsString(interval));}
+            catch (Exception e){}
         }
     }
 
