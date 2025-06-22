@@ -74,7 +74,12 @@ public class FormsController {
     }
 
     @PostMapping("/pool/createEvent")
-    public void createEvent(@RequestParam String dateTimeIntervalId){
-
+    public void createEvent(@RequestParam String eventPoolId, @RequestParam String dateTimeIntervalId){
+        Optional<EventPool> evPool = eventPoolRepository.findById(eventPoolId);
+        if (evPool.isPresent()){
+            // Continuar a ciraçõa de eventos
+            DateTimeInterval dt = evPool.get().getPosibleTimes();
+        }
+        
     }
 }
