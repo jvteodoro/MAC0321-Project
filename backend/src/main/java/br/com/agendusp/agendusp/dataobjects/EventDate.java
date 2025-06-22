@@ -14,6 +14,15 @@ public class EventDate {
 
     public EventDate(){
     }
+    public EventDate(LocalDateTime dt){
+        this.dateTime = dt;
+        this.date = dt.toLocalDate();
+    }
+    public EventDate(LocalDateTime dt, ZoneId zId){
+        this.dateTime = dt;
+        this.date = dt.toLocalDate();
+        this.timeZone = zId;
+    }
 
     public LocalDate getDate() {
         return date;
