@@ -40,6 +40,20 @@ public class CalendarResource {
         return calR;
     }
 
+    public CalendarListResource toCalendarListResource(String acessRole){
+        CalendarListResource calR = new CalendarListResource();
+        calR.setId(this.calendarId);
+        calR.setCalendarId(this.calendarId);
+        calR.setLocation(this.location);
+        calR.setTimeZone(this.timeZone);
+        calR.setOwner(this.owner);
+        calR.setSummary(this.summary);
+        calR.setDescription(this.description);
+        calR.setDeleted(this.deleted);
+        calR.setAccessRole(acessRole);
+        return calR;
+    }
+
     public void setId(String id){
         this.id = id;
     }

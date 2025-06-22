@@ -36,15 +36,18 @@ public class User {//implements UserDetails {
         this.googleId = googleId;
         this.email = email;
         this.name = name;
-        this.calendarPerson = new CalendarPerson(this.googleId, this.email, this.name);
+        this.calendarPerson = new CalendarPerson(this.id, this.email, this.name);
     }
 
     public CalendarPerson getAsCalendarPerson() {
+        if (this.calendarPerson == null) {
+            this.calendarPerson = new CalendarPerson(this.id, this.email, this.name);
+        }
         return this.calendarPerson;
     }
 
     private void updateCalendarPerson() {
-        this.calendarPerson = new CalendarPerson(this.googleId, this.email, this.name);
+        this.calendarPerson = new CalendarPerson(this.id, this.email, this.name);
     }
     
 

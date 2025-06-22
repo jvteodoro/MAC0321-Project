@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.com.agendusp.agendusp.dataobjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPool;
@@ -36,6 +38,8 @@ public class FormsController {
     EventPoolRepository eventPoolRepository;
     @Autowired
     SimpMessagingTemplate msgTemplate;
+    @Autowired
+    ObjectMapper objectMapper;
     
 
     @MessageMapping("/pool/send/{eventPoolId}")
@@ -87,6 +91,9 @@ public class FormsController {
         String ownerId = eventPool.getOwnerId();
         userRepository.addEventPool(ownerId, eventPool);
         eventPoolRepository.insert(eventPool);
+        try {
+        System.out.println("CreatedPool: "+objectMapper.writeValueAsString(eventPool));}
+        catch (Exception w){}
         return eventPool;
     }
 

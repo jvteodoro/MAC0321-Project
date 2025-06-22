@@ -3,8 +3,9 @@ package br.com.agendusp;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import org.junit.Test;
+
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,7 @@ import br.com.agendusp.agendusp.repositories.UserRepository;
 
 @SpringBootTest(classes=AgendUspApplication.class)
 @AutoConfigureMockMvc
-public class UserRepositoryTest extends MongoTestContainer{
+public class UserRepositoryTest extends MongoTestContainer {
     @Autowired
     UserDataController userDataController;
     @Autowired
@@ -52,6 +53,8 @@ public class UserRepositoryTest extends MongoTestContainer{
 
         user.setCalendarList(calendarList);
         userDataController.createUser(user);
+
+        System.out.println("USer: "+objectMapper.writeValueAsString(userDataController.findUser(userId)));
         
         Optional<CalendarListResource> resp = userRepository.findCalendarListResourceByIdAndCalendarId(user.getUserId(), calR1.getCalendarId());
         if (resp.isEmpty()) {

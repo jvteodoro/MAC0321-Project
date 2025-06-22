@@ -127,6 +127,34 @@ public class EventsDataController {
         event.increaseLinks();
         return eventsRepository.save(event);
     }
+
+    public EventsResource addAtendeeToEvent(String eventId, String atendeeUserId) {
+        if (eventId == null || atendeeUserId == null) {
+            throw new IllegalArgumentException(
+                    "ID do evento, ID do calendário, ID do usuário ou do participante não podem ser nulos ou vazios.");
+        }
+        EventsResource event = eventsRepository
+                .findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId
+                        + "' não encontrado"));
+
+        ArrayList<Attendee> attendees = event.getAttendees();
+        for (Attendee attendee : attendees) {
+            if (attendee.getCalendarPerson().getId().equals(atendeeUserId)) {
+                throw new IllegalArgumentException("Pessoa já está convidada para este evento.");
+            }
+        }
+
+        User person = userDataController.findUser(atendeeUserId);
+
+        Attendee newAttendee = new Attendee(person.getAsCalendarPerson(), false);
+        event.addAttendee(newAttendee);
+        event.addCalendarId(person.getCalendarList().get(0).getCalendarId());
+        event.increaseLinks();
+        return eventsRepository.save(event);
+    }
+
+
     public EventsResource getEventById(String eventId){
         Optional<EventsResource> evRoptional = eventsRepository.findById(eventId);
         if (evRoptional.isEmpty()){

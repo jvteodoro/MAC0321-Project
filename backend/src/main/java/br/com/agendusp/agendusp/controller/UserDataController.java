@@ -11,6 +11,7 @@ import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
+import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
 public class UserDataController {
@@ -18,6 +19,8 @@ public class UserDataController {
         //Funçoes gerais para manipular dados de usuários e calendários
         @Autowired
         private UserRepository userRepository;
+        @Autowired
+        CalendarRepository calendarRepository;
         @Autowired
         RestClient restClient;
 
@@ -29,7 +32,15 @@ public class UserDataController {
                 if (userRepository.existsById(user.getId())) {
                 throw new IllegalArgumentException("Usuário com ID '" + user.getId() + "' já existe.");
                 }
-                return userRepository.save(user);
+                CalendarResource mainCalendar = new CalendarResource();
+                mainCalendar.setId(user.getEmail());
+                mainCalendar.setCalendarId(user.getEmail());
+                mainCalendar.setOwner(user.getAsCalendarPerson());
+
+                calendarRepository.save(mainCalendar);
+                user.addCalendarListResource(mainCalendar.toCalendarListResource("owner"));
+                userRepository.save(user);
+                return userRepository.findById(user.getId()).orElse(user);
         }
         public void deleteUser(String id) {
                 Optional<User> user = userRepository.findById(id);
