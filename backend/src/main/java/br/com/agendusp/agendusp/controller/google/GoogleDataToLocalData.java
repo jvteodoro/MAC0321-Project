@@ -2,7 +2,10 @@ package br.com.agendusp.agendusp.controller.google;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,10 +32,15 @@ public class GoogleDataToLocalData {
     @Autowired
     GoogleCalendarsController gCalendarsController;
     @Autowired
+    OAuth2AuthorizedClientService authorizedClientService;
+    @Autowired
     ObjectMapper objMapper;
 
       @GetMapping("/google/userInfo")
     public User getUserInfo(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        
+        System.out.println("Running userinfo");
+
         ResponseEntity<UserInfo> response = restClient.get()
         .uri("https://www.googleapis.com/oauth2/v2/userinfo")
         .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))

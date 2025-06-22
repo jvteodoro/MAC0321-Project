@@ -57,7 +57,6 @@ class TestConfig {
 
 
 @SpringBootTest(classes=AgendUspApplication.class)
-@ActiveProfiles("test")
 @AutoConfigureMockMvc
 public class NewTest {
 
