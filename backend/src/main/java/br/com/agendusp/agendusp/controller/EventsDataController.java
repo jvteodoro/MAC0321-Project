@@ -2,7 +2,6 @@ package br.com.agendusp.agendusp.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -206,7 +205,7 @@ public class EventsDataController {
             throw new IllegalArgumentException("Evento com ID '" + eventId + "' não encontrado.");
         }
         eventResource.setId(eventId);
-        eventResource.setMainCalendarId(calendarId); // FIX
+        eventResource.setMainCalendarId(calendarId); // TODO FIX
         eventsRepository.save(eventResource);
         return eventResource;
     }
@@ -245,6 +244,12 @@ public class EventsDataController {
             throw new IllegalArgumentException("ID do calendário ou ID do usuário não podem ser nulos ou vazios.");
         }
         userDataController.findUser(userId);
+
+        // Only try to fetch if user has this calendar
+        if (!userDataController.userHasCalendar(userId, calendarId)) {
+            // Return empty list instead of throwing
+            return new ArrayList<>();
+        }
 
         CalendarListResource calListResource = userDataController.findCalendarListResource(userId, calendarId);
 

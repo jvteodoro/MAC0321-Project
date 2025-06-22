@@ -16,7 +16,7 @@ import br.com.agendusp.agendusp.repositories.UserRepository;
 
 public class UserDataController {
 
-        //Funçoes gerais para manipular dados de usuários e calendários
+        // Funçoes gerais para manipular dados de usuários e calendários
         @Autowired
         private UserRepository userRepository;
         @Autowired
@@ -24,13 +24,13 @@ public class UserDataController {
         @Autowired
         RestClient restClient;
 
-          // Users
+        // Users
         public User createUser(User user) {
-                if (user == null ){//|| user.getUserId() == null || user.getUserId().isEmpty()) {
-                throw new IllegalArgumentException("Usuário ou ID do usuário não podem ser nulos ou vazios.");
+                if (user == null) {// || user.getUserId() == null || user.getUserId().isEmpty()) {
+                        throw new IllegalArgumentException("Usuário ou ID do usuário não podem ser nulos ou vazios.");
                 }
                 if (userRepository.existsById(user.getId())) {
-                throw new IllegalArgumentException("Usuário com ID '" + user.getId() + "' já existe.");
+                        throw new IllegalArgumentException("Usuário com ID '" + user.getId() + "' já existe.");
                 }
                 CalendarResource mainCalendar = new CalendarResource();
                 mainCalendar.setId(user.getEmail());
@@ -42,46 +42,51 @@ public class UserDataController {
                 userRepository.save(user);
                 return userRepository.findById(user.getId()).orElse(user);
         }
+
         public void deleteUser(String id) {
                 Optional<User> user = userRepository.findById(id);
-                if (user.isPresent()){
+                if (user.isPresent()) {
                         userRepository.delete(user.get());
                 }
         }
-        public User findUserOrCreate(User userGiven){
-                Optional<User> user  = userRepository.findById(userGiven.getId());
-                     if (user.isEmpty()){
-                     //   gCalController.getUserInfo();
-                     //   restClient.get().uri("http://localhost")
+
+        public User findUserOrCreate(User userGiven) {
+                Optional<User> user = userRepository.findById(userGiven.getId());
+                if (user.isEmpty()) {
+                        // gCalController.getUserInfo();
+                        // restClient.get().uri("http://localhost")
                         createUser(userGiven);
                         return userGiven;
                 } else {
                         return user.get();
                 }
         }
+
         public User findUserByName(String name) {
                 User user;
                 try {
-                Optional<User> optUser = userRepository.findByName(name);
-                  user = optUser.get();
-                if (optUser.isEmpty()){
-                         user = new User();
-                }
+                        Optional<User> optUser = userRepository.findByName(name);
+                        user = optUser.get();
+                        if (optUser.isEmpty()) {
+                                user = new User();
+                        }
                 } catch (Exception e) {
                         System.err.println(e);
                         user = new User();
                 }
-               
+
                 return user;
         }
 
-        public ArrayList<CalendarListResource> insertCalendarListResource(String userId, CalendarListResource item){
-                Optional<CalendarListResource> calListR = userRepository.findCalendarListResourceByIdAndCalendarId(userId, item.getCalendarId());
+        public ArrayList<CalendarListResource> insertCalendarListResource(String userId, CalendarListResource item) {
+                Optional<CalendarListResource> calListR = userRepository
+                                .findCalendarListResourceByIdAndCalendarId(userId, item.getCalendarId());
                 if (calListR.isEmpty()) {
                         userRepository.addCalendarListResource(userId, item);
                 }
                 return userRepository.getCalendarList(userId);
         }
+
         public CalendarPerson getCalendarPerson(String userId) {
                 User user = findUser(userId);
                 CalendarPerson calPerson = new CalendarPerson();
@@ -92,8 +97,14 @@ public class UserDataController {
         }
 
         public User findUser(String id) {
-                return userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Usuário não encontrado"));//   .orElseThrow(() -> new IllegalArgumentException("Usuário com ID '" + id + "' não encontrado."));
-             
+                return userRepository.findById(id)
+                                .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado"));// .orElseThrow(()
+                                                                                                         // -> new
+                                                                                                         // IllegalArgumentException("Usuário
+                                                                                                         // com ID '" +
+                                                                                                         // id + "' não
+                                                                                                         // encontrado."));
+
         }
 
         protected CalendarListResource findCalendarListResource(String userId, String calendarId) {
@@ -105,7 +116,7 @@ public class UserDataController {
         }
 
         protected String getAccessRole(CalendarResource calResource, String userId) {
-                if (calResource.getOwner().getId().equals(userId)) 
+                if (calResource.getOwner().getId().equals(userId))
                         return "owner";
                 if (calResource.getWriters().stream().anyMatch(writer -> writer.getId().equals(userId)))
                         return "writer";
@@ -113,5 +124,18 @@ public class UserDataController {
                         return "reader";
 
                 return "freeBusyReader";
+        }
+
+        /**
+         * Checks if the user has a calendar with the given calendarId.
+         */
+        public boolean userHasCalendar(String userId, String calendarId) {
+                try {
+                        userRepository.findCalendarListResourceByIdAndCalendarId(userId, calendarId)
+                                        .orElseThrow(() -> new IllegalArgumentException());
+                        return true;
+                } catch (Exception e) {
+                        return false;
+                }
         }
 }

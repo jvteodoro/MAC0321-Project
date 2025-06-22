@@ -36,7 +36,6 @@ public class CalendarResource {
         calR.setDescription(this.description);
         calR.setDeleted(this.deleted);
 
-
         return calR;
     }
 

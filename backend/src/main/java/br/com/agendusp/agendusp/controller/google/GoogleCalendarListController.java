@@ -11,17 +11,12 @@ import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import br.com.agendusp.agendusp.controller.CalendarDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.dataobjects.CalendarListList;
-import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
-import br.com.agendusp.agendusp.dataobjects.UserInfo;
 import br.com.agendusp.agendusp.dataobjects.WatchRequest;
 import br.com.agendusp.agendusp.dataobjects.WatchResponse;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
-import br.com.agendusp.agendusp.documents.CalendarResource;
-import br.com.agendusp.agendusp.documents.User;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,8 +32,8 @@ public class GoogleCalendarListController {
     private RestClient restClient;
     @Autowired
     private  Gson gson;
-    @Autowired
-    private CalendarDataController calendarDataController;
+    // @Autowired
+    // private CalendarDataController calendarDataController;
     @Autowired
     private UserDataController userDataController;
     @Autowired

@@ -3,11 +3,9 @@ package br.com.agendusp.agendusp.controller;
 import java.util.ArrayList;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 
-import br.com.agendusp.agendusp.CustomOAuth2User;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 

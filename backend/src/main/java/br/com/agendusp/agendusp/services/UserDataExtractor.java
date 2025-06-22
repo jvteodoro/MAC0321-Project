@@ -47,6 +47,8 @@ public class UserDataExtractor {
         //pode ser modificado
         return eventString.toString();
     }
+
+    // TODO: FALTA IMPLEMENTAR
     private String enquetesToString() {
         return "a ser implementada";
     }

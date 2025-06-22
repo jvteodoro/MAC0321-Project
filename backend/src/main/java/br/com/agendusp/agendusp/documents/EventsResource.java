@@ -2,13 +2,10 @@ package br.com.agendusp.agendusp.documents;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.services.calendar.model.Event.ExtendedProperties;
 
 import br.com.agendusp.agendusp.dataobjects.Attendee;
@@ -22,8 +19,8 @@ public class EventsResource {
     @Id
     String id;
     String eventId;
-    int links; // It's necessary to know how many calendars links this event.
-            // If it is 0, the event can be deleted.
+    int links; // É necessário saber quantos calendários linkam este evento.
+               // Se for 0, o evento pode ser deletado.
 
     String kind;
     String etag;
@@ -110,18 +107,17 @@ public class EventsResource {
             afterEventFreeTime.setStart(eventEnd);
             afterEventFreeTime.setEnd(freeTimeEnd);
             
-            System.err.println("BeforeEventFreeTime: "+beforeEventFreeTime.getEnd().toString());;
+            System.err.println("BeforeEventFreeTime: "+beforeEventFreeTime.getEnd().toString());
             // System.err.println("AfterEventFreeTime: "+objMapper.writeValueAsString(afterEventFreeTime));
-         
-
-
+            
+            // TODO pois nunca é usado
             int index = freeTimeVec.indexOf(interval);
 
             // Não há tempo livre!! ;-;
             if (eventStart.isBefore(freeTimeStart) && eventEnd.isAfter(freeTimeEnd)){
                 
             }
-            //Caso onde não temos tempo live antes do evento
+            // Caso onde não temos tempo livre antes do evento
              else if (eventStart.isBefore(freeTimeStart) && eventEnd.isBefore(freeTimeEnd)){
                 freeTimeVecNew.add(afterEventFreeTime);
              }

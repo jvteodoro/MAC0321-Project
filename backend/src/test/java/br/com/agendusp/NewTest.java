@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -16,7 +15,6 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -36,7 +34,6 @@ import br.com.agendusp.agendusp.controller.HomeController;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.EventDate;
-import br.com.agendusp.agendusp.dataobjects.EventPool;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
@@ -87,6 +84,7 @@ public class NewTest {
     
     @Test
     public void testHome() throws Exception{
+        // TODO pois nunca é usado
         ResultActions result = mockMvc.perform(get("/")).andDo(MockMvcResultHandlers.print());
     }
 
@@ -132,6 +130,7 @@ public class NewTest {
     @Test
     @WithMockUser
     public void updateOneByUserIdTest(){
+        // TODO pois nunca é usado
         User user = setupFind();
 
     }
@@ -359,6 +358,7 @@ public class NewTest {
         
         String calendarId;
         String dataInicial = "2025-06-21T00:00:00Z";
+        // TODO pois nunca é usado
         EventsResource mockEvent = new EventsResource();
         String userId = "teste@gmail.com";
         User user = new User();
@@ -402,6 +402,7 @@ public class NewTest {
             System.out.println("Prompt Semana: "+promptTotalSemana);
         }
     
+        // TODO pois nunca é usado
         ResultActions result = mockMvc.perform(get("/prompt/semana")).andDo(MockMvcResultHandlers.print());
         // ResultActions result = mockMvc.perform(get("/prompt/dia")).andDo(MockMvcResultHandlers.print());
     }

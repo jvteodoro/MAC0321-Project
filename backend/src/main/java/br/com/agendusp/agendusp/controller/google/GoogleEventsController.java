@@ -5,7 +5,6 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +14,6 @@ import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.dataobjects.EventListResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
-import br.com.agendusp.agendusp.documents.User;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController

@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.agendusp.agendusp.dataobjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPool;
 import br.com.agendusp.agendusp.dataobjects.EventDate;

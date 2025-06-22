@@ -45,6 +45,7 @@ public class CalendarListResource {
     //     this.selected = calendarListUserItem.isSelected();
     //     this.accessRole = calendarListUserItem.getAccessRole();
     // }
+    // Índice 0 é o calendário principal do usuário
     public CalendarResource extractCalendarResource() {
         CalendarResource resource = new CalendarResource();
         resource.setCalendarId(this.calendarId);

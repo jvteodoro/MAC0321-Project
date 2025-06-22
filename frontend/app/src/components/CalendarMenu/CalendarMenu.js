@@ -23,14 +23,16 @@ const Calendar = ({ year, month }) => {
           { withCredentials: true }
         );
 
-        // Usa o ID do primeiro calendário para buscar os eventos
-        if (calendarsResponse.data.length > 0) {
-          const newCalendarId =
-            calendarsResponse.data[calendarsResponse.data.length - 1]
-              .id;
+        // Escolhe o primeiro calendário com accessRole owner ou writer
+        const validCalendars = calendarsResponse.data.filter(
+          (cal) =>
+            cal.accessRole === "owner" ||
+            cal.accessRole === "writer"
+        );
+        if (validCalendars.length > 0) {
+          const newCalendarId = validCalendars[0].id;
           setCalendarId(newCalendarId);
 
-          // Use the local variable here instead of the state
           const eventsResponse = await axios.get(
             `http://localhost:12003/events/list?calendarId=${newCalendarId}`,
             { withCredentials: true }

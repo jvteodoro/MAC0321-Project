@@ -1,6 +1,5 @@
 package br.com.agendusp.agendusp.controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,6 +75,7 @@ public class LocalEventsController implements EventsController {
         ArrayList<EventsResource> eventsOnInterval = eventsDataController.getEventsOnInterval(calendarId, dateEndObj);
         boolean[][] dateVec = new boolean[dayNum][divTempo];
 
+        // TODO pois nunca é usado
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         for (EventsResource ev: eventsOnInterval){
             EventDate end = ev.getEnd();

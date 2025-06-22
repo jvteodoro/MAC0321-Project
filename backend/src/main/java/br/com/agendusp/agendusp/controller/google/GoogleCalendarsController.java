@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 // import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.com.agendusp.agendusp.controller.CalendarDataController;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 

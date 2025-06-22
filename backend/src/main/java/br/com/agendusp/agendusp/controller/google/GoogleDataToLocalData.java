@@ -53,12 +53,38 @@ public class GoogleDataToLocalData {
     public void cloudToLocal(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) throws Exception{
         this.getUserInfo(authorizedClient);
         CalendarListList calList = gCalendarListController.list(authorizedClient);
+        String userId = authorizedClient.getPrincipalName();
         for (CalendarListResource calListResource: calList.getItems()){
-            System.out.println(objMapper.writeValueAsString(calListResource));
-            gEventsController.list(calListResource.getId(), authorizedClient);
-            gCalendarsController.get(calListResource.getId(), authorizedClient);
+            boolean isWritable = calListResource.getAccessRole() != null &&
+                (calListResource.getAccessRole().equalsIgnoreCase("owner") ||
+                 calListResource.getAccessRole().equalsIgnoreCase("writer"));
+            boolean userHas = userDataController.userHasCalendar(userId, calListResource.getCalendarId());
+            if (!isWritable) {
+                System.out.println("Skipping calendar: " + calListResource.getCalendarId() +
+                    " (accessRole=" + calListResource.getAccessRole() + ")");
+                continue;
+            }
+            if (!userHas) {
+                System.out.println("Skipping calendar (not in user list): " + calListResource.getCalendarId());
+                continue;
+            }
+            try {
+                System.out.println(objMapper.writeValueAsString(calListResource));
+                try {
+                    gEventsController.list(calListResource.getId(), authorizedClient);
+                } catch (Exception e) {
+                    System.out.println("Skipping events for calendar: " + calListResource.getCalendarId() + " due to error: " + e.getMessage());
+                }
+                try {
+                    gCalendarsController.get(calListResource.getId(), authorizedClient);
+                } catch (IllegalArgumentException ex) {
+                    System.out.println("Calendar already exists: " + calListResource.getCalendarId());
+                } catch (Exception ex) {
+                    System.out.println("Skipping calendar: " + calListResource.getCalendarId() + " due to error: " + ex.getMessage());
+                }
+            } catch (Exception outer) {
+                System.out.println("Error processing calendar: " + calListResource.getCalendarId() + " - " + outer.getMessage());
+            }
         }
-
-        
     }
 }

@@ -2,7 +2,6 @@ package br.com.agendusp.agendusp.services;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -67,6 +66,8 @@ public class PromptBuilder {
         String hora = dataInicial.substring(13, 15);
         String minuto = dataInicial.substring(16, 18);  
         String segundo = dataInicial.substring(19, 21);
+
+        // TODO pois nunca é usado
         LocalDateTime dataInicialDate = LocalDateTime.of(Integer.parseInt(ano), Integer.parseInt(mes),
                 Integer.parseInt(dia), Integer.parseInt(hora), Integer.parseInt(minuto), Integer.parseInt(segundo));
         
@@ -182,6 +183,7 @@ public class PromptBuilder {
         String hora = dataInicial.substring(13, 15);
         String minuto = dataInicial.substring(16, 18);  
         String segundo = dataInicial.substring(19, 21);
+        // TODO pois nunca é usado
         LocalDateTime dataInicialDate = LocalDateTime.of(Integer.parseInt(ano), Integer.parseInt(mes),
                 Integer.parseInt(dia), Integer.parseInt(hora), Integer.parseInt(minuto), Integer.parseInt(segundo));
         

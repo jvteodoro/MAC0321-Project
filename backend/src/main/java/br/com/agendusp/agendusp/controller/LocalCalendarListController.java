@@ -69,7 +69,7 @@ public class LocalCalendarListController implements CalendarListController {
         // try {
         //     return gson.toJson(dataController.getCalendars(userId));
         // } catch (Exception e) {
-        //     return gson.toJson("Error fetching calendars: " + e.getMessage());
+        //     return gson.toJson("Erro ao buscar calendários: " + e.getMessage());
         // }
     }
 

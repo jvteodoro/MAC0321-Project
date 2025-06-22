@@ -10,7 +10,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import com.google.gson.Gson;
 
 import br.com.agendusp.agendusp.documents.CalendarListResource;
-import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
@@ -53,10 +52,11 @@ public class UserRepositoryTest extends MongoTestContainer{
         CalendarListResource calendarListResource = new CalendarListResource();
         calendarListResource.setCalendarId("test-calendar-id");
 
+        // TODO pois nunca é usado
         Integer num = userRepository.insertCalendarListResourceByUserId("testuser", calendarListResource)
             .orElseThrow(() -> new RuntimeException("Failed to add calendar list resource"));
 
-
+        // TODO pois nunca é usado
         User updatedUser = userRepository.findByUserId("testuser")
             .orElseThrow(() -> new RuntimeException("User not found after update"));
 

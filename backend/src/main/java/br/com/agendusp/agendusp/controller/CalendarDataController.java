@@ -160,6 +160,7 @@ public class CalendarDataController {
     // }
     public ArrayList<CalendarListResource> getCalendarList(String userId){
         User user = userDataController.findUser(userId);
+        // Retorna apenas os calendários realmente presentes na lista do usuário
         return user.getCalendarList();
     }
 
