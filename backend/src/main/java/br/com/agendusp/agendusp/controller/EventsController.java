@@ -1,5 +1,7 @@
 package br.com.agendusp.agendusp.controller;
 
+import java.util.ArrayList;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -13,20 +15,20 @@ public interface EventsController {
         public ResponseEntity<String> delete(String calendarId, String eventId,
                        @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient);
 
-        public String get(String calendarId, String eventId,
+        public EventsResource get(String calendarId, String eventId,
                         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient);
 
         // public String importEvent(String calendarId, EventResource event);
 
-        public String insert(String calendarId, @RequestBody EventsResource event,
+        public EventsResource insert(String calendarId, @RequestBody EventsResource event,
                        @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient);
 
-        public String addAttendee(String calendarId, String attendeeId , @RequestBody EventsResource event,
+        public EventsResource addAttendee(String calendarId, String attendeeId , @RequestBody EventsResource event,
                        @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient);
 
         // public CalendarEvents instances(String calendarId, String eventId);
 
-        public String list(String calendarId,
+        public ArrayList<EventsResource> list(String calendarId,
                         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient);
 
         // public String move(String calendarId, String eventId, String destination);
@@ -36,7 +38,7 @@ public interface EventsController {
 
         // public String quickAdd(String calendarId, String text);
 
-        public String update(String calendarId, EventsResource event,
+        public EventsResource update(String calendarId, EventsResource event,
                        @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient);
 
         // public WatchResponse watch(String calendarId, WatchRequest watchRequest);

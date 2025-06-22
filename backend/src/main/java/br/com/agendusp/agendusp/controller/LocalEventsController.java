@@ -111,37 +111,37 @@ public class LocalEventsController implements EventsController {
     }
 
     @GetMapping("/events/get")
-    public String get(String calendarId, String eventId, @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+    public EventsResource get(String calendarId, String eventId, @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         String userId = authorizedClient.getPrincipalName();
-        return gson.toJson(eventsDataController.getEvent(eventId, calendarId, userId));
+        return eventsDataController.getEvent(eventId, calendarId, userId);
     }
 
     @PostMapping("/events/addAttendee/{calendarId}/{attendeeId}")
-    public String addAttendee(String calendarId, String attendeeId, @RequestBody EventsResource event,
+    public EventsResource addAttendee(String calendarId, String attendeeId, @RequestBody EventsResource event,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         String userId = authorizedClient.getPrincipalName();
-        return gson.toJson(eventsDataController.addAtendeeToEvent(event.getEventId(), calendarId, userId, attendeeId));
+        return eventsDataController.addAtendeeToEvent(event.getEventId(), calendarId, userId, attendeeId);
     }
 
     @PostMapping("/events/insert/{calendarId}")
-    public String insert(String calendarId, @RequestBody EventsResource event,
+    public EventsResource insert(String calendarId, @RequestBody EventsResource event,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         String userId = authorizedClient.getPrincipalName();
         eventsDataController.createEvent(calendarId, event, userId);
-        return gson.toJson(event);
+        return event;
     }
 
     @GetMapping("/events/list")
-    public String list(@RequestBody String calendarId, @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+    public ArrayList<EventsResource> list(@RequestBody String calendarId, @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         String userId = authorizedClient.getPrincipalName();
-        return gson.toJson(eventsDataController.getEvents(calendarId, userId));
+        return eventsDataController.getEvents(calendarId, userId);
     }
 
     @PutMapping("/events/update/{calendarId}")
-    public String update(String calendarId, EventsResource event,
+    public EventsResource update(String calendarId, EventsResource event,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         String userID = authorizedClient.getPrincipalName();
-        return gson.toJson(eventsDataController.updateEvent(calendarId, event.getId(), event, userID));
+        return eventsDataController.updateEvent(calendarId, event.getId(), event, userID);
     }
 
     @PatchMapping("/events/patch/{calendarId}")
