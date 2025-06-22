@@ -32,10 +32,10 @@ const Calendar = ({ year, month }) => {
 
           // Use the local variable here instead of the state
           const eventsResponse = await axios.get(
-            `http://localhost:12003/google/events/list?calendarId=${newCalendarId}`,
+            `http://localhost:12003/events/list?calendarId=${newCalendarId}`,
             { withCredentials: true }
           );
-          setEvents(eventsResponse.data.items);
+          setEvents(eventsResponse.data);
         }
       } catch (error) {
         console.error("Erro ao buscar eventos:", error);

@@ -29,7 +29,7 @@ public interface UserRepository extends MongoRepository<User, String> {
 @Aggregation(pipeline = {
         "{ $match: { 'id': ?0 } }",
         "{ $unwind: '$calendarList' }",
-        "{ $match: { 'calendarList.calendarId': ?1 } }",
+        "{ $match: { 'calendarList.id': ?1 } }",
         "{ $replaceRoot: { newRoot: '$calendarList' } }",
         "{ $limit: 1 }"
     })    

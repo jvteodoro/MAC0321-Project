@@ -28,7 +28,11 @@ public class GoogleCalendarsController {//implements CalendarsController {
         .uri("https://www.googleapis.com/calendar/v3/calendars/"+calendarId)
         .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
         .retrieve().toEntity(CalendarResource.class).getBody();
-        calendarDataController.addCalendar(calResource, authorizedClient.getPrincipalName());
+        try {
+            calendarDataController.addCalendar(calResource, authorizedClient.getPrincipalName());
+        } catch (Exception e) {
+            System.err.println(e);
+        }
         return calResource;
     }
 }

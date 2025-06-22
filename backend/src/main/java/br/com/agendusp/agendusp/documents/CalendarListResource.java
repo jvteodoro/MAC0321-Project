@@ -6,6 +6,7 @@ import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
 @Document(collection = "calendarLists")
 public class CalendarListResource {
+    String id;
     String calendarId;
     String kind = "calendar#calendarListEntry";
     // String etag;
@@ -57,10 +58,10 @@ public class CalendarListResource {
     }
 
     public String getId() {
-        return calendarId;
+        return id;
     }
-    public void setId(String calendarId){
-        this.calendarId = calendarId;
+    public void setId(String id){
+        this.id = id;
     }
 
     public String getAcessRole() {

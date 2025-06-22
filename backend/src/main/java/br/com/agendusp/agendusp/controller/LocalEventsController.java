@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -36,6 +37,8 @@ public class LocalEventsController implements EventsController {
     private Gson gson;
     @Autowired
     private EventsDataController eventsDataController;
+    @Autowired
+    ObjectMapper objMapper;
 
     public LocalEventsController() {}
 
@@ -137,10 +140,17 @@ public class LocalEventsController implements EventsController {
         return eventsDataController.getEvents(calendarId, userId);
     }
 
-    @PutMapping("/events/update/{calendarId}")
-    public EventsResource update(String calendarId, EventsResource event,
+    @PutMapping("/events/update")
+    public EventsResource update(@RequestParam String calendarId, @RequestBody EventsResource event,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         String userID = authorizedClient.getPrincipalName();
+        
+        try {
+            System.out.println(objMapper.writeValueAsString(event));
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+
         return eventsDataController.updateEvent(calendarId, event.getId(), event, userID);
     }
 

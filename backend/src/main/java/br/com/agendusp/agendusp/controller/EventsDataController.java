@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import br.com.agendusp.agendusp.dataobjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
@@ -26,6 +28,8 @@ public class EventsDataController {
     CalendarDataController calendarDataController;
     @Autowired
     CalendarRepository calendarRepository;
+    @Autowired
+    ObjectMapper objMapper;
 
     public ArrayList<EventsResource> getEventsOnInterval(String calendarId, LocalDateTime endDate) {
         return eventsRepository.findEventsByEndDate(calendarId, endDate)
@@ -190,6 +194,11 @@ public class EventsDataController {
     public EventsResource updateEvent(String calendarId, String eventId, EventsResource eventResource, String userId) {
         CalendarResource calendar = calendarRepository.findByCalendarId(calendarId).orElse(null);
         EventsResource event = eventsRepository.findByEventId(eventId).orElse(null);
+        try {
+            System.out.println(objMapper.writeValueAsString(event));
+        } catch (Exception e) {
+            System.err.println(e);
+        }
         if (calendar == null) {
             throw new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado.");
         }

@@ -20,7 +20,7 @@ public interface EventsRepository extends MongoRepository<EventsResource, String
     @Query("{'calendarIds': ?0}")
     public Optional<ArrayList<EventsResource>> findAllByCalendarId(String calendarId);
 
-    @Query("{'eventId': ?0, 'calendarIds': ?1}")
+    @Query("{'id': ?0, 'calendarIds': ?1}")
     public Optional<EventsResource> findEventsResourceByEventIdAndCalendarId(String eventId, String calendarId);
 
     @Query("{ 'eventId': ?0, 'attendees': { $elemMatch: { 'calendarPerson.id': ?1 } } }")

@@ -56,7 +56,7 @@ const EditarEventoMenu = (props) => {
     const carregarEvento = async () => {
       try {
         const resposta = await axios.get(
-          `http://localhost:12003/google/events/get?calendarId=${calendarId}&eventId=${eventId}`,
+          `http://localhost:12003/events/get?calendarId=${calendarId}&eventId=${eventId}`,
           { withCredentials: true }
         );
 
@@ -93,7 +93,7 @@ const EditarEventoMenu = (props) => {
         }
       } catch (erro) {
         console.error("Erro ao carregar reunião:", erro);
-        alert("Erro ao carregar dados do reunião");
+        alert("Erro ao carregar dados da reunião");
       } finally {
         setCarregando(false);
       }
@@ -155,6 +155,7 @@ const EditarEventoMenu = (props) => {
 
     try {
       const dadosEvento = {
+        id: eventId,
         summary: formData.titulo,
         start: {
           dateTime: formData.dataInicio.toISOString(),
@@ -173,8 +174,9 @@ const EditarEventoMenu = (props) => {
             : null,
       };
 
+      alert(JSON.stringify(dadosEvento));
       await axios.put(
-        `http://localhost:12003/google/events/update?calendarId=${calendarId}&eventId=${eventId}`,
+        `http://localhost:12003/events/update?calendarId=${calendarId}`,
         dadosEvento,
         { withCredentials: true }
       );
