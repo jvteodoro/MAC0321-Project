@@ -16,10 +16,12 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -58,6 +60,7 @@ class TestConfig {
 
 
 @SpringBootTest(classes=AgendUspApplication.class)
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 public class NewTest {
 
@@ -79,6 +82,7 @@ public class NewTest {
     UserDataController userDataController;
     @Autowired
     FormsController formsController;
+    
 
     
     @Test

@@ -60,11 +60,18 @@ public class UserDataController {
                 }
         }
         public User findUserByName(String name) {
+                User user;
+                try {
                 Optional<User> optUser = userRepository.findByName(name);
-                User user = optUser.get();
+                  user = optUser.get();
                 if (optUser.isEmpty()){
                          user = new User();
                 }
+                } catch (Exception e) {
+                        System.err.println(e);
+                        user = new User();
+                }
+               
                 return user;
         }
 

@@ -61,6 +61,7 @@ public class CalendarListResource {
         return id;
     }
     public void setId(String id){
+        this.calendarId = id;
         this.id = id;
     }
 

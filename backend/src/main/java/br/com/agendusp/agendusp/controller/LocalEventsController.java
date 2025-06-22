@@ -140,7 +140,7 @@ public class LocalEventsController implements EventsController {
         return eventsDataController.getEvents(calendarId, userId);
     }
 
-    @PutMapping("/events/update")
+    @PostMapping("/events/update")
     public EventsResource update(@RequestParam String calendarId, @RequestBody EventsResource event,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         String userID = authorizedClient.getPrincipalName();

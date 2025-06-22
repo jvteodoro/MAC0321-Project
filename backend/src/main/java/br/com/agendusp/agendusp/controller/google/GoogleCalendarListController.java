@@ -116,7 +116,11 @@ public class GoogleCalendarListController {
                 .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
                 .retrieve().toEntity(CalendarListList.class).getBody();
         for (CalendarListResource resource: calList.getItems()){
-            userDataController.insertCalendarListResource(authorizedClient.getPrincipalName(), resource);
+            try {
+                userDataController.insertCalendarListResource(authorizedClient.getPrincipalName(), resource);
+            } catch (Exception e) {
+                System.err.println(e);
+            }
         }
         return calList;
     }

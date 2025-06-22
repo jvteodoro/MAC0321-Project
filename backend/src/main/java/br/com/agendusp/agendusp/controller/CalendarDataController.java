@@ -41,7 +41,7 @@ public class CalendarDataController {
     }
 
     public CalendarListResource addCalendarListResourceFromCalendar(String userId, String calendarId) throws Exception{
-        Optional<CalendarResource> cal = calendarRepository.findByCalendarId(calendarId);
+        Optional<CalendarResource> cal = calendarRepository.findById(calendarId);
         if (cal.isEmpty()){
             throw new Exception("Calendário não existe");
         }
@@ -174,7 +174,7 @@ public class CalendarDataController {
         ArrayList<CalendarListResource> calendarList = user.getCalendarList();
         for (CalendarListResource calListUserItem : calendarList) {
             CalendarResource calResource = calendarRepository
-                .findByCalendarId(calListUserItem.getCalendarId())
+                .findById(calListUserItem.getCalendarId())
                 .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calListUserItem.getCalendarId()
                         + "' não encontrado."));
             outputList.add(calResource);

@@ -192,7 +192,7 @@ public class EventsDataController {
     }
 
     public EventsResource updateEvent(String calendarId, String eventId, EventsResource eventResource, String userId) {
-        CalendarResource calendar = calendarRepository.findByCalendarId(calendarId).orElse(null);
+        CalendarResource calendar = calendarRepository.findById(calendarId).orElse(null);
         EventsResource event = eventsRepository.findByEventId(eventId).orElse(null);
         try {
             System.out.println(objMapper.writeValueAsString(event));
@@ -212,7 +212,7 @@ public class EventsDataController {
     }
 
     public EventsResource patchEvent(String calendarId, String eventId, EventsResource eventResource, String userId) {
-        CalendarResource calendar = calendarRepository.findByCalendarId(calendarId).orElse(null);
+        CalendarResource calendar = calendarRepository.findById(calendarId).orElse(null);
         EventsResource event = eventsRepository.findByEventId(eventId).orElse(null);
         if (calendar == null) {
             throw new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado.");

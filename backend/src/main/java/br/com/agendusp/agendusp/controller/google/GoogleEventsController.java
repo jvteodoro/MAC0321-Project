@@ -74,9 +74,13 @@ public class GoogleEventsController {
         .headers(headers ->headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
         .retrieve().toEntity(EventListResource.class).getBody();
         for (EventsResource resource: eventListResource.getItems()){
-            resource.setMainCalendarId(resource.getOrganizer().getEmail());
-            resource.addCalendarId(calendarId);
-            eventsDataController.addEvent(resource);
+            try {
+                resource.setMainCalendarId(resource.getOrganizer().getEmail());
+                resource.addCalendarId(calendarId);
+                eventsDataController.addEvent(resource);
+            } catch (Exception e) {
+                System.err.println(e);
+            }
         }
 
         return eventListResource;

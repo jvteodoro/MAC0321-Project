@@ -55,6 +55,7 @@ public class CalendarResource {
     }
 
     public void setId(String id){
+        this.calendarId = id;
         this.id = id;
     }
 
