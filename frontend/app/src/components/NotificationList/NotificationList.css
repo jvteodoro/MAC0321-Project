@@ -1,8 +1,8 @@
 #notification-list {
   position: absolute;
-  top: 80%;
+  top: 50%;
   right: 0;
-  z-index: 1;
+  z-index: -1;
   height: 0;
   width: 0;
   visibility: hidden;
@@ -14,10 +14,12 @@
 
 #notification-list.extended {
   top: 100%;
+  right: -0.11em;
   visibility: visible;
   height: 10em;
   width: 10em;
   background-color: var(--secondary-hoverselect-color);
+  border: inset 2px var(--main-color);
 }
 
 #list-content {

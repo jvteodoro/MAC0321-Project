@@ -10,12 +10,14 @@ const PageHeader = (props) => {
     setNotListVisible(!notListVisible);
   return (
     <header id="page-header">
-      <h1>AgendUSP</h1>
+      <h1>
+        <a href="/">AgendUSP</a>
+      </h1>
       <h1 id="page-title">{props["title"]}</h1>
       <div id="nav-buttons">
         <button
           id="notifications-button"
-		  className={notListVisible ? 'connected-to-list' : ''}
+          className={notListVisible ? "connected-to-list" : ""}
           onClick={toggleNotificationListVisibility}
         >
           <i className="fa-solid fa-bell"></i>
