@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,7 +37,8 @@ import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
-
+import br.com.agendusp.agendusp.services.PromptBuilder;
+import static org.mockito.Mockito.mock;
 @SpringBootConfiguration
 class TestConfig {
      @Bean
@@ -494,33 +496,33 @@ public class NewTest {
 
 
         calendarId = null;
-        String promptCalendarioDia = PromptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
-        if (prompCalendarioDia != null){
+        String promptCalendarioDia = promptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
+        if (promptCalendarioDia != null){
             System.out.println("Prompt Dia: "+promptCalendarioDia);
         }
 
 
         calendarId = "calR1";
-        String promptTotalDia = PromptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
-        if (prompTotalDia != null){
+        String promptTotalDia = promptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
+        if (promptTotalDia != null){
             System.out.println("Prompt Dia: "+promptTotalDia);
         }
 
         calendarId = null;
-        String promptCalendarioSemana = PromptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
-        if (prompCalendarioSemana != null){
+        String promptCalendarioSemana = promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
+        if (promptCalendarioSemana != null){
             System.out.println("Prompt Semana: "+promptCalendarioSemana);
         }
 
 
         calendarId = "calR1";
-        String promptTotalSemana = PromptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
-        if (prompTotalSemana != null){
+        String promptTotalSemana = promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
+        if (promptTotalSemana != null){
             System.out.println("Prompt Semana: "+promptTotalSemana);
         }
     
         ResultActions result = mockMvc.perform(get("/prompt/semana")).andDo(MockMvcResultHandlers.print());
-        ResultActions result = mockMvc.perform(get("/prompt/dia")).andDo(MockMvcResultHandlers.print());
+        // ResultActions result = mockMvc.perform(get("/prompt/dia")).andDo(MockMvcResultHandlers.print());
     }
         
 

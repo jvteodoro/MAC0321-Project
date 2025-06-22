@@ -107,7 +107,7 @@ public class EventsDataController {
                 .orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId
                         + "' não encontrado para o calendário com ID '" + calendarId + "'."));
 
-        Attendee[] attendees = event.getAttendees();
+        ArrayList<Attendee> attendees = event.getAttendees();
         for (Attendee attendee : attendees) {
             if (attendee.getCalendarPerson().getId().equals(atendeeUserId)) {
                 throw new IllegalArgumentException("Pessoa já está convidada para este evento.");

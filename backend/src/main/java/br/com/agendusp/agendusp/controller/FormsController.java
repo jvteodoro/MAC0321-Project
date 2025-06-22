@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.agendusp.agendusp.dataobjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
+import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPool;
 import br.com.agendusp.agendusp.dataobjects.EventPool;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.repositories.EventPoolRepository;
@@ -77,8 +78,8 @@ public class FormsController {
     public void createEvent(@RequestParam String eventPoolId, @RequestParam String dateTimeIntervalId){
         Optional<EventPool> evPool = eventPoolRepository.findById(eventPoolId);
         if (evPool.isPresent()){
-            // Continuar a ciraçõa de eventos
-            DateTimeInterval dt = evPool.get().getPosibleTimes();
+            // Continuar a criação de eventos
+            ArrayList<DateTimeIntervalPool> dt = evPool.get().getPosibleTimes();
         }
         
     }
