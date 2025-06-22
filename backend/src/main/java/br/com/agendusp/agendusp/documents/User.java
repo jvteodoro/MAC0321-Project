@@ -20,7 +20,7 @@ public class User {//implements UserDetails {
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
-    private ArrayList<EventPool> eventPoolList;
+    private ArrayList<String> eventPoolList;
     private ArrayList<EventPool> eventPoolNotifications;
     private ArrayList<CalendarListResource> calendarList; // Índice 0 é o calendário principal do usuário
     private CalendarPerson calendarPerson;
@@ -48,13 +48,17 @@ public class User {//implements UserDetails {
     }
     
 
-    public ArrayList<EventPool> getEventPoolList() {
+    public ArrayList<String> getEventPoolList() {
         return eventPoolList;
     }
 
-    public void setEventPoolList(ArrayList<EventPool> eventPoolList) {
+    public void setEventPoolList(ArrayList<String> eventPoolList) {
         this.eventPoolList = eventPoolList;
     }
+    public void addEventPool(String eventPoolId){
+        this.eventPoolList.add(eventPoolId);
+    }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }

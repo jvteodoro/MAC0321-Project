@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.controller.CalendarDataController;
+import br.com.agendusp.agendusp.controller.EventPoolDataController;
 import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.dataobjects.EventPool;
@@ -28,6 +29,8 @@ public class PromptBuilder {
     CalendarDataController calendarDataController;
     @Autowired
     EventsDataController eventsDataController;
+    @Autowired
+    EventPoolDataController eventPoolDataController;
     
     @GetMapping("/prompt/semana")
     public String getPromptSemana(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient,
@@ -98,7 +101,8 @@ public class PromptBuilder {
 
         
         //PEGA ENQUETES QUE EU CRIEI
-        enquetesCriadas = user.getEventPoolList();
+        enquetesCriadas = eventPoolDataController.getAllEventPools(user.getEventPoolList());
+        
 
         //PEGA ENQUETES QUE EU RESPONDI
         enquetesRespondidas = user.getEventPoolNotifications();
@@ -212,7 +216,7 @@ public class PromptBuilder {
 
         
         //PEGA ENQUETES QUE EU CRIEI
-        enquetesCriadas = user.getEventPoolList();
+        enquetesCriadas = eventPoolDataController.getAllEventPools(user.getEventPoolList());
 
         //PEGA ENQUETES QUE EU RESPONDI
         enquetesRespondidas = user.getEventPoolNotifications();

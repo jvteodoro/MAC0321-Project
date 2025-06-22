@@ -2,6 +2,7 @@ package br.com.agendusp;
 
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,10 +29,12 @@ import br.com.agendusp.agendusp.AgendUspApplication;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.controller.CalendarDataController;
 import br.com.agendusp.agendusp.controller.EventsDataController;
+import br.com.agendusp.agendusp.controller.FormsController;
 import br.com.agendusp.agendusp.controller.HomeController;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.EventDate;
+import br.com.agendusp.agendusp.dataobjects.EventPool;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
@@ -73,6 +77,8 @@ public class NewTest {
     EventsDataController eventsDataController;
     @Autowired
     UserDataController userDataController;
+    @Autowired
+    FormsController formsController;
 
     
     @Test
@@ -469,8 +475,19 @@ public class NewTest {
             try{System.out.println(objectMapper.writeValueAsString(interval));}
             catch (Exception e){}
         }
+        MvcResult result = mockMvc.perform(post("/pool/create?start="+initFreeTime.getStart().toString()
+        +"&end="+initFreeTime.getEnd().toString()).content(objectMapper.writeValueAsString(mockEvent))).andReturn();
+        System.out.println(result.getResponse().getContentAsString());
     }
 
+    // Testes EventPoolDataController
+    @Test
+    @WithMockUser
+    public void getAllEventPoolsTest(){
+        
+    }
+
+    // Teste AI
     @Test
     @WithMockUser
     public void testPrompBuilder() throws Exception{

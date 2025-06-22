@@ -15,6 +15,7 @@ import br.com.agendusp.agendusp.documents.EventsResource;
 public interface EventsRepository extends MongoRepository<EventsResource, String>{
     /*public Optional<EventsResource> findById(String id);
     public List<EventsResource> findAll();*/
+
     public Optional<EventsResource> findByEventId(String eventId);
     @Query("{'calendarIds': ?0}")
     public Optional<ArrayList<EventsResource>> findAllByCalendarId(String calendarId);
@@ -27,5 +28,8 @@ public interface EventsRepository extends MongoRepository<EventsResource, String
 
     @Query("{ 'calendarIds': {$elemMatch: ?0}, 'end.date' : { $elemMatch: ?1}}")
     public Optional<ArrayList<EventsResource>> findEventsByEndDate(String calendarId, LocalDateTime endDate);
+
+    @Query("{ 'inicio': { $gte: ?0 }, 'fim': { $lte: ?1 } }")
+    ArrayList<EventsResource> findEventosDentroDoIntervalo(LocalDateTime dataInicio, LocalDateTime dataFim);
 
 }

@@ -20,11 +20,20 @@ public class EventPool {
       this.setEvent(event);
     }
 
-    public void setPossibleTimesFromDateTimeIntervalList(ArrayList<DateTimeInterval> dtList){
+    public void addPossibleTimesFromDateTimeIntervalList(ArrayList<DateTimeInterval> dtList){
+        if (this.posibleTimes == null){this.posibleTimes = new ArrayList<>();}
         for (DateTimeInterval dt:  dtList){
-            posibleTimes.add(new DateTimeIntervalPool(dt));
+            this.posibleTimes.add(new DateTimeIntervalPool(dt));
         }
     }
+    public void setPossibleTimesFromDateTimeIntervalList(ArrayList<DateTimeInterval> dtList){
+        ArrayList<DateTimeIntervalPool> intervalPool = new ArrayList<>();
+        for (DateTimeInterval dt:  dtList){
+            intervalPool.add(new DateTimeIntervalPool(dt));
+        }
+        this.posibleTimes = intervalPool;
+    }
+
 
 
     public void vote(String dateTimeIntervalPoolId){

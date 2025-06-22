@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import br.com.agendusp.agendusp.controller.CalendarDataController;
+import br.com.agendusp.agendusp.controller.EventPoolDataController;
 import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.google.GoogleCalendarListController;
@@ -31,6 +32,10 @@ public class DataConfig {
     @Bean
     public UserDataController userDataController(){
         return new UserDataController();
+    }
+    @Bean
+    public EventPoolDataController eventPoolDataController(){
+        return new EventPoolDataController();
     }
     @Bean
     public GoogleCalendarListController googleCalendarListController(){

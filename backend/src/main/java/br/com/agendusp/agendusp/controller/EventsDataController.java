@@ -3,10 +3,12 @@ package br.com.agendusp.agendusp.controller;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.agendusp.agendusp.dataobjects.Attendee;
+import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
@@ -28,6 +30,9 @@ public class EventsDataController {
     public ArrayList<EventsResource> getEventsOnInterval(String calendarId, LocalDateTime endDate) {
         return eventsRepository.findEventsByEndDate(calendarId, endDate)
                 .orElse(new ArrayList<EventsResource>());
+    }
+    public ArrayList<EventsResource> getEventsOnInterval(DateTimeInterval interval){
+        return eventsRepository.findEventosDentroDoIntervalo(interval.getStart(), interval.getEnd());
     }
 
     public EventsResource addEvent(EventsResource eventResource) {
@@ -122,6 +127,13 @@ public class EventsDataController {
         event.increaseLinks();
         return eventsRepository.save(event);
     }
+    public EventsResource getEventById(String eventId){
+        Optional<EventsResource> evRoptional = eventsRepository.findById(eventId);
+        if (evRoptional.isEmpty()){
+            return new EventsResource();
+        }
+        return evRoptional.get();
+    }
 
     public EventsResource getEvent(String eventId, String calendarId,
             String userId) {
@@ -140,6 +152,11 @@ public class EventsDataController {
                         + "' não encontrado para o calendário com ID '" + calendarId + "'."));
 
         return event;
+    }
+    public EventsResource updateByObject(EventsResource eventsResource){
+        String id = eventsResource.getId();
+        eventsRepository.save(eventsResource);
+        return eventsRepository.findById(id).orElse(new EventsResource()); 
     }
 
     public EventsResource updateEvent(String calendarId, String eventId, EventsResource eventResource, String userId) {
