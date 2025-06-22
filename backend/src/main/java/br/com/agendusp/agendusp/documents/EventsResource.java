@@ -49,7 +49,7 @@ public class EventsResource {
     String visibility;
     String iCalUID;
     String sequence;
-    Attendee[] attendees;
+    ArrayList<Attendee> attendees;
     boolean attendeesOmitted;
     ExtendedProperties extendedProperties;
     String hangoutLink;
@@ -60,7 +60,7 @@ public class EventsResource {
             String created, String updated, String summary, String description, String location, String colorId,
             CalendarPerson creator, CalendarPerson organizer, EventDate start, EventDate end,
             boolean endTimeUnspecified, String[] recurrence, String recurringEventId, EventDate originalStartTime,
-            String transparency, String visibility, String iCalUID, String sequence, Attendee[] attendees,
+            String transparency, String visibility, String iCalUID, String sequence, ArrayList<Attendee> attendees,
             boolean attendeesOmitted, ExtendedProperties extendedProperties, String hangoutLink) {
         this.links = links;
         this.eventId = eventId;
@@ -334,32 +334,21 @@ public class EventsResource {
     public void setSequence(String sequence) {
         this.sequence = sequence;
     }
-    public Attendee[] getAttendees() {
+    public ArrayList<Attendee> getAttendees() {
         return attendees;
     }
-    public void setAttendees(Attendee[] attendees) {
+    public void setAttendees(ArrayList<Attendee> attendees) {
         this.attendees = attendees;
     }
 
     public void addAttendee(Attendee attendee) {
         if (this.attendees == null) {
-            this.attendees = new Attendee[0];
+            this.attendees = new ArrayList<>();
         }
-        Attendee[] newAttendees = new Attendee[this.attendees.length + 1];
-        System.arraycopy(this.attendees, 0, newAttendees, 0, this.attendees.length);
-        newAttendees[this.attendees.length] = attendee;
-        this.attendees = newAttendees;
+        this.attendees.add(attendee);
     }
     public void removeAttendee(Attendee attendee) {
-        if (this.attendees != null) {
-            ArrayList<Attendee> attendeesList = new ArrayList<>();
-            for (Attendee a : this.attendees) {
-                if (!a.getCalendarPerson().getId().equals(attendee.getCalendarPerson().getId())) {
-                    attendeesList.add(a);
-                }
-            }
-            this.attendees = attendeesList.toArray(new Attendee[0]);
-        }
+        this.attendees.remove(attendee);
     }
 
     public boolean isAttendeesOmitted() {

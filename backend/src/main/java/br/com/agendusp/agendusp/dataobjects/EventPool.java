@@ -11,7 +11,20 @@ public class EventPool {
     int done;
     String id;
     String ownerId;
-    EventsResource event;
+    String eventId;
+    ArrayList<DateTimeIntervalPool> posibleTimes;
+
+    public EventPool (){}
+
+    public EventPool (EventsResource event){
+      this.setEvent(event);
+    }
+
+    public void setPossibleTimesFromDateTimeIntervalList(ArrayList<DateTimeInterval> dtList){
+        for (DateTimeInterval dt:  dtList){
+            posibleTimes.add(new DateTimeIntervalPool(dt));
+        }
+    }
     public ArrayList<Attendee> getAttendees() {
         return attendees;
     }
@@ -36,11 +49,14 @@ public class EventPool {
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
-    public EventsResource getEvent() {
-        return event;
+    public String getEventId() {
+        return this.eventId;
     }
     public void setEvent(EventsResource event) {
-        this.event = event;
+        this.eventId = event.getId();
+        this.id = event.getId();
+        this.done = event.getAttendees().size();
+        this.attendees = event.getAttendees();
     }
 
     @Override
@@ -50,8 +66,14 @@ public class EventPool {
                 ", done=" + done +
                 ", id='" + id + '\'' +
                 ", ownerId='" + ownerId + '\'' +
-                ", event=" + event +
+                ", eventId=" + eventId +
                 '}';
+    }
+    public ArrayList<DateTimeIntervalPool> getPosibleTimes() {
+        return posibleTimes;
+    }
+    public void setPosibleTimes(ArrayList<DateTimeIntervalPool> posibleTimes) {
+        this.posibleTimes = posibleTimes;
     }
     
 }
