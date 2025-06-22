@@ -3,6 +3,7 @@ package br.com.agendusp.agendusp.controller;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -36,7 +37,6 @@ public class FormsController {
         ArrayList<Attendee> attendees =  eventPool.getAttendees();
         for (Attendee at: attendees ){
             String attendeeId = at.getCalendarPerson().getId();
-
             userRepository.addEventPoolNotification(attendeeId, eventPool);
         }
         return eventPool;
@@ -55,6 +55,8 @@ public class FormsController {
         ArrayList<DateTimeInterval> initialFreeTime = new ArrayList<>();
         initialFreeTime.add(dateTimeInterval);
 
+
+        //Pegar todos os eventos no intervalo
         eventPool.setPossibleTimesFromDateTimeIntervalList(event.freeTime(initialFreeTime));
         String ownerId = eventPool.getOwnerId();
         userRepository.addEventPool(ownerId, eventPool);
@@ -62,7 +64,17 @@ public class FormsController {
     }
 
     @PostMapping("/pool/vote")
-    public EventPool vote(@RequestParam String dateTimeIntervalId ){
-        
+    public void vote(@RequestParam String eventPoolId, @RequestParam String dateTimeIntervalId ){
+        Optional<EventPool> evPool = eventPoolRepository.findById(eventPoolId);
+        if (evPool.isPresent()){
+            evPool.get().vote(dateTimeIntervalId);
+            evPool.get().getDone();
+        }
+
+    }
+
+    @PostMapping("/pool/createEvent")
+    public void createEvent(@RequestParam String dateTimeIntervalId){
+
     }
 }

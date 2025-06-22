@@ -25,6 +25,17 @@ public class EventPool {
             posibleTimes.add(new DateTimeIntervalPool(dt));
         }
     }
+
+
+    public void vote(String dateTimeIntervalPoolId){
+        for (DateTimeIntervalPool dtPool: this.posibleTimes){
+            if (dtPool.getId() == dateTimeIntervalPoolId){
+                dtPool.vote();
+            }
+        }
+    }
+    
+
     public ArrayList<Attendee> getAttendees() {
         return attendees;
     }
