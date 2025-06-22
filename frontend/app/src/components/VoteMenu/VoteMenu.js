@@ -107,7 +107,7 @@ const VoteMenu = (props) => {
     <main id="vote-menu">
       <h2>Vote nos melhores horários</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="off">
         <div className="timeslot-list-container">
           <h3>Horários disponíveis:</h3>
 

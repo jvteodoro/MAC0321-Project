@@ -14,7 +14,7 @@ import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.dataobjects.EventListResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class GoogleEventsController {
@@ -73,11 +73,15 @@ public class GoogleEventsController {
         .retrieve().toEntity(EventListResource.class).getBody();
         for (EventsResource resource: eventListResource.getItems()){
             try {
+                if (resource.getOrganizer() == null || resource.getOrganizer().getEmail() == null) {
+                    System.err.println("[SKIP] Event with id=" + resource.getId() + " summary=" + resource.getSummary() + " has null organizer or organizer email.");
+                    continue;
+                }
                 resource.setMainCalendarId(resource.getOrganizer().getEmail());
                 resource.addCalendarId(calendarId);
                 eventsDataController.addEvent(resource);
             } catch (Exception e) {
-                System.err.println(e);
+                System.err.println("[ERROR] Skipping event with id=" + resource.getId() + " summary=" + resource.getSummary() + ": " + e);
             }
         }
 

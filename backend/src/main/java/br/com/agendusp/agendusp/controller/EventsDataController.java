@@ -191,18 +191,13 @@ public class EventsDataController {
     }
 
     public EventsResource updateEvent(String calendarId, String eventId, EventsResource eventResource, String userId) {
-        CalendarResource calendar = calendarRepository.findById(calendarId).orElse(null);
-        EventsResource event = eventsRepository.findByEventId(eventId).orElse(null);
+        // CalendarResource calendar = calendarRepository.findById(calendarId).orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado."));
+        EventsResource event = eventsRepository.findById(eventId).orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId + "' não encontrado."));
+
         try {
             System.out.println(objMapper.writeValueAsString(event));
         } catch (Exception e) {
             System.err.println(e);
-        }
-        if (calendar == null) {
-            throw new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado.");
-        }
-        if (event == null) {
-            throw new IllegalArgumentException("Evento com ID '" + eventId + "' não encontrado.");
         }
         eventResource.setId(eventId);
         eventResource.setMainCalendarId(calendarId); // TODO FIX
@@ -212,7 +207,7 @@ public class EventsDataController {
 
     public EventsResource patchEvent(String calendarId, String eventId, EventsResource eventResource, String userId) {
         CalendarResource calendar = calendarRepository.findById(calendarId).orElse(null);
-        EventsResource event = eventsRepository.findByEventId(eventId).orElse(null);
+        EventsResource event = eventsRepository.findById(eventId).orElse(null);
         if (calendar == null) {
             throw new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado.");
         }
@@ -257,6 +252,12 @@ public class EventsDataController {
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Nenhum evento encontrado para o calendário com ID '" + calendarId + "'."));
 
+        try {
+            System.out.println("[DEGUB] Lista de eventos:\n     " + objMapper.writeValueAsString(events));
+        } catch(Exception e) {
+
+        }
+        
         return events;
     }
 

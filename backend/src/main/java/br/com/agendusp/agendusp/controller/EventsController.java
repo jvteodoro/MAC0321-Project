@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2Aut
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.agendusp.agendusp.documents.EventsResource;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface EventsController {
         public ResponseEntity<String> delete(String calendarId, String eventId,

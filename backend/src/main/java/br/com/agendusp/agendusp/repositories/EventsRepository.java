@@ -16,14 +16,15 @@ public interface EventsRepository extends MongoRepository<EventsResource, String
     /*public Optional<EventsResource> findById(String id);
     public List<EventsResource> findAll();*/
 
-    public Optional<EventsResource> findByEventId(String eventId);
+    @Query("{'id': ?0}")
+    public Optional<EventsResource> findById(String eventId);
     @Query("{'calendarIds': ?0}")
     public Optional<ArrayList<EventsResource>> findAllByCalendarId(String calendarId);
 
     @Query("{'id': ?0, 'calendarIds': ?1}")
     public Optional<EventsResource> findEventsResourceByEventIdAndCalendarId(String eventId, String calendarId);
 
-    @Query("{ 'eventId': ?0, 'attendees': { $elemMatch: { 'calendarPerson.id': ?1 } } }")
+    @Query("{ 'id': ?0, 'attendees': { $elemMatch: { 'calendarPerson.id': ?1 } } }")
     public Optional<EventsResource> findEventByEventIdAndUserId(String eventId, String userId);
 
     @Query("{ 'calendarIds': {$elemMatch: ?0}, 'end.date' : { $elemMatch: ?1}}")

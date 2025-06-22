@@ -190,6 +190,7 @@ const CreatePollMenu = () => {
             onChange={(e) => setPollTitle(e.target.value)}
             required
             placeholder="Enter poll title"
+            autoComplete="off"
           />
         </div>
 
@@ -201,6 +202,7 @@ const CreatePollMenu = () => {
             onChange={(e) => setPollDescription(e.target.value)}
             placeholder="Optional description for your poll"
             rows="3"
+            autoComplete="off"
           />
         </div>
 

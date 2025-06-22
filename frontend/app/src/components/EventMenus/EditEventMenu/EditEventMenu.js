@@ -50,6 +50,7 @@ const EditarEventoMenu = (props) => {
     email: "",
     displayName: "",
   });
+  const [originalEvent, setOriginalEvent] = useState(null);
 
   useEffect(() => {
     registerLocale("pt-BR", ptBR);
@@ -62,6 +63,7 @@ const EditarEventoMenu = (props) => {
 
         if (resposta.data) {
           const evento = resposta.data;
+          setOriginalEvent(evento); // Store the original event object
           setFormData({
             titulo: evento.summary || "",
             dataInicio: evento.start?.dateTime
@@ -93,7 +95,7 @@ const EditarEventoMenu = (props) => {
         }
       } catch (erro) {
         console.error("Erro ao carregar reunião:", erro);
-        alert("Erro ao carregar dados da reunião");
+        console.err("Erro ao carregar dados da reunião");
       } finally {
         setCarregando(false);
       }
@@ -154,38 +156,41 @@ const EditarEventoMenu = (props) => {
     if (Object.keys(erros).length > 0) return setErrosFormulario(erros);
 
     try {
-      const dadosEvento = {
-        id: eventId,
-        summary: formData.titulo,
-        start: {
-          dateTime: formData.dataInicio.toISOString(),
-          timeZone: "America/Sao_Paulo",
-        },
-        end: {
-          dateTime: formData.dataFim.toISOString(),
-          timeZone: "America/Sao_Paulo",
-        },
-        colorId: formData.cor.toString(),
-        description: formData.descricao || null,
-        location: formData.local || null,
-        attendees:
-          formData.convidados.length > 0
-            ? formData.convidados.map((email) => ({ email }))
-            : null,
-      };
+      if (!originalEvent) {
+        throw new Error("Evento original não carregado");
+      }
+      // Clone the original event object
+      const updatedEvent = { ...originalEvent };
 
-      alert(JSON.stringify(dadosEvento));
+      // Update only the properties from the form
+      updatedEvent.summary = formData.titulo;
+      updatedEvent.start = {
+        dateTime: formData.dataInicio.toISOString(),
+        timeZone: "America/Sao_Paulo",
+      };
+      updatedEvent.end = {
+        dateTime: formData.dataFim.toISOString(),
+        timeZone: "America/Sao_Paulo",
+      };
+      updatedEvent.colorId = formData.cor.toString();
+      updatedEvent.description = formData.descricao || null;
+      updatedEvent.location = formData.local || null;
+      updatedEvent.attendees =
+        formData.convidados.length > 0
+          ? formData.convidados.map((email) => ({ email }))
+          : null;
+
       await axios.post(
         `http://localhost:12003/events/update?calendarId=${calendarId}`,
-        dadosEvento,
+        updatedEvent,
         { withCredentials: true }
       );
 
-      alert("Reunião atualizada com sucesso!");
+      console.log("Reunião atualizada com sucesso!");
       window.location.href = "http://localhost:3000/";
     } catch (erro) {
       console.error("Falha ao atualizar reunião:", erro);
-      alert(erro.response?.data?.message || "Erro ao atualizar reunião");
+      console.err(erro.response?.data?.message || "Erro ao atualizar reunião");
     }
   };
 
@@ -235,6 +240,7 @@ const EditarEventoMenu = (props) => {
             value={formData.titulo}
             onChange={handleInputChange}
             className={errosFormulario.titulo ? "error-input" : ""}
+            autoComplete="off"
           />
         </label>
 
@@ -335,6 +341,7 @@ const EditarEventoMenu = (props) => {
             value={formData.local}
             onChange={handleInputChange}
             placeholder="Onde a reunião acontecerá"
+            autoComplete="off"
           />
         </label>
 
@@ -345,6 +352,7 @@ const EditarEventoMenu = (props) => {
             value={formData.descricao}
             onChange={handleInputChange}
             rows="1"
+            autoComplete="off"
           />
         </label>
 
@@ -362,6 +370,7 @@ const EditarEventoMenu = (props) => {
                   e.key === "Enter" &&
                   (e.preventDefault(), adicionarConvidado())
                 }
+                autoComplete="off"
               />
               <button
                 type="button"

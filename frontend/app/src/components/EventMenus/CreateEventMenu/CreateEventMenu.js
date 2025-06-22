@@ -193,7 +193,7 @@ const CriarEventoMenu = (props) => {
         { withCredentials: true }
       );
 
-      alert(
+      console.log(
         `Evento criado com sucesso!${
           resposta.data.hangoutLink
             ? `\nLink do Meet: ${resposta.data.hangoutLink}`
@@ -203,7 +203,7 @@ const CriarEventoMenu = (props) => {
       window.location.href = "/";
     } catch (erro) {
       console.error("Erro:", erro);
-      alert(erro.response?.data?.message || "Erro ao criar evento");
+      console.err(erro.response?.data?.message || "Erro ao criar evento");
     } finally {
       setCarregando(false);
     }
@@ -239,6 +239,7 @@ const CriarEventoMenu = (props) => {
             value={formData.titulo}
             onChange={handleInputChange}
             className={errosFormulario.titulo ? "error-input" : ""}
+            autoComplete="off"
           />
         </label>
 
@@ -383,6 +384,7 @@ const CriarEventoMenu = (props) => {
             value={formData.local}
             onChange={handleInputChange}
             placeholder="Onde o evento acontecerá"
+            autoComplete="off"
           />
         </label>
 
@@ -393,6 +395,7 @@ const CriarEventoMenu = (props) => {
             value={formData.descricao}
             onChange={handleInputChange}
             rows="2"
+            autoComplete="off"
           />
         </label>
 
@@ -410,6 +413,7 @@ const CriarEventoMenu = (props) => {
                   e.key === "Enter" &&
                   (e.preventDefault(), adicionarConvidado())
                 }
+                autoComplete="off"
               />
               <button
                 type="button"
