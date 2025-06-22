@@ -16,10 +16,10 @@ public interface EventsRepository extends MongoRepository<EventsResource, String
     /*public Optional<EventsResource> findById(String id);
     public List<EventsResource> findAll();*/
     public Optional<EventsResource> findByEventId(String eventId);
-    @Query("{'calendarIds': { $in: ?0}}")
+    @Query("{'calendarIds': ?0}")
     public Optional<ArrayList<EventsResource>> findAllByCalendarId(String calendarId);
 
-    @Query("{'eventId': ?0, 'calendarIds': { $in: ?1}}")
+    @Query("{'eventId': ?0, 'calendarIds': ?1}")
     public Optional<EventsResource> findEventsResourceByEventIdAndCalendarId(String eventId, String calendarId);
 
     @Query("{ 'eventId': ?0, 'attendees': { $elemMatch: { 'calendarPerson.id': ?1 } } }")

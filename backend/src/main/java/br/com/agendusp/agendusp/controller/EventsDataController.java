@@ -15,7 +15,7 @@ import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
 
 public class EventsDataController {
-  // Events
+    // Events
     @Autowired
     EventsRepository eventsRepository;
     @Autowired
@@ -26,10 +26,11 @@ public class EventsDataController {
     CalendarRepository calendarRepository;
 
     public ArrayList<EventsResource> getEventsOnInterval(String calendarId, LocalDateTime endDate) {
-            return eventsRepository.findEventsByEndDate(calendarId, endDate)
-            .orElse(new ArrayList<EventsResource>());
+        return eventsRepository.findEventsByEndDate(calendarId, endDate)
+                .orElse(new ArrayList<EventsResource>());
     }
-    public EventsResource addEvent(EventsResource eventResource){
+
+    public EventsResource addEvent(EventsResource eventResource) {
         eventsRepository.save(eventResource);
         return eventResource;
     }
@@ -91,7 +92,6 @@ public class EventsDataController {
         return eventsRepository.save(event);
     }
 
-    
     public EventsResource addAtendeeToEvent(String eventId, String calendarId, String userId, String atendeeUserId) {
         if (eventId == null || eventId.isEmpty() || calendarId == null || calendarId.isEmpty() || userId == null
                 || userId.isEmpty() || atendeeUserId == null) {
@@ -123,7 +123,6 @@ public class EventsDataController {
         return eventsRepository.save(event);
     }
 
-    
     public EventsResource getEvent(String eventId, String calendarId,
             String userId) {
         if (eventId == null || eventId.isEmpty() || calendarId == null || calendarId.isEmpty() || userId == null
@@ -143,7 +142,6 @@ public class EventsDataController {
         return event;
     }
 
-    
     public EventsResource updateEvent(String calendarId, String eventId, EventsResource eventResource, String userId) {
         CalendarResource calendar = calendarRepository.findByCalendarId(calendarId).orElse(null);
         EventsResource event = eventsRepository.findByEventId(eventId).orElse(null);
@@ -159,7 +157,6 @@ public class EventsDataController {
         return eventResource;
     }
 
-    
     public EventsResource patchEvent(String calendarId, String eventId, EventsResource eventResource, String userId) {
         CalendarResource calendar = calendarRepository.findByCalendarId(calendarId).orElse(null);
         EventsResource event = eventsRepository.findByEventId(eventId).orElse(null);
@@ -188,7 +185,6 @@ public class EventsDataController {
         return event;
     }
 
-    
     public ArrayList<EventsResource> getEvents(String calendarId,
             String userId) {
         if (calendarId == null || calendarId.isEmpty() || userId == null || userId.isEmpty()) {
@@ -196,16 +192,15 @@ public class EventsDataController {
         }
         userDataController.findUser(userId);
 
-        CalendarListResource calListUserItem = userDataController.findCalendarListResource(userId, calendarId);
+        CalendarListResource calListResource = userDataController.findCalendarListResource(userId, calendarId);
 
-        ArrayList<EventsResource> events = eventsRepository.findAllByCalendarId(calListUserItem.getCalendarId())
+        ArrayList<EventsResource> events = eventsRepository.findAllByCalendarId(calListResource.getCalendarId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Nenhum evento encontrado para o calendário com ID '" + calendarId + "'."));
 
         return events;
     }
 
-    
     public void removeEvent(String eventId, String calendarId, String userId) {
         if (eventId == null || eventId.isEmpty() || calendarId == null || calendarId.isEmpty() || userId == null
                 || userId.isEmpty()) {
@@ -230,7 +225,6 @@ public class EventsDataController {
         eventsRepository.delete(event);
     }
 
-    
     public void cancelEvent(String eventId, String calendarId, String userId) {
         if (eventId == null || eventId.isEmpty() || calendarId == null || calendarId.isEmpty() || userId == null
                 || userId.isEmpty()) {
