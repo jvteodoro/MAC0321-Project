@@ -21,6 +21,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import br.com.agendusp.agendusp.repositories.UserRepository;
+import br.com.agendusp.agendusp.services.CustomAuthenticationSuccessHandler;
 import br.com.agendusp.agendusp.services.CustomOAuth2UserService;
 
 // import static org.springframework.security.config.Customizer.withDefaults;
@@ -43,6 +44,11 @@ public class SecurityConfig {
 
     public SecurityConfig(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Bean
+    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler(){
+        return new CustomAuthenticationSuccessHandler();
     }
 
     @Bean
@@ -73,7 +79,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("http://localhost:3000/login-success", true)
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(OAuth2UserService())))
+                                .userService(OAuth2UserService())).successHandler(customAuthenticationSuccessHandler()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .build();
