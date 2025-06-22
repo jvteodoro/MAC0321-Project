@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.agendusp.agendusp.dataobjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPool;
+import br.com.agendusp.agendusp.dataobjects.EventDate;
 import br.com.agendusp.agendusp.dataobjects.EventPool;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.repositories.EventPoolRepository;
@@ -122,8 +123,13 @@ public class FormsController {
             for (DateTimeIntervalPool dtP: dt){
                 if (dtP.getId() == dateTimeIntervalId){
                     selected = dtP;
+                    EventDate start = new EventDate(selected.getDateTimeInterval().getStart());
+                    EventDate end = new EventDate(selected.getDateTimeInterval().getEnd());
+                    event.setStart(start);
+                    event.setEnd(end);
                 }
             }
+
             return eventsDataController.updateByObject(event);
         }
         return new EventsResource();
