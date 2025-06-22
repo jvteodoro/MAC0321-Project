@@ -1,14 +1,19 @@
 package br.com.agendusp.agendusp.documents;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.services.calendar.model.Event.ExtendedProperties;
 
 import br.com.agendusp.agendusp.dataobjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.EventDate;
 
 @Document(collection = "events")
@@ -86,6 +91,59 @@ public class EventsResource {
         this.attendeesOmitted = attendeesOmitted;
         this.extendedProperties = extendedProperties;
         this.hangoutLink = hangoutLink;
+    }
+
+    public ArrayList<DateTimeInterval> freeTime(ArrayList<DateTimeInterval> freeTimeVec) {
+        ArrayList<DateTimeInterval> freeTimeVecNew = new ArrayList<>();
+        
+        for (DateTimeInterval interval: freeTimeVec){
+
+            LocalDateTime eventStart = this.getStart().getDateTime();
+            LocalDateTime eventEnd = this.getEnd().getDateTime();
+            LocalDateTime freeTimeStart = interval.getStart();
+            LocalDateTime freeTimeEnd = interval.getEnd();
+
+            DateTimeInterval beforeEventFreeTime = new DateTimeInterval();
+            DateTimeInterval afterEventFreeTime = new DateTimeInterval();
+            beforeEventFreeTime.setStart(freeTimeStart);
+            beforeEventFreeTime.setEnd(eventStart);
+            afterEventFreeTime.setStart(eventEnd);
+            afterEventFreeTime.setEnd(freeTimeEnd);
+            
+            System.err.println("BeforeEventFreeTime: "+beforeEventFreeTime.getEnd().toString());;
+            // System.err.println("AfterEventFreeTime: "+objMapper.writeValueAsString(afterEventFreeTime));
+         
+
+
+            int index = freeTimeVec.indexOf(interval);
+
+            // Não há tempo livre!! ;-;
+            if (eventStart.isBefore(freeTimeStart) && eventEnd.isAfter(freeTimeEnd)){
+                
+            }
+            //Caso onde não temos tempo live antes do evento
+             else if (eventStart.isBefore(freeTimeStart) && eventEnd.isBefore(freeTimeEnd)){
+                freeTimeVecNew.add(afterEventFreeTime);
+             }
+             // Caso onde não há tempo livre depois do evento
+             else if ((eventStart.isAfter(freeTimeStart) && eventStart.isBefore(freeTimeEnd)) && 
+             eventEnd.isAfter(freeTimeEnd)){
+                freeTimeVecNew.add(beforeEventFreeTime);
+             }
+             // Temos tempo livre antes e depois do evento
+             else if (eventStart.isAfter(freeTimeStart) && eventStart.isBefore(freeTimeEnd) &&
+              eventEnd.isBefore(freeTimeEnd) && eventEnd.isAfter(freeTimeStart)) {
+                freeTimeVecNew.add(beforeEventFreeTime);
+                freeTimeVecNew.add(afterEventFreeTime);
+             }
+             // O evento e o tempo livre são disjuntos
+             else if (eventStart.isAfter(freeTimeEnd)){
+                freeTimeVecNew.add(interval);
+             }
+
+        }
+        //Collections.sort(freeTimeVec);
+        return freeTimeVecNew;
     }
 
     public String getEventId() {
@@ -329,6 +387,6 @@ public class EventsResource {
                 "id='" + id + '\'' +
                 ", eventId='" + eventId + '\'' +
                 ", summary=" + summary +
-                ", description='" + description + '\'' 
+                ", description='" + description + '\'';
     }
 }

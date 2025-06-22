@@ -192,7 +192,7 @@ public class CalendarListResource {
         return "CalendarListResource{" +
                 "calendarId='" + calendarId + '\'' +
                 ", summary='" + summary + '\'' +
-                ", description='" + description + '\''
+                ", description='" + description + '\''+
                 '}';
        
     }
