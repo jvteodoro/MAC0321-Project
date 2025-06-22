@@ -1,6 +1,7 @@
 package br.com.agendusp.agendusp.services;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +9,12 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.agendusp.agendusp.calendar.EventsResource;
+import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.controller.CalendarDataController;
 import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.dataobjects.EventPool;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 
 @RestController
@@ -79,10 +82,10 @@ public class PromptBuilder {
 
         
         //PEGA ENQUETES QUE EU CRIEI
-        enquetesCriadas = user.getPoolList;
+        enquetesCriadas = user.getEventPoolList();
 
         //PEGA ENQUETES QUE EU RESPONDI
-        enquetesRespondidas = user.getPoolNotifications;
+        enquetesRespondidas = user.getEventPoolNotifications();
 
     
 
@@ -97,7 +100,7 @@ public class PromptBuilder {
         if (compromissos == null || compromissos.isEmpty()) {
             prompt.append("Não há compromissos!\n");
         } else {
-            for (String compromisso : compromissos) {
+            for (EventsResource compromisso : compromissos) {
                 prompt.append("- ").append(compromisso).append("\n");
             }
         }
@@ -105,23 +108,23 @@ public class PromptBuilder {
         if (enquetesCriadas == null || enquetesCriadas.isEmpty()) {
             prompt.append("Não há enquetes criadas pelo usuário!\n");
         } else {
-            for (String enquetesCriadas : enquetesCriadas) {
-                prompt.append("- ").append(enquetesCriadas).append("\n");
+            for (EventPool enquete : enquetesCriadas) {
+                prompt.append("- ").append(enquete).append("\n");
             }
         }
         prompt.append("\nResultado de enquetes respondidas pelo usuário:\n");
         if (enquetesRespondidas == null || enquetesRespondidas.isEmpty()) {
             prompt.append("Não há enquetes respondidas pelo usuário!\n");
         } else {
-            for (String enquetesRespondidas : enquetesRespondidas) {
-                prompt.append("- ").append(enquetesRespondidas).append("\n");
+            for (EventPool enquete : enquetesRespondidas) {
+                prompt.append("- ").append(enquete).append("\n");
             }
         }
         prompt.append("\nEventos cancelados:\n");
         if (eventosCancelados == null || eventosCancelados.isEmpty()) {
             prompt.append("Não há enquetes!\n");
         } else {
-            for (String evento : eventosCancelados) {
+            for (EventsResource evento : eventosCancelados) {
                 prompt.append("- ").append(evento).append("\n");
             }
         }
@@ -189,10 +192,10 @@ public class PromptBuilder {
 
         
         //PEGA ENQUETES QUE EU CRIEI
-        enquetesCriadas = user.getPoolList;
+        enquetesCriadas = user.getEventPoolList();
 
         //PEGA ENQUETES QUE EU RESPONDI
-        enquetesRespondidas = user.getPoolNotifications;
+        enquetesRespondidas = user.getEventPoolNotifications();
 
         prompt.append("Você é uma inteligência artificial que gera relatórios de compromissos diários.\n");
         prompt.append("Sua tarefa é criar um informe formal e claro com base nos compromissos do dia " + dia + ".\n");
@@ -206,7 +209,7 @@ public class PromptBuilder {
         if (compromissos == null || compromissos.isEmpty()) {
             prompt.append("Não há compromissos!\n");
         } else {
-            for (String compromisso : compromissos) {
+            for (EventsResource compromisso : compromissos) {
                 prompt.append("- ").append(compromisso).append("\n");
             }
         }
@@ -214,23 +217,23 @@ public class PromptBuilder {
         if (enquetesCriadas == null || enquetesCriadas.isEmpty()) {
             prompt.append("Não há enquetes criadas pelo usuário!\n");
         } else {
-            for (String enquetesCriadas : enquetesCriadas) {
-                prompt.append("- ").append(enquetesCriadas).append("\n");
+            for (EventPool enquete : enquetesCriadas) {
+                prompt.append("- ").append(enquete).append("\n");
             }
         }
         prompt.append("\nResultado de enquetes respondidas pelo usuário:\n");
         if (enquetesRespondidas == null || enquetesRespondidas.isEmpty()) {
             prompt.append("Não há enquetes respondidas pelo usuário!\n");
         } else {
-            for (String enquetesRespondidas : enquetesRespondidas) {
-                prompt.append("- ").append(enquetesRespondidas).append("\n");
+            for (EventPool enquete : enquetesRespondidas) {
+                prompt.append("- ").append(enquete).append("\n");
             }
         }
         prompt.append("\nEventos cancelados:\n");
         if (eventosCancelados == null || eventosCancelados.isEmpty()) {
             prompt.append("Não há enquetes!\n");
         } else {
-            for (String evento : eventosCancelados) {
+            for (EventsResource evento : eventosCancelados) {
                 prompt.append("- ").append(evento).append("\n");
             }
         }
