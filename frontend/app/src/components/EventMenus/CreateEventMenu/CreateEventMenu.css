@@ -42,7 +42,7 @@
     left: 35%;
     width: 30%;
     height: 70%;
-    border: solid var(main-font-color);
+    border: solid var(--main-font-color);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }

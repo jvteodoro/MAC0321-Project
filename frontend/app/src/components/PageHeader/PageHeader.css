@@ -24,7 +24,18 @@
 #nav-buttons button{
     font-size: 1.3em;
     padding: 0.2em 0.5em;
-    border-radius: 15px;
+    border-radius: 0.4em;
     font-weight: bold;
     border: 0;
+}
+
+#notifications-button {
+    position: relative;
+    z-index: 0;
+}
+
+#notifications-button.connected-to-list{
+    background-color: var(--secondary-hoverselect-color);
+    border-radius: 0.4em 0.4em 0 0;
+    z-index: 2;
 }
