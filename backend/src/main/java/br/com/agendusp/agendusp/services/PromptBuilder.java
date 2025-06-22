@@ -26,6 +26,20 @@ public class PromptBuilder {
     CalendarDataController calendarDataController;
     @Autowired
     EventsDataController eventsDataController;
+    
+    @GetMapping("/prompt/semana")
+    public String getPromptSemana(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient,
+                                    @RequestParam String dataInicial,
+                                    @RequestParam(required = false) String calendarId) {
+        return getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
+    }
+
+    @GetMapping("/prompt/dia")
+    public String getPromptDia(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient,
+                                @RequestParam String dataInicial,
+                                @RequestParam(required = false) String calendarId) {
+        return getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
+    }
 
     public String getPromptParaInformeSemana(
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient, String dataInicial, String calendarId) {
@@ -104,6 +118,10 @@ public class PromptBuilder {
                 prompt.append("- ").append(compromisso).append("\n");
             }
         }
+
+        prompt.append(
+                "Com esses dados, calcule a quantidade de horas que os eventos agendados para esse dia ocupam.\n");
+
         prompt.append("\nResultado de enquetes criadas pelo usuário:\n");
         if (enquetesCriadas == null || enquetesCriadas.isEmpty()) {
             prompt.append("Não há enquetes criadas pelo usuário!\n");
@@ -213,6 +231,10 @@ public class PromptBuilder {
                 prompt.append("- ").append(compromisso).append("\n");
             }
         }
+
+        prompt.append(
+                "Com esses dados, calcule a quantidade de horas que os eventos agendados para esse dia ocupam.\n");
+
         prompt.append("\nResultado de enquetes criadas pelo usuário:\n");
         if (enquetesCriadas == null || enquetesCriadas.isEmpty()) {
             prompt.append("Não há enquetes criadas pelo usuário!\n");

@@ -71,6 +71,7 @@ public class NewTest {
     EventsDataController eventsDataController;
     @Autowired
     UserDataController userDataController;
+
     
     @Test
     public void testHome() throws Exception{
@@ -468,4 +469,60 @@ public class NewTest {
         }
     }
 
+    @Test
+    @WithMockUser
+    public void testPrompBuilder() throws Exception{
+        PromptBuilder promptBuilder = new PromptBuilder();
+        
+        String calendarId;
+        String dataInicial = "2025-06-21T00:00:00Z";
+        EventsResource mockEvent = new EventsResource();
+        String userId = "teste@gmail.com";
+        User user = new User();
+        user.setId(userId);
+        ArrayList<CalendarListResource> calendarList = new ArrayList<>();
+        CalendarListResource calR1 = new CalendarListResource();
+        CalendarListResource calR2 = new CalendarListResource();
+        calR1.setId("calR1");
+        calR1.setCalendarId("calR1");
+        calR2.setId("calR2");
+        calR2.setCalendarId("calR2");
+        calendarList.add(calR1);
+        calendarList.add(calR2);
+        user.setCalendarList(calendarList);
+        OAuth2AuthorizedClient authorizedClient = mock(OAuth2AuthorizedClient.class);
+
+
+        calendarId = null;
+        String promptCalendarioDia = PromptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
+        if (prompCalendarioDia != null){
+            System.out.println("Prompt Dia: "+promptCalendarioDia);
+        }
+
+
+        calendarId = "calR1";
+        String promptTotalDia = PromptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
+        if (prompTotalDia != null){
+            System.out.println("Prompt Dia: "+promptTotalDia);
+        }
+
+        calendarId = null;
+        String promptCalendarioSemana = PromptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
+        if (prompCalendarioSemana != null){
+            System.out.println("Prompt Semana: "+promptCalendarioSemana);
+        }
+
+
+        calendarId = "calR1";
+        String promptTotalSemana = PromptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
+        if (prompTotalSemana != null){
+            System.out.println("Prompt Semana: "+promptTotalSemana);
+        }
+    
+        ResultActions result = mockMvc.perform(get("/prompt/semana")).andDo(MockMvcResultHandlers.print());
+        ResultActions result = mockMvc.perform(get("/prompt/dia")).andDo(MockMvcResultHandlers.print());
+    }
+        
+
+        
 }
