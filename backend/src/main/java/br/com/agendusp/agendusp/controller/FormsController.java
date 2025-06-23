@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,7 +43,7 @@ public class FormsController {
     
 
     @MessageMapping("/pool/send/{eventPoolId}")
-    public void sendPool(@RequestParam String eventPoolId){
+    public void sendPool(@PathVariable String eventPoolId){
         Optional<EventPool> eventPoolOptional = eventPoolRepository.findById(eventPoolId);
         if (eventPoolOptional.isPresent()){
             EventPool eventPool = eventPoolRepository.save(eventPoolOptional.get());
@@ -52,15 +53,15 @@ public class FormsController {
     }
 
     @MessageMapping("/pool/vote/{eventPoolId}")
-    public void voteEventPool(@RequestParam String eventPoolId, @RequestParam String dateTimeIntervalId){
+    public void voteEventPool(@PathVariable String eventPoolId, @RequestParam String dateTimeIntervalId){
         String destination = "/notify/pool/"+eventPoolId;
          msgTemplate.convertAndSend(destination, this.vote(eventPoolId, dateTimeIntervalId));
     }
 
 
     @MessageMapping("/pool/create/{eventPoolId}/{dateTimeIntervalId}")
-    public void createEventFromPool(@RequestParam String eventPoolId, 
-    @RequestParam String dateTimeIntervalId){
+    public void createEventFromPool(@PathVariable String eventPoolId, 
+    @PathVariable String dateTimeIntervalId){
 
         this.createEvent(eventPoolId, dateTimeIntervalId);
         eventPoolRepository.findById(eventPoolId);
