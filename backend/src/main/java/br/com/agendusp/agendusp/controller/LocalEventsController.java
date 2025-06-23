@@ -140,6 +140,10 @@ public class LocalEventsController implements EventsController {
         String userId = authorizedClient.getPrincipalName();
         return eventsDataController.getEvents(calendarId, userId);
     }
+    @PostMapping("/events/cancel")
+    public EventsResource cancel(@RequestParam String eventId){
+        return eventsDataController.cancelEvent(eventId);
+    }
 
     @PostMapping("/events/update")
     public EventsResource update(

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -75,6 +76,14 @@ public class EventsDataController {
         eventResource.setStatus("confirmed"); // Definindo o status do evento como confirmado
 
         return eventsRepository.insert(eventResource);
+    }
+
+    public EventsResource cancelEvent(String eventId){
+        EventsResource event = eventsRepository.findById(eventId).orElse(new EventsResource());
+        event.setStatus("cancelled");
+        eventsRepository.save(event);
+        return event;
+
     }
 
     // Helper to generate a random 26-character id (lowercase letters and numbers)

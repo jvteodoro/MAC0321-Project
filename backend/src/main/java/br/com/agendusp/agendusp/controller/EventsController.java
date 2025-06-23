@@ -40,5 +40,6 @@ public interface EventsController {
         public EventsResource update(@RequestBody EventsResource event, @RequestParam String calendarId,
                         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient);
 
+        public EventsResource cancel(@RequestParam String eventId);
         // public WatchResponse watch(String calendarId, WatchRequest watchRequest);
 }
