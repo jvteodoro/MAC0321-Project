@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,27 +68,34 @@ public class FormsController {
         eventPoolRepository.findById(eventPoolId);
     }
 
-    @PostMapping("/pool/create")
-    public EventPool createPool(@RequestParam String startDate, 
-    @RequestParam String endDate, @RequestBody EventsResource event,
+    @GetMapping("/pool/create")
+    public EventPool createPool(@RequestParam String eventId, @RequestParam String startDate, 
+    @RequestParam String endDate,
     @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient){
+        EventsResource event = eventsDataController.getEventById(eventId);
         EventPool eventPool = new EventPool(event);
 
+        System.out.println("[DEBUG] 1");
+        
         DateTimeInterval dateTimeInterval = new DateTimeInterval();
         dateTimeInterval.setStart(LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME));
         dateTimeInterval.setEnd(LocalDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME));
-      
+        
+        System.out.println("[DEBUG] 2");
         ArrayList<DateTimeInterval> initialFreeTime = new ArrayList<>();
         initialFreeTime.add(dateTimeInterval);
-
-
+        
+        
         //Pegar todos os eventos no intervalo
-        ArrayList<EventsResource> allEvents = eventsDataController.getEventsOnInterval(endDate, null);
+        ArrayList<EventsResource> allEvents = eventsDataController.getEventsOnInterval(dateTimeInterval);
+        System.out.println("[DEBUG] 3");
         for (EventsResource ev: allEvents){
             initialFreeTime = ev.freeTime(initialFreeTime);
+            System.out.println("[DEBUG] A");
         }
         eventPool.setPossibleTimesFromDateTimeIntervalList(initialFreeTime);
-       
+        System.out.println("[DEBUG] 4");
+        
         String ownerId = eventPool.getOwnerId();
         userRepository.addEventPool(ownerId, eventPool);
         eventPoolRepository.insert(eventPool);

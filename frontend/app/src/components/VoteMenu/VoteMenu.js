@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ptBR from "date-fns/locale/pt-BR";
@@ -9,6 +9,7 @@ import "./VoteMenu.css";
 
 const VoteMenu = (props) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { eventId } = location.state || {};
 
   // State for the component
@@ -106,6 +107,15 @@ const VoteMenu = (props) => {
   return (
     <main id="vote-menu">
       <h2>Vote nos melhores horários</h2>
+
+      <button
+        type="button"
+        className="submit-button"
+        style={{ marginBottom: "1em", width: "auto" }}
+        onClick={() => navigate("/evento/criarEnquete", { state: { eventId } })}
+      >
+        Criar enquete
+      </button>
 
       <form onSubmit={handleSubmit} autoComplete="off">
         <div className="timeslot-list-container">

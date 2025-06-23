@@ -71,7 +71,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/events/**")) // <-- added "/events/**"
+                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/events/**", "/pool/**")) // <-- added "/pool/**"
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(
                         "/", 
@@ -79,7 +79,8 @@ public class SecurityConfig {
                         "/api/auth/**", 
                         "/oauth2/**",
                         "/events/update",
-                        "/events/**"
+                        "/events/**",
+                        "/pool/**" // <-- added here
                     ).permitAll();
                     auth.anyRequest().authenticated();
                 })

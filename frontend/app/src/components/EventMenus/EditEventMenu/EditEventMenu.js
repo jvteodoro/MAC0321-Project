@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../EventMenu.css";
@@ -24,6 +24,7 @@ const EditarEventoMenu = (props) => {
   };
 
   const location = useLocation();
+  const navigate = useNavigate();
   const { calendarId, eventId } = location.state || {};
 
   // Estados do componente
@@ -51,6 +52,8 @@ const EditarEventoMenu = (props) => {
     displayName: "",
   });
   const [originalEvent, setOriginalEvent] = useState(null);
+  const [pollSuccess, setPollSuccess] = useState(false);
+  const [pollError, setPollError] = useState(null);
 
   useEffect(() => {
     registerLocale("pt-BR", ptBR);
@@ -235,6 +238,43 @@ const EditarEventoMenu = (props) => {
     window.location.href = "http://localhost:3000/";
   };
 
+  // Helper to get start/end of the day in ISO string
+  const getDayInterval = (date) => {
+    if (!date) return [null, null];
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(date);
+    end.setHours(23, 59, 59, 99);
+    return [
+      start.toISOString().split("T")[0] + "T00:00:00",
+      end.toISOString().split("T")[0] + "T23:59:59",
+    ];
+  };
+
+  // Handler for "Criar enquete"
+  const handleCreatePoll = async () => {
+    setPollError(null);
+    setPollSuccess(false);
+    if (!originalEvent || !formData.dataInicio) {
+      setPollError("Evento não carregado ou data inválida.");
+      return;
+    }
+    const [startDate, endDate] = getDayInterval(formData.dataInicio);
+    try {
+      await axios.get(
+        `http://localhost:12003/pool/create?eventId=${originalEvent.id}&startDate=${startDate}&endDate=${endDate}`,
+        {
+          withCredentials: true,
+        }
+      );
+      setPollSuccess(true);
+    } catch (err) {
+      setPollError(
+        err.response?.data?.message || "Erro ao criar enquete."
+      );
+    }
+  };
+
   if (carregando) {
     return (
       <main id="event-menu">
@@ -248,6 +288,25 @@ const EditarEventoMenu = (props) => {
       <button id="close-button" onClick={aoFechar}>
         <i className="fa-solid fa-close"></i>
       </button>
+
+      <button
+        type="button"
+        className="submit-button"
+        style={{ marginBottom: "1em", width: "auto" }}
+        onClick={handleCreatePoll}
+      >
+        Criar enquete
+      </button>
+      {pollSuccess && (
+        <div className="success" style={{ marginBottom: "1em" }}>
+          Enquete criada com sucesso!
+        </div>
+      )}
+      {pollError && (
+        <div className="error-message" style={{ marginBottom: "1em" }}>
+          {pollError}
+        </div>
+      )}
 
       <div id="event-origin-info">
         <div id="criador-display">

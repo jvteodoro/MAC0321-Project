@@ -9,7 +9,7 @@ import CalendarMenu from "./components/CalendarMenu/CalendarMenu";
 import CreateEventMenu from "./components/EventMenus/CreateEventMenu";
 import EditEventMenu from "./components/EventMenus/EditEventMenu";
 import VoteMenu from "./components/VoteMenu/VoteMenu";
-import CreatePollMenu from "./components/CreatePollMenu/CreatePollMenu";
+// import CreatePollMenu from "./components/OBSOLETE_CreatePollMenu/CreatePollMenu";
 import WeeklyParticipationVisualization from "./components/DataVisualization/WeeklyParticipationVisualization/WeeklyParticipationVisualization";
 import AIResponseVisualization from "./components/DataVisualization/AIResponseVisualization/AIResponseVisualization";
 
@@ -58,7 +58,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/evento/criarEnquete"
               element={
                 <PrivateRoute>
@@ -66,7 +66,7 @@ function App() {
                   <CreatePollMenu/>
                 </PrivateRoute>
               }
-            />
+            /> */}
           <Route
             path="/votar"
             element={

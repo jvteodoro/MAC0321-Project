@@ -9,7 +9,7 @@ import "./CreatePollMenu.css";
 
 const CreatePollMenu = () => {
   const location = useLocation();
-  const { calendarId, initialDate } = location.state || {};
+  const { eventId } = location.state || {};
 
   // Component state
   const [availableSlots, setAvailableSlots] = useState([]);
@@ -21,10 +21,8 @@ const CreatePollMenu = () => {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [newSlot, setNewSlot] = useState({
-    start: initialDate ? new Date(initialDate) : null,
-    end: initialDate
-      ? new Date(new Date(initialDate).getTime() + 60 * 60 * 1000)
-      : null,
+    start: null,
+    end: null,
   });
 
   // Fetch available time slots from backend
@@ -34,19 +32,11 @@ const CreatePollMenu = () => {
     const fetchAvailableSlots = async () => {
       try {
         const response = await axios.get(
-          `/api/calendar/${calendarId}/availability`,
-          {
-            params: {
-              date: initialDate
-                ? new Date(initialDate).toISOString()
-                : new Date().toISOString(),
-            },
-            withCredentials: true,
-          }
+          `/events/${eventId}/timeslots`,
+          { withCredentials: true }
         );
-
         setAvailableSlots(
-          response.data.availableSlots.map((slot) => ({
+          response.data.timeSlots.map((slot) => ({
             ...slot,
             start: new Date(slot.start),
             end: new Date(slot.end),
@@ -55,16 +45,16 @@ const CreatePollMenu = () => {
         setLoading(false);
       } catch (err) {
         setError(
-          err.response?.data?.message || "Failed to load available time slots"
+          err.response?.data?.message || "Falha ao carregar horários disponíveis"
         );
         setLoading(false);
       }
     };
 
-    if (calendarId) {
+    if (eventId) {
       fetchAvailableSlots();
     }
-  }, [calendarId, initialDate]);
+  }, [eventId]);
 
   // Handle time selection for manual slot addition
   const handleTimeChange = (time, field) => {
@@ -130,7 +120,7 @@ const CreatePollMenu = () => {
     e.preventDefault();
 
     if (selectedSlots.length === 0) {
-      setError("Please select at least one time slot");
+      setError("Selecione pelo menos um horário");
       return;
     }
 
@@ -141,16 +131,16 @@ const CreatePollMenu = () => {
       await axios.post(
         `/api/polls/create`,
         {
+          eventId,
           title: pollTitle,
           description: pollDescription,
           timeSlots: selectedSlots,
-          calendarId,
         },
         { withCredentials: true }
       );
       setSuccess(true);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to create poll");
+      setError(err.response?.data?.message || "Falha ao criar enquete");
     } finally {
       setSubmitting(false);
     }
@@ -167,50 +157,50 @@ const CreatePollMenu = () => {
   };
 
   if (loading)
-    return <div className="loading">Loading available time slots...</div>;
+    return <div className="loading">Carregando horários disponíveis...</div>;
   if (success)
     return (
       <div className="success">
-        <h3>Poll created successfully!</h3>
-        <p>Your participants can now vote on the selected time slots.</p>
+        <h3>Enquete criada com sucesso!</h3>
+        <p>Os participantes podem votar nos horários selecionados.</p>
       </div>
     );
-	
+
   return (
     <div className="create-poll-container">
-      <h2>Create New Time Poll</h2>
+      <h2>Criar nova enquete de horários</h2>
 
       <form id="create-poll-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="pollTitle">Poll Title*</label>
+          <label htmlFor="pollTitle">Título da Enquete*</label>
           <input
             id="pollTitle"
             type="text"
             value={pollTitle}
             onChange={(e) => setPollTitle(e.target.value)}
             required
-            placeholder="Enter poll title"
+            placeholder="Digite o título da enquete"
             autoComplete="off"
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="pollDescription">Description</label>
+          <label htmlFor="pollDescription">Descrição</label>
           <textarea
             id="pollDescription"
             value={pollDescription}
             onChange={(e) => setPollDescription(e.target.value)}
-            placeholder="Optional description for your poll"
+            placeholder="Descrição opcional para sua enquete"
             rows="3"
             autoComplete="off"
           />
         </div>
 
         <div className="time-selection-section">
-          <h3>Available Time Slots</h3>
+          <h3>Horários disponíveis</h3>
 
           {availableSlots.length === 0 ? (
-            <p>No available time slots found for the selected date.</p>
+            <p>Nenhum horário disponível encontrado.</p>
           ) : (
             <div className="available-slots">
               {availableSlots.map((slot, index) => (
@@ -236,7 +226,7 @@ const CreatePollMenu = () => {
           )}
 
           <div className="manual-slot-creation">
-            <h4>Add Custom Time Slot</h4>
+            <h4>Adicionar horário personalizado</h4>
             <div className="time-inputs">
               <DatePicker
                 selected={newSlot.start}
@@ -244,24 +234,24 @@ const CreatePollMenu = () => {
                 showTimeSelect
                 showTimeSelectOnly
                 timeIntervals={15}
-                timeCaption="Time"
+                timeCaption="Hora"
                 dateFormat="HH:mm"
                 timeFormat="HH:mm"
                 locale="pt-BR"
-                placeholderText="Start time"
+                placeholderText="Início"
               />
-              <span>to</span>
+              <span>até</span>
               <DatePicker
                 selected={newSlot.end}
                 onChange={(time) => handleTimeChange(time, "end")}
                 showTimeSelect
                 showTimeSelectOnly
                 timeIntervals={15}
-                timeCaption="Time"
+                timeCaption="Hora"
                 dateFormat="HH:mm"
                 timeFormat="HH:mm"
                 locale="pt-BR"
-                placeholderText="End time"
+                placeholderText="Fim"
                 minTime={newSlot.start}
               />
               <button
@@ -270,17 +260,17 @@ const CreatePollMenu = () => {
                 onClick={addManualSlot}
                 disabled={!newSlot.start || !newSlot.end}
               >
-                Add Custom Slot
+                Adicionar horário
               </button>
             </div>
           </div>
         </div>
 
         <div className="selected-slots-section">
-          <h3>Selected Time Slots for Poll ({selectedSlots.length})</h3>
+          <h3>Horários selecionados para a enquete ({selectedSlots.length})</h3>
 
           {selectedSlots.length === 0 ? (
-            <p className="empty-message">No slots selected yet</p>
+            <p className="empty-message">Nenhum horário selecionado ainda</p>
           ) : (
             <ul className="selected-slots">
               {selectedSlots.map((slot, index) => (
@@ -309,7 +299,7 @@ const CreatePollMenu = () => {
             className="submit-button"
             disabled={selectedSlots.length === 0 || submitting}
           >
-            {submitting ? "Creating Poll..." : "Create Poll"}
+            {submitting ? "Criando enquete..." : "Criar Enquete"}
           </button>
         </div>
       </form>
@@ -318,8 +308,7 @@ const CreatePollMenu = () => {
 };
 
 CreatePollMenu.propTypes = {
-  calendarId: PropTypes.string,
-  initialDate: PropTypes.instanceOf(Date),
+  // eventId is passed via route state
 };
 
 export default CreatePollMenu;

@@ -1,0 +1,79 @@
+#stats-menu {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  height: 0;
+  width: 0;
+  visibility: hidden;
+  overflow: hidden;
+  border-radius: 0.4em 0 0.4em 0.4em;
+  background-color: var(--main-hoverselect-color);
+  padding: 0.1em;
+  z-index: 100;
+}
+
+#stats-menu.extended {
+  top: 100%;
+  visibility: visible;
+  height: 15em;
+  width: 18em;
+  background-color: var(--secondary-hoverselect-color);
+  outline: inset 2px var(--main-color);
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+}
+
+#stats-header {
+  margin: 0 0 0.5em 0;
+  text-align: center;
+}
+
+.stats-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.stats-inputs label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1em;
+  gap: 0.2em;
+}
+
+.generate-stats-button {
+  margin-top: 0.5em;
+  padding: 0.5em;
+  border-radius: 0.3em;
+  background: var(--main-color);
+  border: none;
+  cursor: pointer;
+}
+
+.generate-stats-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stats-result {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 0.5em;
+}
+
+.stats-output {
+  font-size: 0.95em;
+  background: #fff2;
+  border-radius: 0.3em;
+  padding: 0.5em;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.error {
+  color: #d32f2f;
+  font-weight: bold;
+  margin-top: 0.5em;
+}
