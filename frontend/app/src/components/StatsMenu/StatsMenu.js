@@ -12,18 +12,39 @@ const StatsMenu = ({ visible }) => {
   const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
 
+  function formatLocalDateTime(date) {
+    if (!date) return "";
+    const pad = (n) => n.toString().padStart(2, "0");
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth() + 1) +
+      "-" +
+      pad(date.getDate()) +
+      "T" +
+      pad(date.getHours()) +
+      ":" +
+      pad(date.getMinutes()) +
+      ":" +
+      pad(date.getSeconds())
+    );
+  }
+
   const handleGenerate = async () => {
     setLoading(true);
     setStats(null);
     setError(null);
     try {
       const params = {
-        start: start ? start.toISOString() : "",
-        end: end ? end.toISOString() : "",
+        start: formatLocalDateTime(start),
+        end: formatLocalDateTime(end),
       };
       const response = await axios.get(
-        `/api/stats/generate`,
-        { params, withCredentials: true }
+        `http://localhost:12003/stats`,
+        {
+          params,
+          withCredentials: true
+        }
       );
       setStats(response.data);
     } catch (err) {

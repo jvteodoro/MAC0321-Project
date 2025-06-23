@@ -25,6 +25,7 @@ public class HomeController {
 
     @GetMapping("/stats")
     public String generateStats(@RequestBody DateTimeInterval interval) {
+        System.out.println(interval);
         ArrayList<EventsResource> allEvents = eventsDataController.getEventsOnInterval(interval);
         int eventsNum = allEvents.size();
         long timeInEvents = 0;
