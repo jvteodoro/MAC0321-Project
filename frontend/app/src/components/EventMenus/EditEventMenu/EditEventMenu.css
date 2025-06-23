@@ -1,10 +1,3 @@
-#event-data-form .submit-button {
-    margin-bottom: 1em;
-    width: auto;
-    align-self: flex-end;
-    max-width: 220px;
-}
-
 #event-data-form .success {
     margin: 1em 0;
     padding: 1.5em;
@@ -30,25 +23,10 @@
     gap: 1em;
 }
 
-#meetLinkHolder {
-    height: 100%;
-    display: flex;
-    justify-content: center;
+#cancel-button {
+    background-color: #ff4444;
+    border-color: #ff4444;
 }
-
-#meet-link {
-    color: var(--main-color);
-}
-
-#meet-link:hover {
-    color: var(--main-hoverselect-color);
-}
-
-/* Responsive adjustments */
-@media (max-width: 700px) {
-    #event-data-form .submit-button,
-    #event-data-form .success,
-    #event-data-form .criar-enquete-btn {
-        max-width: 98vw;
-    }
+#cancel-button:hover {
+    background-color: #cc0000;
 }
