@@ -75,9 +75,7 @@ const EditarEventoMenu = (props) => {
             cor: evento.colorId ? parseInt(evento.colorId) : 0,
             descricao: evento.description || "",
             local: evento.location || "",
-            convidados: evento.attendees
-              ? evento.attendees.map((a) => a.email)
-              : [],
+            convidados: evento.attendees,
             novoConvidado: "",
             hangoutLink: evento.hangoutLink || "",
           });
@@ -118,11 +116,15 @@ const EditarEventoMenu = (props) => {
   const adicionarConvidado = () => {
     if (
       formData.novoConvidado &&
-      !formData.convidados.includes(formData.novoConvidado)
+      !formData.convidados.some((c) =>
+        typeof c === "string"
+          ? c === formData.novoConvidado
+          : c?.calendarPerson?.email === formData.novoConvidado
+      )
     ) {
       setFormData((prev) => ({
         ...prev,
-        convidados: [...prev.convidados, prev.novoConvidado],
+        convidados: [...prev.convidados, formData.novoConvidado],
         novoConvidado: "",
       }));
     }
@@ -131,7 +133,11 @@ const EditarEventoMenu = (props) => {
   const removerConvidado = (email) => {
     setFormData((prev) => ({
       ...prev,
-      convidados: prev.convidados.filter((c) => c !== email),
+      convidados: prev.convidados.filter((c) =>
+        typeof c === "string"
+          ? c !== email
+          : c?.calendarPerson?.email !== email && c !== email
+      ),
     }));
   };
 
@@ -175,9 +181,24 @@ const EditarEventoMenu = (props) => {
       updatedEvent.colorId = formData.cor.toString();
       updatedEvent.description = formData.descricao || null;
       updatedEvent.location = formData.local || null;
+
+      // Ensure attendees are in the Attendee structure with CalendarPerson
       updatedEvent.attendees =
         formData.convidados.length > 0
-          ? formData.convidados.map((email) => ({ email }))
+          ? formData.convidados.map((c) => {
+              // If already in Attendee structure, keep as is
+              if (typeof c === "object" && c.calendarPerson) return c;
+              // If string (email), wrap as Attendee with CalendarPerson
+              return {
+                calendarPerson: { email: c },
+                organizer: false,
+                resource: false,
+                optional: false,
+                responseStatus: "needsAction",
+                comment: "",
+                additionalGuests: 0,
+              };
+            })
           : null;
 
       await axios.post(
@@ -384,18 +405,25 @@ const EditarEventoMenu = (props) => {
 
           {formData.convidados.length > 0 && (
             <div className="lista-convidados">
-              {formData.convidados.map((email, index) => (
-                <div key={index} className="convidado-item">
-                  {email}
-                  <button
-                    type="button"
-                    className="remover"
-                    onClick={() => removerConvidado(email)}
-                  >
-                    <i className="fa-solid fa-close"></i>
-                  </button>
-                </div>
-              ))}
+              {formData.convidados.map((c, index) => {
+                // Support both string and Attendee object
+                const email =
+                  typeof c === "string"
+                    ? c
+                    : c?.calendarPerson?.email || c?.email || "";
+                return (
+                  <div key={index} className="convidado-item">
+                    {email}
+                    <button
+                      type="button"
+                      className="remover"
+                      onClick={() => removerConvidado(email)}
+                    >
+                      <i className="fa-solid fa-close"></i>
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
