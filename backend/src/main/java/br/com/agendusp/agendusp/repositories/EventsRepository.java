@@ -30,7 +30,7 @@ public interface EventsRepository extends MongoRepository<EventsResource, String
     @Query("{ 'calendarIds': {$elemMatch: ?0}, 'end.date' : { $elemMatch: ?1}}")
     public Optional<ArrayList<EventsResource>> findEventsByEndDate(String calendarId, LocalDateTime endDate);
 
-    @Query("{ 'inicio': { $gte: ?0 }, 'fim': { $lte: ?1 } }")
-    ArrayList<EventsResource> findEventosDentroDoIntervalo(LocalDateTime dataInicio, LocalDateTime dataFim);
+    @Query("{ 'start.dateTime': { $gte: ?0 }, 'end.dateTime': { $lte: ?1 } }")
+    public Optional<ArrayList<EventsResource>> findEventosDentroDoIntervalo(LocalDateTime dataInicio, LocalDateTime dataFim);
 
 }

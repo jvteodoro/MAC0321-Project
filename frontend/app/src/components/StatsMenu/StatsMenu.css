@@ -5,7 +5,8 @@
   height: 0;
   width: 0;
   visibility: hidden;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
   border-radius: 0.4em 0 0.4em 0.4em;
   background-color: var(--main-hoverselect-color);
   padding: 0.1em;
@@ -75,4 +76,10 @@
   color: #d32f2f;
   font-weight: bold;
   margin-top: 0.5em;
+}
+
+/* Ensure datepicker popper is above the menu */
+.react-datepicker-popper {
+  position: fixed !important;
+  z-index: 3;
 }

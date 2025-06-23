@@ -39,7 +39,7 @@ public class EventsDataController {
                 .orElse(new ArrayList<EventsResource>());
     }
     public ArrayList<EventsResource> getEventsOnInterval(DateTimeInterval interval){
-        return eventsRepository.findEventosDentroDoIntervalo(interval.getStart(), interval.getEnd());
+        return eventsRepository.findEventosDentroDoIntervalo(interval.getStart(), interval.getEnd()).orElse(null);
     }
 
     public EventsResource addEvent(EventsResource eventResource) {

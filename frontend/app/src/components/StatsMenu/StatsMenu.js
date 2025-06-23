@@ -12,6 +12,7 @@ const StatsMenu = ({ visible }) => {
   const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
 
+  // Send date-times in ISO 8601 format: 'YYYY-MM-DDTHH:mm:ss'
   function formatLocalDateTime(date) {
     if (!date) return "";
     const pad = (n) => n.toString().padStart(2, "0");
@@ -67,8 +68,8 @@ const StatsMenu = ({ visible }) => {
             dateFormat="dd/MM/yyyy HH:mm"
             timeFormat="HH:mm"
             placeholderText="Selecione início"
-            minTime={new Date(0, 0, 0, 0, 0)}
-            maxTime={new Date(0, 0, 0, 23, 59)}
+            minTime={new Date(0, 0, 0, 0, 0, 0)}
+            maxTime={new Date(0, 0, 0, 23, 59, 59)}
           />
         </label>
         <label>
