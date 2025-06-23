@@ -17,6 +17,7 @@ import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
+import br.com.agendusp.agendusp.repositories.UserRepository;
 
 public class EventsDataController {
     // Events
@@ -27,9 +28,11 @@ public class EventsDataController {
     @Autowired
     CalendarDataController calendarDataController;
     @Autowired
-    CalendarRepository calendarRepository;
-    @Autowired
     ObjectMapper objMapper;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    CalendarRepository calendarRepository;
 
     public ArrayList<EventsResource> getEventsOnInterval(String calendarId, LocalDateTime endDate) {
         return eventsRepository.findEventsByEndDate(calendarId, endDate)
@@ -71,9 +74,11 @@ public class EventsDataController {
         eventResource.addCalendarId(calendarId);
         eventResource.setCreator(user.getAsCalendarPerson());
         eventResource.setOrganizer(user.getAsCalendarPerson()); // Inicialmente, o criador é o organizador
-        eventResource.addAttendee(new Attendee(user.getAsCalendarPerson(), true)); // Adicionando o criador como
-                                                                                   // participante
+        eventResource.addAttendee(new Attendee(user.getAsCalendarPerson(), true)); // Adicionando o criador como participante
         eventResource.setStatus("confirmed"); // Definindo o status do evento como confirmado
+
+        // Atualiza os attendees e calendarIds conforme solicitado
+        updateAttendeesAndCalendars(eventResource);
 
         return eventsRepository.insert(eventResource);
     }
@@ -215,7 +220,6 @@ public class EventsDataController {
     }
 
     public EventsResource updateEvent(String calendarId, String eventId, EventsResource eventResource, String userId) {
-        // CalendarResource calendar = calendarRepository.findById(calendarId).orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId + "' não encontrado."));
         EventsResource event = eventsRepository.findById(eventId).orElseThrow(() -> new IllegalArgumentException("Evento com ID '" + eventId + "' não encontrado."));
 
         try {
@@ -225,6 +229,10 @@ public class EventsDataController {
         }
         eventResource.setId(eventId);
         eventResource.setMainCalendarId(calendarId); // TODO FIX
+
+        // Atualiza os attendees e calendarIds conforme solicitado
+        updateAttendeesAndCalendars(eventResource);
+
         eventsRepository.save(eventResource);
         return eventResource;
     }
@@ -329,5 +337,57 @@ public class EventsDataController {
 
         event.setStatus("cancelled");
         eventsRepository.save(event);
+    }
+
+    /**
+     * Atualiza os attendees do evento: se algum attendee tiver id ou displayName nulo,
+     * tenta buscar o usuário pelo email e preencher os dados. Também adiciona o mainCalendar
+     * do usuário à lista de calendarIds do evento. Se não encontrar o usuário, remove o attendee.
+     */
+    private void updateAttendeesAndCalendars(EventsResource eventResource) {
+        if (eventResource.getAttendees() == null) return;
+        ArrayList<Attendee> updatedAttendees = new ArrayList<>();
+        ArrayList<String> calendarIds = eventResource.getCalendarIds();
+        if (calendarIds == null) {
+            calendarIds = new ArrayList<>();
+        }
+        for (Attendee attendee : eventResource.getAttendees()) {
+            System.out.println("[DEBUG] Attendee: " + attendee.getCalendarPerson().getId() + " | " + attendee.getCalendarPerson().getEmail() + " | " + attendee
+                    .getCalendarPerson().getDisplayName());
+            if (attendee == null || attendee.getCalendarPerson() == null) continue;
+            String email = attendee.getCalendarPerson().getEmail();
+            String id = attendee.getCalendarPerson().getId();
+            String displayName = attendee.getCalendarPerson().getDisplayName();
+            if (id == null || id.isEmpty() || displayName == null || displayName.isEmpty()) {
+                // Try to find user by email
+                try {
+                    User user = userRepository.findByEmail(email).orElse(null);
+                    if (user != null && user.getId() != null && user.getEmail() != null) {
+                        attendee.getCalendarPerson().setId(user.getId());
+                        attendee.getCalendarPerson().setDisplayName(
+                            user.getDisplayName() != null ? user.getDisplayName() : user.getName()
+                        );
+                        // Add user's main calendar to calendarIds
+                        if (user.getCalendarList() != null && !user.getCalendarList().isEmpty()) {
+                            // String mainCalendarId = user.getCalendarList().get(0).getCalendarId();
+                            String mainCalendarId = email;
+                            if (mainCalendarId != null && !calendarIds.contains(mainCalendarId)) {
+                                calendarIds.add(mainCalendarId);
+                            }
+                        }
+                        updatedAttendees.add(attendee);
+                        continue;
+                    }
+                } catch (Exception e) {
+                    // User not found, will remove attendee
+                }
+                // If user not found, skip adding this attendee
+            } else {
+                // Already has id and displayName, just add
+                updatedAttendees.add(attendee);
+            }
+        }
+        eventResource.setAttendees(updatedAttendees);
+        eventResource.setCalendarIds(calendarIds);
     }
 }

@@ -110,6 +110,7 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
                         : "Dia todo",
                       calendarId: calendarId,
                       eventId: event.id,
+                      status: event.status
                     }}
                   />
                 ))}

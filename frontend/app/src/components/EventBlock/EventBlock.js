@@ -28,7 +28,8 @@ const EventBlock = ({ eventInfo, clickable }) => {
 
   return (
     <div
-      className={`eventBlock${clickable ? " link" : ""}`}
+      className={`eventBlock${clickable ? " link" : ""} ${
+        eventInfo.status}`}
       onClick={() =>
         goToEditMenu(clickable, eventInfo.calendarId, eventInfo.eventId)
       }

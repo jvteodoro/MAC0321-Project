@@ -98,7 +98,7 @@ const CriarEventoMenu = (props) => {
     try {
       // Prepare attendees as array of Attendee objects (with email as calendarPerson)
       const attendees = formData.convidados.map((email) => ({
-        calendarPerson: { email },
+        calendarPerson: { id: null, email: email, displayName: null },
         organizer: false,
         resource: false,
         optional: false,
