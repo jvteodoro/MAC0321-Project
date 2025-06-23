@@ -241,6 +241,7 @@ const Calendar = ({ year, month }) => {
                                   }
                                 )
                               : "Dia todo",
+                            status: event.status
                           }}
                           clickable={false}
                         />

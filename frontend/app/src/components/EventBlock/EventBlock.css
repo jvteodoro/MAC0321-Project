@@ -8,8 +8,25 @@
     padding: 0.15em;
     border-radius: 0.4em;
     text-align: start;
+    position: relative;
 }
 
 .link {
     cursor: pointer;
+}
+
+.cancelled {
+    opacity: 30%;
+}
+.cancelled > span {
+    display: none;
+}
+
+.cancelled::before {
+    color: var(--main-font-color);
+    content: 'Cancelado';
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
 }

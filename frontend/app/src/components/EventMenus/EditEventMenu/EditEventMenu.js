@@ -215,6 +215,22 @@ const EditarEventoMenu = (props) => {
     }
   };
 
+  const cancelarEvento = async () => {
+    if (!eventId) return;
+    try {
+      await axios.post(
+        `http://localhost:12003/events/cancel?eventId=${eventId}`,
+        {},
+        { withCredentials: true }
+      );
+      console.log("Evento cancelado com sucesso!");
+      window.location.href = "http://localhost:3000/";
+    } catch (erro) {
+      console.error("Falha ao cancelar evento:", erro);
+      alert("Erro ao cancelar evento.");
+    }
+  };
+
   const aoFechar = () => {
     window.location.href = "http://localhost:3000/";
   };
@@ -430,6 +446,15 @@ const EditarEventoMenu = (props) => {
 
         <button type="submit" id="save-button" className="form-field">
           Salvar Alterações
+        </button>
+        <button
+          type="button"
+          id="cancelar-button"
+          className="form-field"
+          style={{ backgroundColor: "#e57373", color: "#fff", marginTop: "10px" }}
+          onClick={cancelarEvento}
+        >
+          Cancelar
         </button>
       </form>
     </main>
