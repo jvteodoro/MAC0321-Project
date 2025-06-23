@@ -33,27 +33,11 @@ public class HomeController {
             timeInEvents += ChronoUnit.HOURS.between(ev.getEnd().getDateTime(), ev.getStart().getDateTime());
             if (ev.getStatus() == "cancelled"){
                 canceledEvents += 1;
-            }
+            }            
         }
 
         return "Você participou de "+eventsNum+
         "eventos, o que corresponde a "+timeInEvents+
         " horas"+". Desses eventos, "+canceledEvents+" foram cancelados.";
-    }
-    
-
-    @GetMapping("/")
-    public String getHome() {
-        return new String("Hello Home");
-    }
-
-    @GetMapping("/secured")
-    public String getSecured(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
-        //dataController.findUser()
-        String userPrincipal = authorizedClient.getPrincipalName();
-        authorizedClient.getClientRegistration().getClientName();
-        
-        return new String("Hello Secured:"+userPrincipal);
-
     }
 }
