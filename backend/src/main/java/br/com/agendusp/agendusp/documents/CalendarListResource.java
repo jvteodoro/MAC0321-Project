@@ -1,8 +1,12 @@
 package br.com.agendusp.agendusp.documents;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
+@Document(collection = "calendarLists")
 public class CalendarListResource {
+    String id;
     String calendarId;
     String kind = "calendar#calendarListEntry";
     // String etag;
@@ -41,6 +45,7 @@ public class CalendarListResource {
     //     this.selected = calendarListUserItem.isSelected();
     //     this.accessRole = calendarListUserItem.getAccessRole();
     // }
+    // Índice 0 é o calendário principal do usuário
     public CalendarResource extractCalendarResource() {
         CalendarResource resource = new CalendarResource();
         resource.setCalendarId(this.calendarId);
@@ -54,10 +59,11 @@ public class CalendarListResource {
     }
 
     public String getId() {
-        return calendarId;
+        return id;
     }
-    public void setId(String calendarId){
-        this.calendarId = calendarId;
+    public void setId(String id){
+        this.calendarId = id;
+        this.id = id;
     }
 
     public String getAcessRole() {
@@ -182,6 +188,16 @@ public class CalendarListResource {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    @Override
+    public String toString(){
+        return "CalendarListResource{" +
+                "calendarId='" + calendarId + '\'' +
+                ", summary='" + summary + '\'' +
+                ", description='" + description + '\''+
+                '}';
+       
     }
 
 }

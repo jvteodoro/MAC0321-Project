@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 // import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,9 +21,20 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import br.com.agendusp.agendusp.repositories.UserRepository;
+import br.com.agendusp.agendusp.services.CustomAuthenticationSuccessHandler;
 import br.com.agendusp.agendusp.services.CustomOAuth2UserService;
 
 // import static org.springframework.security.config.Customizer.withDefaults;
+@Configuration
+@Profile("test")
+class SecurityConfigNoAuth {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        return http.build();
+    }
+}
+
+
 
 @Configuration
 @EnableWebSecurity
@@ -35,13 +47,17 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler(){
+        return new CustomAuthenticationSuccessHandler();
+    }
+
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
-        configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -55,15 +71,23 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**"))
+                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/events/**", "/pool/**")) // <-- added "/pool/**"
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/", "/login", "/api/auth/**", "/oauth2/**").permitAll();
+                    auth.requestMatchers(
+                        "/", 
+                        "/login", 
+                        "/api/auth/**", 
+                        "/oauth2/**",
+                        "/events/update",
+                        "/events/**",
+                        "/pool/**" // <-- added here
+                    ).permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("http://localhost:3000/login-success", true)
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(OAuth2UserService())))
+                                .userService(OAuth2UserService())).successHandler(customAuthenticationSuccessHandler()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .build();

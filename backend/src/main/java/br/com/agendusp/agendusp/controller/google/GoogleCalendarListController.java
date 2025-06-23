@@ -11,17 +11,12 @@ import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import br.com.agendusp.agendusp.controller.CalendarDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.dataobjects.CalendarListList;
-import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
-import br.com.agendusp.agendusp.dataobjects.UserInfo;
 import br.com.agendusp.agendusp.dataobjects.WatchRequest;
 import br.com.agendusp.agendusp.dataobjects.WatchResponse;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
-import br.com.agendusp.agendusp.documents.CalendarResource;
-import br.com.agendusp.agendusp.documents.User;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,36 +28,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 public class GoogleCalendarListController {
 
-    private final RestClient restClient;
-    private final Gson gson;
     @Autowired
-    private CalendarDataController calendarDataController;
+    private RestClient restClient;
+    @Autowired
+    private  Gson gson;
+    
     @Autowired
     private UserDataController userDataController;
     @Autowired
     ObjectMapper objMapper;
-    public GoogleCalendarListController(RestClient restClient, Gson gson, UserDataController userDataController) {
-        
-        this.restClient = restClient;
-        //authToken.getAcess
-    //     this.userInfo = restClient.get()
-    //     .uri("https://www.googleapis.com/oauth2/v2/userinfo")
-    //   //  .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
-    //     .retrieve().toEntity(String.class).getBody();
-        this.gson = gson;
-        //authToken.getAcess
-    //     this.userInfo = restClient.get()
-    //     .uri("https://www.googleapis.com/oauth2/v2/userinfo")
-    //   //  .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
-    //     .retrieve().toEntity(String.class).getBody();
-        this.userDataController = userDataController;
+    @Autowired
+    GoogleCalendarsController googleCalendarsController;
 
-    }
-
-    // @PostMapping()
-    // public ResponseEntity<Void> fetch(OAuth2AuthorizedClient authorizedClient){
-    //     authorizedClient.getPrincipalName()
-    // }
+   
 
     /**
      * Remove uma agenda da lista de agendas do usuário.
@@ -89,32 +67,7 @@ public class GoogleCalendarListController {
             return ResponseEntity.status(HttpStatusCode.valueOf(500)).build();
         }
     }
-    /*
-     * public ArrayList<Calendar> get(Calendar calendar){}
-     * public CalendarList insert(Calendar calendar){}
-     */
-
-    @GetMapping("/google/userInfo")
-    public User getUserInfo(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) throws Exception{
-        ResponseEntity<UserInfo> response = restClient.get()
-        .uri("https://www.googleapis.com/oauth2/v2/userinfo")
-        .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
-        .retrieve().toEntity(UserInfo.class);
-        UserInfo inf = response.getBody();
-        User user = new User();
-        user.setEmail(inf.getEmail());
-        user.setGoogleId(inf.getId());
-        user.setId(inf.getId());
-        user.setUsername(inf.getName());
-        //user.setId(inf.getId());
-        userDataController.findUserOrCreate(user);
-        System.out.println("Adding user:"+objMapper.writeValueAsString(user));
-        User addedUser = userDataController.findUserByName(user.getName());
-        System.out.println(objMapper.writeValueAsString(addedUser));
-
-        //return objMapper.writeValueAsString(user);
-        return user;
-    }
+  
     @GetMapping("/google/test")
     public boolean[] test(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient){
         //return authorizedClient.getPrincipalName();
@@ -151,18 +104,14 @@ public class GoogleCalendarListController {
                 .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
                 .retrieve().toEntity(CalendarListList.class).getBody();
         for (CalendarListResource resource: calList.getItems()){
-            CalendarResource calendarResource =resource.extractCalendarResource();
-            calendarDataController.addCalendar(calendarResource, authorizedClient.getPrincipalName());
-            userDataController.insertCalendarListResource(authorizedClient.getPrincipalName(), resource);
-
-            System.out.println("RUNNING, response:"+calList.toString());
-
+            try {
+                userDataController.insertCalendarListResource(authorizedClient.getPrincipalName(), resource);
+            } catch (Exception e) {
+                System.err.println(e);
+            }
         }
         return calList;
     }
-    // public CalendarListResourceve().toEntity(Json.class);
-    // CalendarListResource calendarListResource = new CalendarListResource();
-    // }
 
     public WatchResponse watch(WatchRequest watchRequest,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
@@ -174,63 +123,7 @@ public class GoogleCalendarListController {
                 .toEntity(Gson.class);
         return new WatchResponse(response.getBody());
     }
-    // .retrieve().toEntity(Json.class);
-    // CalendarListResource calendarListResource = new CalendarListResource();
-
-    // quemz esse acho legal verificar eses campos
-
-    @PatchMapping("/calendar/{calendarId}")
-    public CalendarListResource patch(@PathVariable String calendarId, @RequestBody CalendarListResource calendar) {
-        calendar.setId(calendarId);
-        CalendarListResource calendarAtual = calendar;
-        // CalendarListResource calendarAtual = get(calendar).stream() // pega o calendario def pelo rest controller
-        //         .filter(c -> c.getId().equals(calendarId))
-        //         .findFirst()
-        //         .orElseThrow(() -> new IllegalArgumentException("O calendário " + calendarId + " não foi encontrado."));
-
-        // atualiza o que não está sem nada
-        // patch nao mexe: id, primary, etag, kind, accessRole, deleted (atualizar no
-        // get e no list)
-        if (calendar.getSummary() != null) {
-            calendarAtual.setSummary(calendar.getSummary()); // nome
-        }
-        if (calendar.getDescription() != null) {
-            calendarAtual.setDescription(calendar.getDescription());
-        }
-        if (calendar.getLocation() != null) {
-            calendarAtual.setLocation(calendar.getLocation()); // localização vinculada a agenda (verificar loc de
-                                                               // eventos)
-        }
-        if (calendar.getTimeZone() != null) {
-            calendarAtual.setTimeZone(calendar.getTimeZone());
-        }
-        if (calendar.getColorId() != null) {
-            calendarAtual.setColorId(calendar.getColorId());
-        }
-        if (calendar.getBackgroundColor() != null) {
-            calendarAtual.setBackgroundColor(calendar.getBackgroundColor());
-        }
-        if (calendar.getForegroundColor() != null) {
-            calendarAtual.setForegroundColor(calendar.getForegroundColor());
-        }
-        // Opções ainda não implementadas
-        // if (calendar.getHidden() != null) {
-        //     calendarAtual.setHidden(calendar.getHidden()); // indica se a agenda esta oculta
-        // }
-        // if (calendar.getSelected() != null) {
-        //     calendarAtual.setSelected(calendar.getSelected()); // praticamente igual ao hidden
-        // }
-        // if (calendar.getDefaultReminders() != null) {
-        //     calendarAtual.setDefaultReminders(calendar.getDefaultReminders()); // lista de lembretes (acho que é array
-        //                                                                        // entao verificar a implementaçao)
-        // }
-        // if (calendar.getConferenceProperties() != null) {
-        //     calendarAtual.setConferenceProperties(calendar.getConferenceProperties()); // google meet
-        // }
-        // return update(calendarAtual);
-        return update(calendar);
-        // update conforme orientação do google api
-    }
+    
 
     public CalendarListResource update(CalendarListResource calendar) {
         if (calendar == null || calendar.getId() == null || calendar.getId().isEmpty()) {

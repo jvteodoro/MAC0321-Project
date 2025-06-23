@@ -85,6 +85,7 @@ public class DataControllerCalendarOperationsTest extends MongoTestContainer {
         calResource.setLocation("Test Location 3");
         calResource.setTimeZone("UTC");
         calResource.setOwner(user.getAsCalendarPerson());
+        // TODO pois nunca é usado
         CalendarResource createdCalendar =calendarDataController.addCalendar(calResource, "testuser3");
 
         CalendarListResource calListUserItem = new CalendarListResource();

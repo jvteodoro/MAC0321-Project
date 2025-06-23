@@ -1,14 +1,8 @@
 package br.com.agendusp.agendusp.documents;
 
 import java.util.ArrayList;
-import java.util.Collection;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.userdetails.UserDetails;
 
 
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
@@ -18,9 +12,6 @@ import br.com.agendusp.agendusp.dataobjects.EventPool;
 @Document(collection = "users")
 public class User {//implements UserDetails {
 
-    @Autowired
-    private SecurityContext securityContext; // Para acessar o contexto de segurança
-
     @Id
     private String id; // ID gerada pelo MongoDB
     private String userId;
@@ -29,7 +20,7 @@ public class User {//implements UserDetails {
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
-    private ArrayList<EventPool> eventPoolList;
+    private ArrayList<String> eventPoolList;
     private ArrayList<EventPool> eventPoolNotifications;
     private ArrayList<CalendarListResource> calendarList; // Índice 0 é o calendário principal do usuário
     private CalendarPerson calendarPerson;
@@ -45,27 +36,43 @@ public class User {//implements UserDetails {
         this.googleId = googleId;
         this.email = email;
         this.name = name;
-        this.calendarPerson = new CalendarPerson(this.googleId, this.email, this.name);
+        this.calendarPerson = new CalendarPerson(this.id, this.email, this.name);
     }
 
     public CalendarPerson getAsCalendarPerson() {
+        if (this.calendarPerson == null) {
+            this.calendarPerson = new CalendarPerson(this.id, this.email, this.name);
+        }
         return this.calendarPerson;
     }
 
     private void updateCalendarPerson() {
-        this.calendarPerson = new CalendarPerson(this.googleId, this.email, this.name);
+        this.calendarPerson = new CalendarPerson(this.id, this.email, this.name);
     }
     
 
-    public ArrayList<EventPool> getEventPoolList() {
+    public ArrayList<String> getEventPoolList() {
         return eventPoolList;
     }
 
-    public void setEventPoolList(ArrayList<EventPool> eventPoolList) {
+    public void setEventPoolList(ArrayList<String> eventPoolList) {
         this.eventPoolList = eventPoolList;
     }
+    public void addEventPool(String eventPoolId){
+        this.eventPoolList.add(eventPoolId);
+    }
 
-    
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCalendarList(ArrayList<CalendarListResource> calendarList) {
+        this.calendarList = calendarList;
+    }
 
     public ArrayList<EventPool> getEventPoolNotifications() {
         return eventPoolNotifications;

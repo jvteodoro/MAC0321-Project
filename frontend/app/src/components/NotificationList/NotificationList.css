@@ -1,0 +1,25 @@
+#notification-list {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  height: 0;
+  width: 0;
+  visibility: hidden;
+  overflow: hidden;
+  border-radius: 0.4em 0 0.4em 0.4em;
+  background-color: var(--main-hoverselect-color);
+  padding: 0.1em;
+}
+
+#notification-list.extended {
+  top: 100%;
+  visibility: visible;
+  height: 10em;
+  width: 10em;
+  background-color: var(--secondary-hoverselect-color);
+  outline: inset 2px var(--main-color);
+}
+
+#list-content {
+  overflow-y: auto;
+}

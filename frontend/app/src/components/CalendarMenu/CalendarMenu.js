@@ -2,16 +2,53 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "./CalendarMenu.css";
 import WeekView from "../WeekView/WeekView";
+import EventBlock from "../EventBlock/EventBlock";
+import axios from "axios";
 
 const Calendar = ({ year, month }) => {
+  // Estados para armazenar os calendários e eventos
+  // const [calendars, setCalendars] = useState([]);
+  const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date(year, month));
   const [selectedWeek, setSelectedWeek] = useState(null);
+  const [calendarId, setCalendarId] = useState(null);
 
+  // Busca os eventos quando o componente é montado
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Busca a lista de calendários
+        const calendarsResponse = await axios.get(
+          "http://localhost:12003/calendarList/list",
+          { withCredentials: true }
+        );
+
+        // Escolhe o primeiro calendário com accessRole owner ou writer
+        const validCalendars = calendarsResponse.data.filter(
+          (cal) =>
+            cal.accessRole === "owner" ||
+            cal.accessRole === "writer"
+        );
+        if (validCalendars.length > 0) {
+          const newCalendarId = validCalendars[0].id;
+          setCalendarId(newCalendarId);
+
+          const eventsResponse = await axios.get(
+            `http://localhost:12003/events/list?calendarId=${newCalendarId}`,
+            { withCredentials: true }
+          );
+          setEvents(eventsResponse.data);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar eventos:", error);
+      }
+    };
+
+    fetchData();
     resetToCurrent();
   }, []);
 
-  // Navigation functions
+  // Funções de Navegação
   const prevMonth = () => {
     setCurrentDate(
       new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
@@ -36,20 +73,33 @@ const Calendar = ({ year, month }) => {
     setSelectedWeek(null);
   };
 
-  // Get date information
+  // Pega informação da data
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const today = new Date();
 
-  // Calculate the calendar grid with dynamic rows
+  // Função para verificar se um evento ocorre em um dia específico
+  const getEventsForDay = (dayInfo) => {
+    if (!events || events.length === 0) return [];
+    return events.filter((event) => {
+      const eventDate = new Date(event.start.dateTime || event.start.date);
+      return (
+        eventDate.getDate() === dayInfo.day &&
+        eventDate.getMonth() === dayInfo.monthIndex &&
+        eventDate.getFullYear() === dayInfo.year
+      );
+    });
+  };
+
+  // Calcula a grade do calendário de forma dinâmica
   const getCalendarDays = () => {
     const firstDay = new Date(currentYear, currentMonth, 1);
     const lastDay = new Date(currentYear, currentMonth + 1, 0);
 
-    const startDay = firstDay.getDay(); // 0 (Sunday) to 6 (Saturday)
+    const startDay = firstDay.getDay(); // 0 (Domingo) até 6 (Sábado)
     const daysInMonth = lastDay.getDate();
 
-    // Calculate days from previous month to show
+    // Calcula dias do mês anterior
     const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
     const prevMonthDays = Array.from({ length: startDay }, (_, i) => ({
       day: prevMonthLastDay - startDay + i + 1,
@@ -59,7 +109,7 @@ const Calendar = ({ year, month }) => {
       year: currentMonth === 0 ? currentYear - 1 : currentYear,
     }));
 
-    // Current month days
+    // Calcula dias do mês atual
     const currentMonthDays = Array.from({ length: daysInMonth }, (_, i) => ({
       day: i + 1,
       isCurrentMonth: true,
@@ -71,15 +121,15 @@ const Calendar = ({ year, month }) => {
       year: currentYear,
     }));
 
-    // Combine all days
+    // Junta todos os dias
     const allDays = [...prevMonthDays, ...currentMonthDays];
 
-    // Calculate how many days we've shown and how many empty cells we need
+    // Calcula quantos dias faltam para completar a grade
     const totalDaysShown = allDays.length;
     const remainingCells =
       totalDaysShown % 7 === 0 ? 0 : 7 - (totalDaysShown % 7);
 
-    // Add days from next month if needed
+    // Adiciona dias do mês seguinte, se necessário
     const nextMonthDays = Array.from({ length: remainingCells }, (_, i) => ({
       day: i + 1,
       isCurrentMonth: false,
@@ -94,7 +144,7 @@ const Calendar = ({ year, month }) => {
   const calendarDays = getCalendarDays();
   const numberOfRows = Math.ceil(calendarDays.length / 7);
 
-  // Group days into weeks
+  // Agrupa dias em semanas
   const weeks = [];
   for (let i = 0; i < calendarDays.length; i += 7) {
     weeks.push(calendarDays.slice(i, i + 7));
@@ -103,7 +153,12 @@ const Calendar = ({ year, month }) => {
   return (
     <div id="calendar-menu">
       {selectedWeek ? (
-        <WeekView week={selectedWeek} onClose={closeWeekView} />
+        <WeekView
+          week={selectedWeek}
+          calendarId={calendarId}
+          events={events}
+          onClose={closeWeekView}
+        />
       ) : (
         <>
           <div className="calendar-header">
@@ -128,7 +183,9 @@ const Calendar = ({ year, month }) => {
           <div
             id="calendar"
             style={{
-              gridTemplateRows: `auto repeat(${numberOfRows}, 1fr)`,
+              gridTemplateRows: `auto repeat(${numberOfRows}, ${
+                18.35 * 5 / numberOfRows
+              }%)`,
             }}
           >
             {/* Weekday headers */}
@@ -150,16 +207,48 @@ const Calendar = ({ year, month }) => {
                 className="week"
                 onClick={() => handleWeekClick(week)}
               >
-                {week.map((dayInfo, dayIndex) => (
-                  <div
-                    key={`day-${weekIndex}-${dayIndex}`}
-                    className={`calendar-day 
-                      ${dayInfo.isCurrentMonth ? "" : "other-month"} 
-                      ${dayInfo.isToday ? "today" : ""}`}
-                  >
-                    <span className="day-number">{dayInfo.day}</span>
-                  </div>
-                ))}
+                {week.map((dayInfo, dayIndex) => {
+                  const dayEvents = getEventsForDay(dayInfo);
+                  return (
+                    <div
+                      key={`day-${weekIndex}-${dayIndex}`}
+                      className={`calendar-day 
+                        ${dayInfo.isCurrentMonth ? "" : "other-month"} 
+                        ${dayInfo.isToday ? "today" : ""}`}
+                    >
+                      <span className="day-number">{dayInfo.day}</span>
+                      {/* Renderiza um EventBlock para cada evento deste dia */}
+                      {dayEvents.map((event, eventIndex) => (
+                        <EventBlock
+                          key={`event-${weekIndex}-${dayIndex}-${eventIndex}`}
+                          eventInfo={{
+                            colorId: event.colorId,
+                            title: event.summary,
+                            startTime: event.start.dateTime
+                              ? new Date(
+                                  event.start.dateTime
+                                ).toLocaleTimeString("pt-BR", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                              : "Dia todo",
+                            endTime: event.end.dateTime
+                              ? new Date(event.end.dateTime).toLocaleTimeString(
+                                  "pt-BR",
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )
+                              : "Dia todo",
+                            status: event.status
+                          }}
+                          clickable={false}
+                        />
+                      ))}
+                    </div>
+                  );
+                })}
               </div>
             ))}
           </div>
@@ -171,7 +260,7 @@ const Calendar = ({ year, month }) => {
 
 Calendar.propTypes = {
   year: PropTypes.number,
-  month: PropTypes.number, // 0-11 (January-December)
+  month: PropTypes.number, // 0-11 (Janeiro-Dezembro)
 };
 
 Calendar.defaultProps = {

@@ -3,7 +3,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 1em;
+  padding: 0.5em;
   gap: 0.5em;
 }
 
@@ -11,7 +11,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 0.2em;
+  padding-bottom: 0.5em;
   border-bottom: 1px solid var(--secondary-hoverselect-color);
 }
 
@@ -20,13 +20,14 @@
   margin: 0;
 }
 
-#geraRelatorio {
+#gera-relatorio {
     position: relative;
     display: flex;
     flex-direction: column;
   }
   
-  #geraRelatorio > span {
+  #gera-relatorio > span {
+    font-size: 0.6em;
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -37,7 +38,7 @@
   background: var(--secondary-color);
   border: none;
   border-radius: 4px;
-  padding: 8px 16px;
+  padding: 0.4em 0.5em;
   cursor: pointer;
   color: var(--main-highlight-color);
   display: flex;
@@ -50,6 +51,7 @@
 }
 
 .week-view-grid {
+  font-size: 1.3em;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 0.5em;
@@ -63,8 +65,8 @@
   flex-direction: column;
   position: relative;
   background: var(--secondary-color);
-  padding: 1em;
-  border-radius: 10px;
+  padding: 0.7em;
+  border-radius: 0.4em;
 }
 
 .week-view-day:hover {
@@ -76,7 +78,7 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  margin-bottom: 1em;
+  margin-bottom: 6%;
   font-size: 0.9em;
 }
 
@@ -97,6 +99,14 @@
   font-size: 1.8em;
   font-weight: bold;
   opacity: 25%;
+}
+
+.week-day-schedule {
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
 }
 
 .week-view-day.other-month {

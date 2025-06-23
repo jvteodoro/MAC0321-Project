@@ -3,9 +3,11 @@ package br.com.agendusp.agendusp.documents;
 import java.util.ArrayList;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 
+@Document(collection = "calendars")
 public class CalendarResource {
     
     @Id
@@ -23,7 +25,36 @@ public class CalendarResource {
     ArrayList<CalendarPerson> freeBusyReaders;
     boolean deleted;
 
+    public CalendarListResource toCalendarListResource(){
+        CalendarListResource calR = new CalendarListResource();
+        calR.setId(this.calendarId);
+        calR.setCalendarId(this.calendarId);
+        calR.setLocation(this.location);
+        calR.setTimeZone(this.timeZone);
+        calR.setOwner(this.owner);
+        calR.setSummary(this.summary);
+        calR.setDescription(this.description);
+        calR.setDeleted(this.deleted);
+
+        return calR;
+    }
+
+    public CalendarListResource toCalendarListResource(String acessRole){
+        CalendarListResource calR = new CalendarListResource();
+        calR.setId(this.calendarId);
+        calR.setCalendarId(this.calendarId);
+        calR.setLocation(this.location);
+        calR.setTimeZone(this.timeZone);
+        calR.setOwner(this.owner);
+        calR.setSummary(this.summary);
+        calR.setDescription(this.description);
+        calR.setDeleted(this.deleted);
+        calR.setAccessRole(acessRole);
+        return calR;
+    }
+
     public void setId(String id){
+        this.calendarId = id;
         this.id = id;
     }
 

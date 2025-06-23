@@ -1,35 +1,55 @@
 package br.com.agendusp.agendusp.dataobjects;
 
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 public class EventDate {
     
-    String date;
-    String dateTime;
-    String timeZone;
+    LocalDate date;
+    LocalDateTime dateTime;
+    ZoneId timeZone;
 
-    EventDate(){
+    public EventDate(){
+    }
+    public EventDate(LocalDateTime dt){
+        this.dateTime = dt;
+        this.date = dt.toLocalDate();
+    }
+    public EventDate(LocalDateTime dt, ZoneId zId){
+        this.dateTime = dt;
+        this.date = dt.toLocalDate();
+        this.timeZone = zId;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
     public void setDate(String date) {
+        this.date = LocalDate.parse(date,DateTimeFormatter.ISO_DATE);
+    }
+    public void setDateFromObject(LocalDate date) {
         this.date = date;
     }
 
-    public String getDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
     }
-
-    public void setDateTime(String dateTime) {
+    public void setDateTimeFromObject(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
-
-    public String getTimeZone() {
-        return timeZone;
+    public void setDateTime(String dateTime) {
+         this.dateTime = LocalDateTime.parse(dateTime,DateTimeFormatter.ISO_DATE_TIME);
+       
     }
 
-    public void setTimeZone(String timeZone) {
+    public ZoneId getTimeZone() {
+        return timeZone;
+    }
+    public void setTimeZone(ZoneId timeZone) {
         this.timeZone = timeZone;
     }
 

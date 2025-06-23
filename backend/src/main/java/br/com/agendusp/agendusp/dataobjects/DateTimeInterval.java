@@ -2,11 +2,16 @@ package br.com.agendusp.agendusp.dataobjects;
 
 import java.time.LocalDateTime;
 
-public class DateTimeInterval {
+public class DateTimeInterval implements Comparable<DateTimeInterval> {
     LocalDateTime start;
     LocalDateTime end;
 
     public DateTimeInterval(){}
+
+    @Override
+    public int compareTo(DateTimeInterval other){
+        return this.start.compareTo(other.getStart());
+    }
 
     public LocalDateTime getStart() {
         return start;

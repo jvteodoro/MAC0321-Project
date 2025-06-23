@@ -1,6 +1,6 @@
 import Google_Icon from "../../assets/Google_Icon.webp";
 import { useLocation } from "react-router-dom";
-import styles from "./LoginMenu.css";
+import "./LoginMenu.css";
 
 const LoginMenu = (props) => {
   const location = useLocation();
