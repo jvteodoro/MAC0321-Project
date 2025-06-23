@@ -95,7 +95,7 @@ const EditarEventoMenu = (props) => {
         }
       } catch (erro) {
         console.error("Erro ao carregar reunião:", erro);
-        console.err("Erro ao carregar dados da reunião");
+        console.error("Erro ao carregar dados da reunião");
       } finally {
         setCarregando(false);
       }
@@ -190,7 +190,7 @@ const EditarEventoMenu = (props) => {
       window.location.href = "http://localhost:3000/";
     } catch (erro) {
       console.error("Falha ao atualizar reunião:", erro);
-      console.err(erro.response?.data?.message || "Erro ao atualizar reunião");
+      console.error(erro.response?.data?.message || "Erro ao atualizar reunião");
     }
   };
 

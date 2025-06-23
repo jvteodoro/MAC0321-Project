@@ -44,8 +44,12 @@ public class EventsDataController {
     }
 
     public EventsResource createEvent(String calendarId, EventsResource eventResource, String userId) {
-        if (eventResource == null || eventResource.getId() == null || eventResource.getId().isEmpty()) {
-            throw new IllegalArgumentException("Evento não pode ser nulo e deve ter um ID.");
+        // Generate random 26-character id if not present
+        if (eventResource == null) {
+            throw new IllegalArgumentException("Evento não pode ser nulo.");
+        }
+        if (eventResource.getId() == null || eventResource.getId().isEmpty()) {
+            eventResource.setId(generateRandomId(26));
         }
         User user = userDataController.findUser(userId);
 
@@ -71,6 +75,17 @@ public class EventsDataController {
         eventResource.setStatus("confirmed"); // Definindo o status do evento como confirmado
 
         return eventsRepository.insert(eventResource);
+    }
+
+    // Helper to generate a random 26-character id (lowercase letters and numbers)
+    private String generateRandomId(int length) {
+        String chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder(length);
+        java.util.Random random = new java.util.Random();
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
     }
 
     public EventsResource addCalendarToEvent(String calendarId, String eventId, String userId) {
@@ -252,12 +267,11 @@ public class EventsDataController {
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Nenhum evento encontrado para o calendário com ID '" + calendarId + "'."));
 
-        try {
-            System.out.println("[DEGUB] Lista de eventos:\n     " + objMapper.writeValueAsString(events));
-        } catch(Exception e) {
+        // try {
+        //     System.out.println("[DEGUB] Lista de eventos:\n     " + objMapper.writeValueAsString(events));
+        // } catch(Exception e) {
 
-        }
-        
+        // }
         return events;
     }
 

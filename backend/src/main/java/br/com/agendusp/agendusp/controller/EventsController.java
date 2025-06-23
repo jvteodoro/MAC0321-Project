@@ -19,7 +19,7 @@ public interface EventsController {
 
         // public String importEvent(String calendarId, EventResource event);
 
-        public EventsResource insert(String calendarId, @RequestBody EventsResource event,
+        public EventsResource insert(@RequestBody EventsResource event, @RequestParam String calendarId,
                         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient);
 
         public EventsResource addAttendee(String calendarId, String attendeeId, @RequestBody EventsResource event,

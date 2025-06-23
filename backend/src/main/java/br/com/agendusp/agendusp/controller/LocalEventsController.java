@@ -126,8 +126,8 @@ public class LocalEventsController implements EventsController {
         return eventsDataController.addAtendeeToEvent(event.getEventId(), calendarId, userId, attendeeId);
     }
 
-    @PostMapping("/events/insert/{calendarId}")
-    public EventsResource insert(String calendarId, @RequestBody EventsResource event,
+    @PostMapping("/events/insert")
+    public EventsResource insert(@RequestBody EventsResource event, @RequestParam String calendarId,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         String userId = authorizedClient.getPrincipalName();
         eventsDataController.createEvent(calendarId, event, userId);
@@ -159,7 +159,8 @@ public class LocalEventsController implements EventsController {
         }
 
         EventsResource updatedEvent = eventsDataController.updateEvent(calendarId, event.getId(), event, userID);
-        System.out.println("[DEBUG] updateEvent returned: " + (updatedEvent != null ? updatedEvent.toString() : "null"));
+        System.out
+                .println("[DEBUG] updateEvent returned: " + (updatedEvent != null ? updatedEvent.toString() : "null"));
         return updatedEvent;
     }
 

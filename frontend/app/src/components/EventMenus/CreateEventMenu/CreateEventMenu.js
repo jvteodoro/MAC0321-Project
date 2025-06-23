@@ -32,15 +32,11 @@ const CriarEventoMenu = (props) => {
     descricao: "",
     local: "",
     cor: 0,
-    criarMeet: false,
+    // remover criarMeet
     convidados: [],
     novoConvidado: "",
-    timeSlots: [], // Array de { start: Date, end: Date }
-  });
-
-  const [novoTimeSlot, setNovoTimeSlot] = useState({
-    start: null,
-    end: null,
+    start: null, // single start datetime
+    end: null,   // single end datetime
   });
 
   const [errosFormulario, setErrosFormulario] = useState({});
@@ -50,97 +46,33 @@ const CriarEventoMenu = (props) => {
   useEffect(() => {
     registerLocale("pt-BR", ptBR);
     // Define a data padrão para o dia selecionado
-    const dataPadrao = new Date(dayInfo.year, dayInfo.monthIndex, dayInfo.day);
-    dataPadrao.setHours(9, 0, 0, 0); // 9:00 AM
-
-    setNovoTimeSlot({
+    const dataPadrao = new Date(dayInfo.year, dayInfo.monthIndex, dayInfo.day, 9, 0, 0, 0); // 9:00 AM
+    setFormData((prev) => ({
+      ...prev,
       start: dataPadrao,
       end: new Date(dataPadrao.getTime() + 60 * 60 * 1000), // +1 hora
-    });
+    }));
   }, [dayInfo]);
 
-  const handleInputChange = (e) => {
-    const { id, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [id]: type === "checkbox" ? checked : value,
-    }));
+  // Helper to create a date with the same day as dayInfo and given hours/minutes
+  const createDateWithTime = (hours, minutes = 0) => {
+    return new Date(dayInfo.year, dayInfo.monthIndex, dayInfo.day, hours, minutes, 0, 0);
   };
 
-  // Helper to create time Date objects
-  const createTime = (hours, minutes = 0) => {
-    const date = new Date();
-    date.setHours(hours, minutes, 0, 0);
-    return date;
-  };
-
-  // Fixed handler for time changes
-  const handleTimeSlotChange = (time, field) => {
-    if (!time) return;
-
-    setNovoTimeSlot((prev) => {
-      const newValue = {
-        start: prev.start ? new Date(prev.start) : null,
-        end: prev.end ? new Date(prev.end) : null,
-      };
-
-      newValue[field] = new Date(time);
-
-      // Ensure end time is always after start time
+  // Handler for start/end datetime changes
+  const handleDateTimeChange = (date, field) => {
+    if (!date) return;
+    setFormData((prev) => {
+      const newValue = { ...prev, [field]: new Date(date) };
+      // Ensure end is after start
       if (field === "start" && newValue.end && newValue.start > newValue.end) {
-        newValue.end = new Date(newValue.start);
-        newValue.end.setHours(newValue.end.getHours() + 1);
+        newValue.end = new Date(newValue.start.getTime() + 60 * 60 * 1000);
       }
-
+      if (field === "end" && newValue.start && newValue.end < newValue.start) {
+        newValue.start = new Date(newValue.end.getTime() - 60 * 60 * 1000);
+      }
       return newValue;
     });
-  };
-
-  const adicionarTimeSlot = () => {
-    if (novoTimeSlot.start && novoTimeSlot.end) {
-      setFormData((prev) => ({
-        ...prev,
-        timeSlots: [
-          ...prev.timeSlots,
-          {
-            start: novoTimeSlot.start,
-            end: novoTimeSlot.end,
-          },
-        ],
-      }));
-      // Reset para o próximo intervalo
-      setNovoTimeSlot((prev) => ({
-        start: new Date(prev.end.getTime() + 30 * 60 * 1000), // +30 minutos
-        end: new Date(prev.end.getTime() + 90 * 60 * 1000), // +1.5 horas
-      }));
-    }
-  };
-
-  const removerTimeSlot = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      timeSlots: prev.timeSlots.filter((_, i) => i !== index),
-    }));
-  };
-
-  const adicionarConvidado = () => {
-    if (
-      formData.novoConvidado &&
-      !formData.convidados.includes(formData.novoConvidado)
-    ) {
-      setFormData((prev) => ({
-        ...prev,
-        convidados: [...prev.convidados, prev.novoConvidado],
-        novoConvidado: "",
-      }));
-    }
-  };
-
-  const removerConvidado = (email) => {
-    setFormData((prev) => ({
-      ...prev,
-      convidados: prev.convidados.filter((c) => c !== email),
-    }));
   };
 
   const selecionarCor = (colorId) => {
@@ -151,8 +83,8 @@ const CriarEventoMenu = (props) => {
   const validarFormulario = () => {
     const erros = {};
     if (!formData.titulo.trim()) erros.titulo = "Nome obrigatório";
-    if (formData.timeSlots.length === 0)
-      erros.timeSlots = "Adicione pelo menos um horário";
+    if (!formData.start || !formData.end)
+      erros.time = "Defina início e fim do evento";
     return erros;
   };
 
@@ -164,31 +96,55 @@ const CriarEventoMenu = (props) => {
     setCarregando(true);
 
     try {
+      // Prepare attendees as array of Attendee objects (with email as calendarPerson)
+      const attendees = formData.convidados.map((email) => ({
+        calendarPerson: { email },
+        organizer: false,
+        resource: false,
+        optional: false,
+        responseStatus: "needsAction",
+        comment: "",
+        additionalGuests: 0,
+      }));
+
+      // Compose the event object to match EventsResource.java
       const dadosEvento = {
+        // Required/standard fields
         summary: formData.titulo,
-        description: `${
-          formData.descricao || ""
-        }\n\nHorários para votação:\n${formData.timeSlots
-          .map(
-            (slot) =>
-              `${slot.start.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })} - ${slot.end.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}`
-          )
-          .join("\n")}`,
+        description: formData.descricao || "",
         location: formData.local || null,
-        colorId: formData.cor.toString(),
-        timeSlots: formData.timeSlots,
-        attendees: formData.convidados.map((email) => ({ email })),
-        createMeet: formData.criarMeet,
+        colorId: formData.cor ? String(formData.cor) : null,
+        start: { dateTime: formData.start }, // EventDate object
+        end: { dateTime: formData.end },     // EventDate object
+        status: "confirmed",
+        attendees: attendees,
+        // Optional/empty fields for EventsResource compatibility
+        kind: "calendar#event",
+        etag: "",
+        mainCalendarId: calendarId,
+        calendarIds: [calendarId],
+        htmlLink: "",
+        created: new Date().toISOString(),
+        updated: new Date().toISOString(),
+        creator: null,
+        organizer: null,
+        endTimeUnspecified: false,
+        recurrence: [],
+        recurringEventId: null,
+        originalStartTime: null,
+        transparency: null,
+        visibility: null,
+        iCalUID: null,
+        sequence: null,
+        attendeesOmitted: false,
+        extendedProperties: null,
+        hangoutLink: null,
+        links: 1,
+        eventId: null,
       };
 
       const resposta = await axios.post(
-        `/api/events/create-with-timeslots?calendarId=${calendarId}`,
+        `http://localhost:12003/events/insert?calendarId=${calendarId}`,
         dadosEvento,
         { withCredentials: true }
       );
@@ -203,7 +159,7 @@ const CriarEventoMenu = (props) => {
       window.location.href = "/";
     } catch (erro) {
       console.error("Erro:", erro);
-      console.err(erro.response?.data?.message || "Erro ao criar evento");
+      console.error(erro.response?.data?.message || "Erro ao criar evento");
     } finally {
       setCarregando(false);
     }
@@ -217,6 +173,36 @@ const CriarEventoMenu = (props) => {
     return (
       date?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) || ""
     );
+  };
+
+  const handleInputChange = (e) => {
+    const { id, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // Adiciona convidado ao array de convidados
+  const adicionarConvidado = () => {
+    if (
+      formData.novoConvidado &&
+      !formData.convidados.includes(formData.novoConvidado)
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        convidados: [...prev.convidados, prev.novoConvidado],
+        novoConvidado: "",
+      }));
+    }
+  };
+
+  // Remove convidado do array de convidados
+  const removerConvidado = (email) => {
+    setFormData((prev) => ({
+      ...prev,
+      convidados: prev.convidados.filter((c) => c !== email),
+    }));
   };
 
   return (
@@ -246,10 +232,10 @@ const CriarEventoMenu = (props) => {
         <div className="form-field full-width">
           <label>
             <p>
-              Adicionar Horários*
-              {errosFormulario.timeSlots && (
+              Início e Fim do Evento*
+              {errosFormulario.time && (
                 <span className="error-message">
-                  {errosFormulario.timeSlots}
+                  {errosFormulario.time}
                 </span>
               )}
             </p>
@@ -258,82 +244,50 @@ const CriarEventoMenu = (props) => {
             <div className="timeslot-inputs">
               <div className="time-input-group">
                 <DatePicker
-                  selected={novoTimeSlot.start}
-                  onChange={(time) => handleTimeSlotChange(time, "start")}
+                  selected={formData.start}
+                  onChange={(date) => handleDateTimeChange(date, "start")}
                   showTimeSelect
-                  showTimeSelectOnly
                   timeIntervals={15}
                   timeCaption="Hora"
-                  dateFormat="HH:mm"
+                  dateFormat="dd/MM/yyyy HH:mm"
                   timeFormat="HH:mm"
                   locale="pt-BR"
                   className="time-input"
-                  placeholderText="Selecione"
-                  minTime={createTime(0, 0)} // Start of day (00:00)
-                  maxTime={createTime(23, 45)} // End of day (23:45)
+                  placeholderText="Início"
+                  minDate={createDateWithTime(0, 0)}
+                  maxDate={createDateWithTime(23, 45)}
+                  minTime={createDateWithTime(0, 0)}
+                  maxTime={createDateWithTime(23, 45)}
                   selectsStart
-                  startDate={novoTimeSlot.start}
-                  endDate={novoTimeSlot.end}
+                  startDate={formData.start}
+                  endDate={formData.end}
                 />
                 <span>às</span>
                 <DatePicker
-                  selected={novoTimeSlot.end}
-                  onChange={(time) => handleTimeSlotChange(time, "end")}
+                  selected={formData.end}
+                  onChange={(date) => handleDateTimeChange(date, "end")}
                   showTimeSelect
-                  showTimeSelectOnly
                   timeIntervals={15}
                   timeCaption="Hora"
-                  dateFormat="HH:mm"
+                  dateFormat="dd/MM/yyyy HH:mm"
                   timeFormat="HH:mm"
                   locale="pt-BR"
                   className="time-input"
-                  placeholderText="Selecione"
-                  minTime={novoTimeSlot.start || createTime(0, 0)}
-                  maxTime={createTime(23, 45)}
+                  placeholderText="Fim"
+                  minDate={formData.start || createDateWithTime(0, 0)}
+                  maxDate={createDateWithTime(23, 45)}
+                  minTime={formData.start || createDateWithTime(0, 0)}
+                  maxTime={createDateWithTime(23, 45)}
                   selectsEnd
-                  startDate={novoTimeSlot.start}
-                  endDate={novoTimeSlot.end}
+                  startDate={formData.start}
+                  endDate={formData.end}
                   filterTime={(time) =>
-                    !novoTimeSlot.start ||
+                    !formData.start ||
                     time.getTime() >=
-                      novoTimeSlot.start.getTime() + 15 * 60 * 1000
+                      formData.start.getTime() + 15 * 60 * 1000
                   }
                 />
               </div>
-              {formData.timeSlots.length > 0 && (
-                <div className="timeslot-list">
-                  {formData.timeSlots.map((slot, index) => (
-                    <div key={index} className="timeslot-item">
-                      <span>
-                        {slot.start.toLocaleTimeString("pt-BR", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}{" "}
-                        -{" "}
-                        {slot.end.toLocaleTimeString("pt-BR", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                      <button
-                        type="button"
-                        className="remover"
-                        onClick={() => removerTimeSlot(index)}
-                      >
-                        <i className="fa-solid fa-close"></i>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <button
-                type="button"
-                id="add-timeslot-button"
-                className="adicionar"
-                onClick={adicionarTimeSlot}
-              >
-                Adicionar Horário
-              </button>
             </div>
           </div>
         </div>
@@ -361,20 +315,6 @@ const CriarEventoMenu = (props) => {
             )}
           </div>
         </label>
-
-        <div className="form-field">
-          <label className="checkbox-container">
-            <input
-              type="checkbox"
-              id="criarMeet"
-              checked={formData.criarMeet}
-              onChange={handleInputChange}
-            />
-            <span className="checkmark"></span>
-            Criar reunião do Google Meet
-            <i className="fa-solid fa-video meet-icon"></i>
-          </label>
-        </div>
 
         <label htmlFor="local" className="form-field full-width">
           Local
@@ -449,7 +389,7 @@ const CriarEventoMenu = (props) => {
           className="form-field"
           disabled={carregando}
         >
-          {carregando ? "Criando..." : "Criar Evento com Votação"}
+          {carregando ? "Criando..." : "Criar Evento"}
         </button>
       </form>
     </main>
