@@ -1,6 +1,7 @@
 package br.com.agendusp.agendusp.services;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,19 +10,23 @@ import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2Aut
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClient;
 
 import br.com.agendusp.agendusp.documents.EventsResource;
-import br.com.agendusp.agendusp.controller.CalendarDataController;
-import br.com.agendusp.agendusp.controller.EventPoolDataController;
-import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
-import br.com.agendusp.agendusp.dataobjects.EventPool;
+import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
+import br.com.agendusp.agendusp.controller.eventControllers.EventPoolDataController;
+import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
+import br.com.agendusp.agendusp.dataobjects.aiObjects.AIRequest;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPool;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 
 @RestController
 public class PromptBuilder {
 
+    @Autowired
+    RestClient restClient;
     @Autowired
     UserDataController userDataController;
     @Autowired
@@ -30,12 +35,16 @@ public class PromptBuilder {
     EventsDataController eventsDataController;
     @Autowired
     EventPoolDataController eventPoolDataController;
+    String stream = "false";
+    String model = "llama3.2:1b";
     
     @GetMapping("/prompt/semana")
     public String getPromptSemana(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient,
                                     @RequestParam String dataInicial,
                                     @RequestParam(required = false) String calendarId) {
-        return getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
+        LocalDateTime dataInicialObject = LocalDateTime.parse(dataInicial, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        String informe = getPromptParaInformeSemana(authorizedClient, dataInicialObject, calendarId);
+        return informe;
     }
 
     @GetMapping("/prompt/dia")
@@ -46,7 +55,7 @@ public class PromptBuilder {
     }
 
     public String getPromptParaInformeSemana(
-            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient, String dataInicial, String calendarId) {
+            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient, LocalDateTime dataInicialObject, String calendarId) {
 
         StringBuilder prompt = new StringBuilder();
         User user = userDataController.findUser(authorizedClient.getPrincipalName());
@@ -60,12 +69,14 @@ public class PromptBuilder {
         ArrayList<EventPool> enquetesRespondidas = new ArrayList<>();
 
         //quebra a string recebida
-        String ano = dataInicial.substring(0, 4);
-        String mes = dataInicial.substring(5, 7);
-        String dia = dataInicial.substring(8, 10);
-        String hora = dataInicial.substring(13, 15);
-        String minuto = dataInicial.substring(16, 18);  
-        String segundo = dataInicial.substring(19, 21);
+        String ano = String.valueOf(dataInicialObject.getYear());
+        String mes = String.valueOf(dataInicialObject.getMonthValue());
+        String dia = String.valueOf(dataInicialObject.getDayOfMonth());
+        String hora = String.valueOf(dataInicialObject.getHour());
+        String minuto = String.valueOf(dataInicialObject.getMinute());
+        String segundo = String.valueOf(dataInicialObject.getSecond());
+
+        
 
         // TODO pois nunca é usado
         LocalDateTime dataInicialDate = LocalDateTime.of(Integer.parseInt(ano), Integer.parseInt(mes),
@@ -116,7 +127,7 @@ public class PromptBuilder {
 
         prompt.append("- Nome da pessoa: ").append(personName).append("\n");
         prompt.append("- Contexto: A pessoa deseja receber um resumo dos compromissos agendados para a semana do dia "
-                + dataInicial + ".\n");
+                + dataInicialObject.toString() + ".\n");
         prompt.append("\nCompromissos:\n");
         if (compromissos == null || compromissos.isEmpty()) {
             prompt.append("Não há compromissos!\n");
@@ -159,8 +170,12 @@ public class PromptBuilder {
                 "Por favor, enfatize informações relevantes como sobreposição de horários, eventos recentemente cancelados e "
                         +
                         "enquetes recentes de horário para reunião.\n");
-
-        return prompt.toString();
+        AIRequest aiRequest =  new AIRequest.AiRequestBuilder(this.model, prompt.toString()).setStream(stream).build();
+        String aiResponse = restClient.post().uri("localhost:11434/generate/api")
+        .body(aiRequest)
+        .retrieve()
+        .toEntity(String.class).getBody();
+        return aiResponse;
     }
 
     public String getPromptParaInformeDia(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient, String dataInicial, String calendarId) {
