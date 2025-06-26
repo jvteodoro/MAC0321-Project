@@ -10,7 +10,8 @@
   display: flex;
   justify-content: center;
   gap: 1em;
-  align-items: center;
+  align-items: flex-start;
+  position: relative;
 }
 
 .month-title {
@@ -30,13 +31,22 @@
   position: absolute;
 }
 
-.nav-button {
+.nav-button { /* Botão para navegar pelos meses */
   padding: 0.5em;
   border: none;
   border-radius: 50%;
+  position: absolute;
+  text-align: center;
+  top: 0%;
+}
+.nav-button:first-of-type {
+  left: 41.5em;
+}
+.nav-button:last-of-type {
+  right: 41.5em;
 }
 
-#calendar {
+#calendar { /* Container principal do calendário */
   width: 100%;
   height: calc(100% - 2em);
   padding: 0 0.5em 0.5em 0.5em;
@@ -46,7 +56,7 @@
   position: relative;
 }
 
-#weekday-headers {
+#weekday-headers { /* Cabeçalhos dos dias da semana */
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 }
@@ -104,7 +114,7 @@
   content: 'Hoje';
   position: absolute;
   top: 0.26em;
-  left: 1.3em;
+  left: 1.5em;
   color: var;
 }
 

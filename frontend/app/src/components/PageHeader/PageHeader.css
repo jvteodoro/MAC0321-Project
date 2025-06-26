@@ -35,7 +35,7 @@
     justify-content: center;
 }
 
-#notifications-button, #stats-button {
+#notifications-button{
     position: relative;
     z-index: 2;
     min-width: 3.5em;
@@ -44,6 +44,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #e6b720;
+}
+#stats-button {
+    position: relative;
+    z-index: 2;
+    min-width: 3.5em;
+    min-height: 2.2em;
+    padding: 0.2em 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color:#2155ff;
 }
 
 #notifications-button.connected-to-list, #stats-button.connected-to-stats{

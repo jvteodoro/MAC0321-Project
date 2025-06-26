@@ -30,7 +30,7 @@
   align-items: center;
 }
 
-.App *:not(input) {
+.App *:not(input) { 
   transition: 0.15s ease-in-out;
 }
 
@@ -50,22 +50,22 @@ input,
 button,
 select,
 option,
-textarea {
-  border-color: var(--main-highlight-color);
+textarea { 
+  border-color: var(--main-highlight-color); 
   font-size: 1em;
   border-radius: 0.4em;
   padding: 0.25em;
 }
 
-input, textarea {
+input, textarea {  
   background-color: var(--secondary-color);
 }
-
-button {
+ 
+button { 
   background-color: var(--main-color);
   cursor: pointer;
 }
-
+                                                                                                                                                                                                                                                           
 button:hover {
   background-color: var(--main-hoverselect-color);
 }

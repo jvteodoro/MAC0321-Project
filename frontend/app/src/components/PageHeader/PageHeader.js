@@ -42,10 +42,10 @@ const PageHeader = (props) => {
           <StatsMenu visible={statsMenuVisible} />
         </div>
         <form action={null} method="POST">
-          <button type="submit">Logout</button>
+          <button type="submit">Salvar</button>
         </form>
         <form action={null} method="POST">
-          <button type="submit">Salvar</button>
+          <button type="submit">Logout</button>
         </form>
       </div>
     </header>
