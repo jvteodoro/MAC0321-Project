@@ -1,10 +1,10 @@
-package br.com.agendusp.agendusp.controller;
+package br.com.agendusp.agendusp.controller.eventControllers;
 
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import br.com.agendusp.agendusp.dataobjects.EventPool;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPool;
 import br.com.agendusp.agendusp.repositories.EventPoolRepository;
 
 public class EventPoolDataController {

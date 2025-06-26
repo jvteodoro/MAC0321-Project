@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 import org.springframework.stereotype.Repository;
 
-import br.com.agendusp.agendusp.dataobjects.EventPool;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPool;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 

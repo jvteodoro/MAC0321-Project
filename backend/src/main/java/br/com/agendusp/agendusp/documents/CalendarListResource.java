@@ -2,7 +2,7 @@ package br.com.agendusp.agendusp.documents;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 
 @Document(collection = "calendarLists")
 public class CalendarListResource {

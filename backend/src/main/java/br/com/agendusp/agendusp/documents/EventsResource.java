@@ -8,10 +8,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.google.api.services.calendar.model.Event.ExtendedProperties;
 
-import br.com.agendusp.agendusp.dataobjects.Attendee;
-import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
-import br.com.agendusp.agendusp.dataobjects.EventDate;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventDate;
 
 @Document(collection = "events")
 public class EventsResource {

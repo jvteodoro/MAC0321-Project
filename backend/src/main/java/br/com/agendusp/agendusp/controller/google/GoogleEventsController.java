@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
-import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
-import br.com.agendusp.agendusp.dataobjects.EventListResource;
+import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventListResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import org.springframework.web.bind.annotation.RequestBody;
 

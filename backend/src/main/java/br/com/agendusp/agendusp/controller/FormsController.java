@@ -19,10 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPool;
-import br.com.agendusp.agendusp.dataobjects.EventDate;
-import br.com.agendusp.agendusp.dataobjects.EventPool;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventDate;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPool;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.repositories.EventPoolRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;

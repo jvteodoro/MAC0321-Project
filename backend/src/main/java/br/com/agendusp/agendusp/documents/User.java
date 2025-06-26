@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
-import br.com.agendusp.agendusp.dataobjects.EventPool;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPool;
 
 
 @Document(collection = "users")

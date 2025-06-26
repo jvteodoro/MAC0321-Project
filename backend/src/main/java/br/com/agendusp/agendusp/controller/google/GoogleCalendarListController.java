@@ -12,10 +12,9 @@ import org.springframework.web.client.RestClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import br.com.agendusp.agendusp.controller.UserDataController;
-import br.com.agendusp.agendusp.dataobjects.CalendarListList;
-
 import br.com.agendusp.agendusp.dataobjects.WatchRequest;
 import br.com.agendusp.agendusp.dataobjects.WatchResponse;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarListList;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 
 import org.springframework.web.bind.annotation.DeleteMapping;

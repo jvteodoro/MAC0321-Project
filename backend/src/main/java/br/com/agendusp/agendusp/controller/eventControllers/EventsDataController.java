@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.controller;
+package br.com.agendusp.agendusp.controller.eventControllers;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.agendusp.agendusp.dataobjects.Attendee;
+import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.EventsResource;

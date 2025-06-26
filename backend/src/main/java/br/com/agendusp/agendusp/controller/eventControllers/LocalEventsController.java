@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.controller;
+package br.com.agendusp.agendusp.controller.eventControllers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
-import br.com.agendusp.agendusp.dataobjects.EventDate;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventDate;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import org.springframework.web.bind.annotation.RequestBody;
 

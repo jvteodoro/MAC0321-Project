@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.dataobjects;
+package br.com.agendusp.agendusp.dataobjects.calendarObjects;
 
 import java.util.ArrayList;
 import br.com.agendusp.agendusp.documents.CalendarListResource;

@@ -1,5 +1,6 @@
-package br.com.agendusp.agendusp.dataobjects;
+package br.com.agendusp.agendusp.dataobjects.eventObjects;
 
+import br.com.agendusp.agendusp.dataobjects.DefaultReminderResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 
 public class EventListResource {

@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.controller;
+package br.com.agendusp.agendusp.controller.calendarControllers;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,8 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 // import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
-import br.com.agendusp.agendusp.controller.CalendarDataController;
+import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 
 @RestController

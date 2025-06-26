@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.controller;
+package br.com.agendusp.agendusp.controller.calendarControllers;
 
 import java.util.ArrayList;
 import org.springframework.http.ResponseEntity;

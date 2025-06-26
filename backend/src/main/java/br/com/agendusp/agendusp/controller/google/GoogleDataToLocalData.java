@@ -14,8 +14,8 @@ import org.springframework.web.client.RestClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.agendusp.agendusp.controller.UserDataController;
-import br.com.agendusp.agendusp.dataobjects.CalendarListList;
 import br.com.agendusp.agendusp.dataobjects.UserInfo;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarListList;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 

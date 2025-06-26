@@ -7,8 +7,8 @@ import org.springframework.web.client.RestClient;
 
 import com.google.gson.Gson;
 
-import br.com.agendusp.agendusp.dataobjects.AIRequest;
-import br.com.agendusp.agendusp.dataobjects.AIResponse;
+import br.com.agendusp.agendusp.dataobjects.aiObjects.AIRequest;
+import br.com.agendusp.agendusp.dataobjects.aiObjects.AIResponse;
 
 
 @RestController //para poder fazer requisicoes http 
@@ -22,11 +22,11 @@ public class AIControler {
     }
 
     public AIResponse gerarInforme(AIRequest airequest){ //a requisicao da ia precisa mandar isso {"model" : "llama3.2:1b", "prompt": "-prompt para a ia-", "stream": false}
-        ResponseEntity<Gson> response = restClient.post()
+        ResponseEntity<AIResponse> response = restClient.post()
             .uri("http://localhost:11434/api/generate")
             .body(airequest)
             .retrieve()
-            .toEntity(Gson.class);
-        return new AIResponse(response.getBody());
+            .toEntity(AIResponse.class);
+        return response.getBody();
     }
 }

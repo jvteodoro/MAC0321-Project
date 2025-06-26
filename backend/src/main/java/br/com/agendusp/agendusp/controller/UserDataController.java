@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestClient;
 
-import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
@@ -107,7 +107,7 @@ public class UserDataController {
 
         }
 
-        protected CalendarListResource findCalendarListResource(String userId, String calendarId) {
+        public CalendarListResource findCalendarListResource(String userId, String calendarId) {
                 CalendarListResource calListResource = userRepository
                                 .findCalendarListResourceByIdAndCalendarId(userId, calendarId)
                                 .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId

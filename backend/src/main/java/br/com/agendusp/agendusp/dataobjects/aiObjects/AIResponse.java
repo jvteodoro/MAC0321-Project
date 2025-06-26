@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.dataobjects;
+package br.com.agendusp.agendusp.dataobjects.aiObjects;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

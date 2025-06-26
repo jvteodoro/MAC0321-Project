@@ -15,8 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.agendusp.agendusp.AgendUspApplication;
 import br.com.agendusp.agendusp.MongoTestContainer;
-import br.com.agendusp.agendusp.controller.CalendarDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;

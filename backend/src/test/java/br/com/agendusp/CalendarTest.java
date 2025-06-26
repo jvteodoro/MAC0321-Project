@@ -12,10 +12,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.agendusp.agendusp.MongoTestContainer;
-import br.com.agendusp.agendusp.controller.CalendarDataController;
-import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.FormsController;
 import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
+import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;

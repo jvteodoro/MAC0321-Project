@@ -14,9 +14,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import com.google.gson.Gson;
 
-import br.com.agendusp.agendusp.controller.CalendarDataController;
-
 import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;

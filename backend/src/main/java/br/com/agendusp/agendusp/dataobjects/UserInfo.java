@@ -11,7 +11,7 @@ public class UserInfo {
     String name;
     String given_name;
     String family_name;
-    String pciture;
+    String picture;
     
     public String getId() {
         return id;
@@ -50,10 +50,10 @@ public class UserInfo {
         this.family_name = family_name;
     }
     public String getPciture() {
-        return pciture;
+        return picture;
     }
     public void setPciture(String pciture) {
-        this.pciture = pciture;
+        this.picture = pciture;
     }
     
 }

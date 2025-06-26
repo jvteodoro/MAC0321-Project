@@ -2,6 +2,7 @@ package br.com.agendusp.agendusp.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.documents.EventsResource;
 

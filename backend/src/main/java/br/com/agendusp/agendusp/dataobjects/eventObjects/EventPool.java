@@ -1,7 +1,9 @@
-package br.com.agendusp.agendusp.dataobjects;
+package br.com.agendusp.agendusp.dataobjects.eventObjects;
 
 import java.util.ArrayList;
 
+import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
+import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPool;
 import br.com.agendusp.agendusp.documents.EventsResource;
 
 public class EventPool {

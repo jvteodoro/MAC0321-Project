@@ -1,4 +1,4 @@
-package br.com.agendusp.agendusp.controller;
+package br.com.agendusp.agendusp.controller.eventControllers;
 
 import java.util.ArrayList;
 

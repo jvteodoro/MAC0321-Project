@@ -1,4 +1,6 @@
-package br.com.agendusp.agendusp.dataobjects;
+package br.com.agendusp.agendusp.dataobjects.eventObjects;
+
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 
 public class Attendee {
     private CalendarPerson calendarPerson;

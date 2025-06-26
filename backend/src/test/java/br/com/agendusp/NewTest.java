@@ -27,13 +27,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.agendusp.agendusp.AgendUspApplication;
 import br.com.agendusp.agendusp.documents.EventsResource;
-import br.com.agendusp.agendusp.controller.CalendarDataController;
-import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.FormsController;
 import br.com.agendusp.agendusp.controller.HomeController;
 import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
+import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
-import br.com.agendusp.agendusp.dataobjects.EventDate;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventDate;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
@@ -388,18 +388,18 @@ public class NewTest {
             System.out.println("Prompt Dia: "+promptTotalDia);
         }
 
-        calendarId = null;
-        String promptCalendarioSemana = promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
-        if (promptCalendarioSemana != null){
-            System.out.println("Prompt Semana: "+promptCalendarioSemana);
-        }
+        // calendarId = null;
+        // String promptCalendarioSemana = promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
+        // if (promptCalendarioSemana != null){
+        //     System.out.println("Prompt Semana: "+promptCalendarioSemana);
+        // }
 
 
-        calendarId = "calR1";
-        String promptTotalSemana = promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
-        if (promptTotalSemana != null){
-            System.out.println("Prompt Semana: "+promptTotalSemana);
-        }
+        // calendarId = "calR1";
+        // String promptTotalSemana = promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
+        // if (promptTotalSemana != null){
+        //     System.out.println("Prompt Semana: "+promptTotalSemana);
+        // }
     
         // TODO pois nunca é usado
         ResultActions result = mockMvc.perform(get("/prompt/semana")).andDo(MockMvcResultHandlers.print());
