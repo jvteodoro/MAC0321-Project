@@ -3,6 +3,13 @@ import PropTypes from "prop-types";
 import "../DataVisualization.css";
 
 const AIResponseVisualization = ({ response }) => {
+  if (!response) {
+    return (
+      <div className="visualization-container ai-response">
+        No response data.
+      </div>
+    );
+  }
   // Sample response structure:
   // {
   //   question: "What are the benefits of React?",
@@ -68,7 +75,7 @@ AIResponseVisualization.propTypes = {
     confidence: PropTypes.string,
     sources: PropTypes.arrayOf(PropTypes.string),
     timestamp: PropTypes.string,
-  }),
+  }).isRequired,
 };
 
 export default AIResponseVisualization;
