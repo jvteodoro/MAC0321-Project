@@ -14,7 +14,7 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventDate;
 
 @Document(collection = "events")
-public class EventsResource {
+public class EventsResource { // objetos dessa classe serão salvos na coleção events do MongoDB
 
     @Id
     String id;
@@ -90,7 +90,8 @@ public class EventsResource {
         this.hangoutLink = hangoutLink;
     }
 
-    public ArrayList<DateTimeInterval> freeTime(ArrayList<DateTimeInterval> freeTimeVec) {
+    public ArrayList<DateTimeInterval> freeTime(ArrayList<DateTimeInterval> freeTimeVec) { // Método que recebe um vetor de intervalos de tempo livre e retorna um novo vetor,
+                                                                                           // de intervalos de tempo livre, removendo os intervalos que se sobrepõem
         ArrayList<DateTimeInterval> freeTimeVecNew = new ArrayList<>();
         
         for (DateTimeInterval interval: freeTimeVec){

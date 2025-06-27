@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LocalEventsController implements EventsController {
 
     @Autowired
-    private Gson gson;
+    private Gson gson; // Gson é usado para manipulação de JSON
     @Autowired
     private EventsDataController eventsDataController;
     @Autowired
@@ -58,6 +58,8 @@ public class LocalEventsController implements EventsController {
         freeTimeVec.add(freeTime);
 
         for (EventsResource event : allEvents) {
+        if (event.getStart() == null || event.getEnd() == null) {
+            continue; // Ignora eventos sem data de início ou fim
             freeTimeVec = event.freeTime(freeTimeVec);
         }
 
@@ -68,15 +70,13 @@ public class LocalEventsController implements EventsController {
     public boolean[][] listWindows(@RequestParam String calendarId, @RequestParam String endDate) {
 
         int divTempo = 24;
-        // Quando 0 então a menor unidade é hora
-        // Quando 1 então a menor unidade é minuto
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime dateEndObj = LocalDateTime.parse(endDate);
         int dayNum = ((int) ChronoUnit.DAYS.between(today, dateEndObj));
         ArrayList<EventsResource> eventsOnInterval = eventsDataController.getEventsOnInterval(calendarId, dateEndObj);
         boolean[][] dateVec = new boolean[dayNum][divTempo];
 
-        // TODO pois nunca é usado
+        // TO-DO pois nunca é usado
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         for (EventsResource ev : eventsOnInterval) {
             EventDate end = ev.getEnd();
@@ -129,6 +129,10 @@ public class LocalEventsController implements EventsController {
     @PostMapping("/events/insert")
     public EventsResource insert(@RequestBody EventsResource event, @RequestParam String calendarId,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        // Verifica se o evento tem data de início e fim
+        if (event.getStart() == null || event.getEnd() == null) {
+            throw new IllegalArgumentException("O evento deve ter uma data de início e fim.");
+        }
         String userId = authorizedClient.getPrincipalName();
         eventsDataController.createEvent(calendarId, event, userId);
         return event;

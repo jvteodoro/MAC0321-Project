@@ -7,11 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPool;
 import br.com.agendusp.agendusp.repositories.EventPoolRepository;
 
-public class EventPoolDataController {
+public class EventPoolDataController { 
     @Autowired
     EventPoolRepository eventPoolRepository;
 
     public ArrayList<EventPool> getAllEventPools(ArrayList<String> eventPoolIdList){
+        // Verifica se a lista de IDs está vazia
+        if (eventPoolIdList == null || eventPoolIdList.isEmpty()) {
+            throw new IllegalArgumentException("A lista de IDs de EventPool não pode ser nula ou vazia.");
+        }
         ArrayList<EventPool> allEventPools = new ArrayList<>();
         for (String id: eventPoolIdList){
             allEventPools.add(eventPoolRepository.findById(id).orElse(null));

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import org.springframework.web.bind.annotation.RequestBody;
 
-public interface EventsController {
+public interface EventsController { // Interface para o controlador de eventos
         public ResponseEntity<String> delete(String calendarId, String eventId,
                         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient);
 

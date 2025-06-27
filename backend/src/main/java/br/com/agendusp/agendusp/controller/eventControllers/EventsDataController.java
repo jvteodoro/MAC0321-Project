@@ -190,6 +190,9 @@ public class EventsDataController {
 
 
     public EventsResource getEventById(String eventId){
+        if (eventId == null || eventId.isEmpty()) {
+            throw new IllegalArgumentException("ID do evento não pode ser nulo ou vazio.");
+        }
         Optional<EventsResource> evRoptional = eventsRepository.findById(eventId);
         if (evRoptional.isEmpty()){
             return new EventsResource();
@@ -230,7 +233,7 @@ public class EventsDataController {
             System.err.println(e);
         }
         eventResource.setId(eventId);
-        eventResource.setMainCalendarId(calendarId); // TODO FIX
+        eventResource.setMainCalendarId(calendarId); // TO-DO FIX
 
         // Atualiza os attendees e calendarIds conforme solicitado
         updateAttendeesAndCalendars(eventResource);
@@ -274,9 +277,9 @@ public class EventsDataController {
         }
         userDataController.findUser(userId);
 
-        // Only try to fetch if user has this calendar
+        // apenas tenta encontrar o calendário se o usuario tem acesso a ele
+        // se não tiver, retorna lista vazia ao invés de lançar exceção
         if (!userDataController.userHasCalendar(userId, calendarId)) {
-            // Return empty list instead of throwing
             return new ArrayList<>();
         }
 
@@ -344,7 +347,7 @@ public class EventsDataController {
     /**
      * Atualiza os attendees do evento: se algum attendee tiver id ou displayName nulo,
      * tenta buscar o usuário pelo email e preencher os dados. Também adiciona o mainCalendar
-     * do usuário à lista de calendarIds do evento. Se não encontrar o usuário, remove o attendee.
+     * do usuário à lista de calendarIds do evento. Se o usuário não for encontrado, remove o attendee.
      */
     private void updateAttendeesAndCalendars(EventsResource eventResource) {
         if (eventResource.getAttendees() == null) return;
