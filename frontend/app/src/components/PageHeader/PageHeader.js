@@ -42,10 +42,24 @@ const PageHeader = (props) => {
           <StatsMenu visible={statsMenuVisible} />
         </div>
         <form action={null} method="POST">
-          <button type="submit">Logout</button>
+          <button 
+            id="salvar"
+            type="submit"
+            onClick={() => {
+              // Implement save functionality here}>
+              alert("implementação salvar ainda não feita");
+            }}>
+            Salvar</button>
         </form>
         <form action={null} method="POST">
-          <button type="submit">Salvar</button>
+          <button
+            id="logout" 
+            type="submit"
+            onClick={() => {
+              // Implement logout functionality here
+              alert("implementação logout ainda não feita");
+            }}>
+            Logout</button>
         </form>
       </div>
     </header>

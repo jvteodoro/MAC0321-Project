@@ -24,14 +24,17 @@
     position: relative;
     display: flex;
     flex-direction: column;
-  }
+    align-items: center;
+    font-size: 2.5em;
+    }
   
   #gera-relatorio > span {
     font-size: 0.6em;
     position: absolute;
-    bottom: 0;
+    bottom: -0.1em;
     left: 50%;
     transform: translate(-50%, 0%);
+    color: burlywood;
   }
 
 .close-button {
