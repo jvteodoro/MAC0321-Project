@@ -9,7 +9,7 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPool;
 
 
 @Document(collection = "users")
-public class User {//implements UserDetails {
+public class User { // objetos dessa classe serão salvos na coleção users do MongoDB
 
     @Id
     private String id; // ID gerada pelo MongoDB
@@ -27,11 +27,14 @@ public class User {//implements UserDetails {
     public User() {
     }
 
-    public User(String userId) {
+    public User(String userId) { // Construtor para criar um usuário com um ID específico
+        this.id = null; // ID será gerado pelo MongoDB
+        this.googleId = null; // Google ID pode ser nulo se o usuário não se autenticou com o Google
         this.userId = userId;
     }
 
-    public User(String googleId, String email, String name) {
+    public User(String googleId, String email, String name) { // Construtor para criar um usuário com Google ID, email e nome
+        this.id = null; // ID será gerado pelo MongoDB
         this.googleId = googleId;
         this.email = email;
         this.name = name;
@@ -51,21 +54,36 @@ public class User {//implements UserDetails {
     
 
     public ArrayList<String> getEventPoolList() {
+        if (this.eventPoolList == null) { 
+            this.eventPoolList = new ArrayList<>();
+        }
         return eventPoolList;
     }
 
     public void setEventPoolList(ArrayList<String> eventPoolList) {
+        if (eventPoolList == null) {
+            eventPoolList = new ArrayList<>();
+        }
         this.eventPoolList = eventPoolList;
     }
     public void addEventPool(String eventPoolId){
+        if (this.eventPoolList == null) {
+            this.eventPoolList = new ArrayList<>();
+        }
         this.eventPoolList.add(eventPoolId);
     }
 
     public void setUserId(String userId) {
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
         this.userId = userId;
     }
 
     public void setName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
         this.name = name;
     }
 

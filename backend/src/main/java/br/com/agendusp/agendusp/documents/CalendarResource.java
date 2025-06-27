@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 
-@Document(collection = "calendars")
+@Document(collection = "calendars") // objetos dessa classe serão salvos na coleção calendars do MongoDB
 public class CalendarResource {
     
     @Id
@@ -39,7 +39,10 @@ public class CalendarResource {
         return calR;
     }
 
-    public CalendarListResource toCalendarListResource(String acessRole){
+    public CalendarListResource toCalendarListResource(String acessRole){ // extrai um CalendarListResource a partir de um CalendarResource
+        if (this.calendarId == null) {
+            throw new IllegalArgumentException("Calendar ID cannot be null");
+        }
         CalendarListResource calR = new CalendarListResource();
         calR.setId(this.calendarId);
         calR.setCalendarId(this.calendarId);
