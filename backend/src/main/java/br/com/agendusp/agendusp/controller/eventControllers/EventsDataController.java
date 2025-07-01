@@ -233,10 +233,48 @@ public class EventsDataController {
             System.err.println(e);
         }
         eventResource.setId(eventId);
-        eventResource.setMainCalendarId(calendarId); // TO-DO FIX
+        // eventResource.setMainCalendarId(calendarId); // TO-DO FIX
+
+        // --- BEGIN: Prevent organizer removal from attendee list ---
+        if (event.getOrganizer() != null && event.getOrganizer().getId() != null) {
+            String organizerId = event.getOrganizer().getId();
+            boolean organizerStillAttendee = false;
+            if (eventResource.getAttendees() != null) {
+                for (Attendee attendee : eventResource.getAttendees()) {
+                    if (attendee != null && attendee.getCalendarPerson() != null
+                        && organizerId.equals(attendee.getCalendarPerson().getId())) {
+                        organizerStillAttendee = true;
+                        break;
+                    }
+                }
+            }
+            if (!organizerStillAttendee) {
+                throw new IllegalArgumentException("O organizador não pode ser removido da lista de convidados.");
+            }
+        }
+        // --- END: Prevent organizer removal from attendee list ---
 
         // Atualiza os attendees e calendarIds conforme solicitado
         updateAttendeesAndCalendars(eventResource);
+
+        // --- BEGIN: Rebuild calendarIds from attendees and mainCalendarId ---
+        ArrayList<String> newCalendarIds = new ArrayList<>();
+        String mainCalendarId = eventResource.getMainCalendarId();
+        if (mainCalendarId != null && !mainCalendarId.isEmpty()) {
+            newCalendarIds.add(mainCalendarId);
+        }
+        if (eventResource.getAttendees() != null) {
+            for (Attendee attendee : eventResource.getAttendees()) {
+                if (attendee != null && attendee.getCalendarPerson() != null) {
+                    String email = attendee.getCalendarPerson().getEmail();
+                    if (email != null && !email.isEmpty() && !newCalendarIds.contains(email)) {
+                        newCalendarIds.add(email);
+                    }
+                }
+            }
+        }
+        eventResource.setCalendarIds(newCalendarIds);
+        // --- END: Rebuild calendarIds from attendees and mainCalendarId ---
 
         eventsRepository.save(eventResource);
         return eventResource;
