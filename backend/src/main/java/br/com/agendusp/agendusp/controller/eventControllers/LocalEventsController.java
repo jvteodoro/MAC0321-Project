@@ -60,8 +60,9 @@ public class LocalEventsController implements EventsController {
         for (EventsResource event : allEvents) {
         if (event.getStart() == null || event.getEnd() == null) {
             continue; // Ignora eventos sem data de início ou fim
-            freeTimeVec = event.freeTime(freeTimeVec);
         }
+        freeTimeVec = event.freeTime(freeTimeVec);
+    }
 
         return freeTimeVec;
     }
