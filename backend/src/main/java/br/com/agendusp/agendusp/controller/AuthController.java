@@ -4,12 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,17 +38,5 @@ public class AuthController {
         result.put("user", principal.getAttributes());
         result.put("accessToken", authorizedClient.getAccessToken().getTokenValue());
         return ResponseEntity.ok(result);
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(Authentication authentication) {
-        try {
-            // Limpa o contexto de segurança
-            SecurityContextHolder.clearContext();
-
-            return ResponseEntity.ok().body("Logout successful");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Logout failed");
-        }
     }
 }

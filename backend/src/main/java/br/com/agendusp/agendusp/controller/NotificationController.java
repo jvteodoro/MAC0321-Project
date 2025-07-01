@@ -1,8 +1,7 @@
 package br.com.agendusp.agendusp.controller;
-package br.com.agendusp.agendusp.controller;
 
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
-import br.com.agendusp.agendusp.service.NotificationService;
+import br.com.agendusp.agendusp.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,4 +19,3 @@ public class NotificationController {
         return notificationService.getNotificationsForUser(userId);
     }
 }
-

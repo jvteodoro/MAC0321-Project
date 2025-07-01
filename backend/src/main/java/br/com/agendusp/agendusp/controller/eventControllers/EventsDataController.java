@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -13,6 +12,7 @@ import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
@@ -20,6 +20,7 @@ import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.EventsRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
+import br.com.agendusp.agendusp.services.NotificationService;
 
 public class EventsDataController {
     // Events

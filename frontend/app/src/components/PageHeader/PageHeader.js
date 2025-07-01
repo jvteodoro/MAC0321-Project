@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "./PageHeader.css";
 import NotificationList from "../NotificationList/NotificationList";
 import StatsMenu from "../StatsMenu/StatsMenu";
-import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 
 const PageHeader = (props) => {
@@ -18,10 +17,8 @@ const PageHeader = (props) => {
 
   const fazerLogout = async () => {
     try {
-      await axios.post("http://localhost:12003/api/auth/logout", null, {
-        withCredentials: true,
-      });
-      logout(); // limpa estado local após logout do servidor
+      await logout(); // limpa estado local após logout do servidor
+      window.location.reload();
     } catch (err) {
       console.error("Erro ao fazer logout:", err);
     }

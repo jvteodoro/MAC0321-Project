@@ -62,6 +62,7 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/logout", configuration);
         return source;
     }
 
@@ -71,7 +72,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/events/**", "/pool/**")) // <-- added "/pool/**"
+                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/events/**", "/pool/**", "/logout"))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(
                         "/", 
@@ -80,7 +81,8 @@ public class SecurityConfig {
                         "/oauth2/**",
                         "/events/update",
                         "/events/**",
-                        "/pool/**" // <-- added here
+                        "/pool/**",
+                        "/logout"
                     ).permitAll();
                     auth.anyRequest().authenticated();
                 })
@@ -90,6 +92,16 @@ public class SecurityConfig {
                                 .userService(OAuth2UserService())).successHandler(customAuthenticationSuccessHandler()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // POST é default
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            System.out.println("Logout handler called. Invalidating session and clearing authentication."); // debug log
+                            response.setStatus(200);
+                        })
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .clearAuthentication(true)
+                    )
                 .build();
     }
 
