@@ -307,9 +307,9 @@ public class NewTest {
     }
 
     @Test
-    @WithMockUser
-    public void testEventResourceFreeTime() throws Exception{
-        EventsResource mockEvent = new EventsResource();
+    @WithMockUser 
+    public void testEventResourceFreeTime() throws Exception{   //testa a função freeTime de EventsResource
+        EventsResource mockEvent = new EventsResource(); 
         EventDate start = new EventDate();
         EventDate end = new EventDate();
         ArrayList<DateTimeInterval> freeTimeVec = new ArrayList<>();
@@ -352,7 +352,7 @@ public class NewTest {
     // Teste AI
     @Test
     @WithMockUser
-    public void testPrompBuilder() throws Exception{
+    public void testPrompBuilder() throws Exception{ //testa a classe PromptBuilder
         PromptBuilder promptBuilder = new PromptBuilder();
         
         String calendarId;

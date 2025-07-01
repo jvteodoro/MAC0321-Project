@@ -189,19 +189,19 @@ const EditarEventoMenu = (props) => {
       updatedEvent.attendees =
         formData.convidados.length > 0
           ? formData.convidados.map((c) => {
-              // If already in Attendee structure, keep as is
-              if (typeof c === "object" && c.calendarPerson) return c;
-              // If string (email), wrap as Attendee with CalendarPerson
-              return {
-                calendarPerson: { email: c },
-                organizer: false,
-                resource: false,
-                optional: false,
-                responseStatus: "needsAction",
-                comment: "",
-                additionalGuests: 0,
-              };
-            })
+            // If already in Attendee structure, keep as is
+            if (typeof c === "object" && c.calendarPerson) return c;
+            // If string (email), wrap as Attendee with CalendarPerson
+            return {
+              calendarPerson: { email: c },
+              organizer: false,
+              resource: false,
+              optional: false,
+              responseStatus: "needsAction",
+              comment: "",
+              additionalGuests: 0,
+            };
+          })
           : null;
 
       await axios.post(
@@ -397,20 +397,32 @@ const EditarEventoMenu = (props) => {
             )}
           </div>
         </label>
+        <div id="enquete-meet" >
+          {formData.hangoutLink && (
+            <div id="meetLinkHolder" className="form-field">
+              <label>Link do Google Meet</label>
+              <a
+                href={formData.hangoutLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                id="meet-link"
+              >
 
-        {formData.hangoutLink && (
-          <div id="meetLinkHolder" className="form-field">
-            <label>Link do Google Meet</label>
-            <a
-              href={formData.hangoutLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              id="meet-link"
-            >
-              {formData.hangoutLink}
-            </a>
-          </div>
-        )}
+
+                {formData.hangoutLink}
+              </a>
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="submit-button criar-enquete-btn"
+            style={{ marginBottom: "1em", width: "auto" }}
+            onClick={handleCreatePoll}
+          >
+            Criar enquete
+          </button>
+        </div>
 
         <label htmlFor="local" className="form-field full-width">
           Local
@@ -485,14 +497,6 @@ const EditarEventoMenu = (props) => {
             </div>
           )}
         </div>
-        <button
-          type="button"
-          className="submit-button criar-enquete-btn"
-          style={{ marginBottom: "1em", width: "auto" }}
-          onClick={handleCreatePoll}
-        >
-          Criar enquete
-        </button>
         <button
           type="button"
           id="cancel-button"
