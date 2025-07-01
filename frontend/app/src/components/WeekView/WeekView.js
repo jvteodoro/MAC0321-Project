@@ -26,8 +26,12 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
     ).toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
   };
 
+  const relatorioGerado = (firstDay, lastDay) => {
+    }
+
   const goToCreateMenu = (clickDayInfo) => {
     navigate("evento/criar", {
+      replace: true,
       state: { calendarId: calendarId, dayInfo: clickDayInfo },
     });
   };
@@ -48,8 +52,8 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
     <div className="week-view-container">
       <div className="week-view-header">
         <h3>Visualização da semana</h3>
-        <form action={"" /* INSERIR URL PARA GERAR O RELATÓRIO */}>
           <button
+            onClick={() => relatorioGerado(firstDay, lastDay)}
             id="gera-relatorio"
             type="submit"
             name="generate"
@@ -58,7 +62,6 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
             <p>Gerar relatório da semana</p>
             <span>(LLaMA 4)</span>
           </button>
-        </form>
         <button onClick={onClose} className="close-button">
           <i className="fa-solid fa-arrow-left"></i> Voltar para o Calendário
         </button>

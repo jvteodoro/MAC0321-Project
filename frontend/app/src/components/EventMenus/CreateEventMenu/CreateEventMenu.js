@@ -349,7 +349,7 @@ const CriarEventoMenu = (props) => {
                 value={formData.novoConvidado}
                 onChange={handleInputChange}
                 placeholder="Adicione e-mails de convidados"
-                onKeyPress={(e) =>
+                onKeyDown={(e) =>
                   e.key === "Enter" &&
                   (e.preventDefault(), adicionarConvidado())
                 }
