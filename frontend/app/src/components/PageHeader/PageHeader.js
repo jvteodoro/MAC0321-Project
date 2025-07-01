@@ -1,18 +1,31 @@
 import React, { useState } from "react";
-// import PropTypes from 'prop-types';
 import "./PageHeader.css";
 import NotificationList from "../NotificationList/NotificationList";
 import StatsMenu from "../StatsMenu/StatsMenu";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const PageHeader = (props) => {
   const [notListVisible, setNotListVisible] = useState(false);
   const [statsMenuVisible, setStatsMenuVisible] = useState(false);
+  const { logout } = useAuth(); // função que limpa estado do usuário
 
   const toggleNotificationListVisibility = () =>
     setNotListVisible(!notListVisible);
 
   const toggleStatsMenuVisibility = () =>
     setStatsMenuVisible(!statsMenuVisible);
+
+  const fazerLogout = async () => {
+    try {
+      await axios.post("http://localhost:12003/api/auth/logout", null, {
+        withCredentials: true,
+      });
+      logout(); // limpa estado local após logout do servidor
+    } catch (err) {
+      console.error("Erro ao fazer logout:", err);
+    }
+  };
 
   return (
     <header id="page-header">
@@ -46,30 +59,23 @@ const PageHeader = (props) => {
             id="salvar"
             type="submit"
             onClick={() => {
-              // Implement save functionality here}>
               alert("implementação salvar ainda não feita");
             }}>
-            Salvar</button>
+            Salvar
+          </button>
         </form>
         <form action={null} method="POST">
           <button
-            id="logout" 
-            type="submit"
-            onClick={() => {
-              // Implement logout functionality here
-              alert("implementação logout ainda não feita");
-            }}>
-            Logout</button>
+            id="logout"
+            type="button"
+            onClick={fazerLogout}
+          >
+            Logout
+          </button>
         </form>
       </div>
     </header>
   );
 };
-
-const PageHeaderPropTypes = {
-  // always use prop types!
-};
-
-PageHeader.propTypes = PageHeaderPropTypes;
 
 export default PageHeader;
