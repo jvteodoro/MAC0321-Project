@@ -1,7 +1,8 @@
-package br.com.agendusp.agendusp.service;
+package br.com.agendusp.agendusp.services;
 
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
