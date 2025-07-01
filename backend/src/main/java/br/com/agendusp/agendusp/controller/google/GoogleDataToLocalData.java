@@ -74,8 +74,13 @@ public class GoogleDataToLocalData {
                 continue;
             }
             if (!userHas) {
-                System.out.println("Skipping calendar (not in user list): " + calListResource.getCalendarId());
-                continue;
+                // Adiciona calendário no usuário se não estiver presente e for possível escrever nele
+                try {
+                    userDataController.insertCalendarListResource(userId, calListResource);
+                    System.out.println("Added calendar to user: " + calListResource.getCalendarId());
+                } catch (Exception e) {
+                    System.out.println("Error adding calendar to user: " + calListResource.getCalendarId() + " - " + e.getMessage());
+                }
             }
             try {
                 System.out.println(objMapper.writeValueAsString(calListResource));
