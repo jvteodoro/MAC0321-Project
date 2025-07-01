@@ -19,11 +19,10 @@ public abstract class MongoTestContainer {
 
     static {
         mongoDBContainer = new MongoDBContainer("mongo:latest").withExposedPorts(27017);
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (mongoDBContainer != null) {
-                mongoDBContainer.stop();
-            }
-        }));
+        mongoDBContainer.start();
+        // Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        //         mongoDBContainer.stop();
+        // }));
     }
 
     @DynamicPropertySource

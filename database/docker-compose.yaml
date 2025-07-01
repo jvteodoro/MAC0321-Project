@@ -8,3 +8,20 @@ services:
     environment:
       MONGODB_INITDB_ROOT_USERNAME: root
       MONGODB_INITDB_ROOT_PASSWORD: example
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+        #      - ./entrypoint-ollama.sh:/entrypoint-ollama.sh
+        #entrypoint: ["/usr/bin/bash", "/entrypoint-ollama.sh"]
+        #entrypoint: ["/usr/bin/bash ollama pull llama3.2:1b"]
+    post_start:
+      - command: ollama pull llama3.2:1b
+
+volumes:
+  ollama_data:
+

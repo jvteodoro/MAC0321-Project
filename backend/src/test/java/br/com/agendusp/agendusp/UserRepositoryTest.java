@@ -10,7 +10,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import com.google.gson.Gson;
 
 import br.com.agendusp.agendusp.documents.CalendarListResource;
-import br.com.agendusp.agendusp.documents.CalendarListUserItem;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
@@ -53,19 +52,20 @@ public class UserRepositoryTest extends MongoTestContainer{
         CalendarListResource calendarListResource = new CalendarListResource();
         calendarListResource.setCalendarId("test-calendar-id");
 
-        Integer num = userRepository.updateOneByUserId("testuser", calendarListResource.extractCalendarListUserItem())
+        // TODO pois nunca é usado
+        Integer num = userRepository.insertCalendarListResourceByUserId("testuser", calendarListResource)
             .orElseThrow(() -> new RuntimeException("Failed to add calendar list resource"));
 
-
+        // TODO pois nunca é usado
         User updatedUser = userRepository.findByUserId("testuser")
             .orElseThrow(() -> new RuntimeException("User not found after update"));
 
 
-        CalendarListUserItem fetchedCalendarListUserItem = userRepository
-        .findCalendarListUserItemByUserIdAndCalendarId("testuser", "test-calendar-id")
+        CalendarListResource fetchedCalendarListResource = userRepository
+        .findCalendarListResourceByIdAndCalendarId("testuser", "test-calendar-id")
         .orElseThrow(() -> new RuntimeException("Calendar not found"));
         
-        assertEquals(calendarListResource.getCalendarId(), fetchedCalendarListUserItem.getCalendarId());
+        assertEquals(calendarListResource.getCalendarId(), fetchedCalendarListResource.getCalendarId());
         
     }
 
@@ -84,9 +84,9 @@ public class UserRepositoryTest extends MongoTestContainer{
     public void testExistsByCalendarId(){
 
         User user = new User("testuser2");
-        CalendarListUserItem calendarListUserItem = new CalendarListUserItem();
-        calendarListUserItem.setCalendarId("test-calendar-id");
-        user.addCalendarListUserItem(calendarListUserItem);
+        CalendarListResource calendarListResource = new CalendarListResource();
+        calendarListResource.setCalendarId("test-calendar-id");
+        user.addCalendarListResource(calendarListResource);
         userRepository.insert(user);
         User user2 = userRepository.findByUserId("testuser2").orElseThrow(() -> new RuntimeException("User not found"));
         User user1 = userRepository.findByUserId("testuser").orElseThrow(() -> new RuntimeException("User not found"));

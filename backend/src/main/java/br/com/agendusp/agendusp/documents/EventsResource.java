@@ -1,5 +1,6 @@
 package br.com.agendusp.agendusp.documents;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.data.annotation.Id;
@@ -7,18 +8,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.google.api.services.calendar.model.Event.ExtendedProperties;
 
-import br.com.agendusp.agendusp.dataobjects.Attendee;
-import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
-import br.com.agendusp.agendusp.calendar.EventDate;
+import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventDate;
 
-@Document
-public class EventsResource {
+@Document(collection = "events")
+public class EventsResource { // objetos dessa classe serão salvos na coleção events do MongoDB
 
     @Id
     String id;
     String eventId;
-    int links; // It's necessary to know how many calendars links this event.
-            // If it is 0, the event can be deleted.
+    int links; // É necessário saber quantos calendários linkam este evento.
+               // Se for 0, o evento pode ser deletado.
 
     String kind;
     String etag;
@@ -44,7 +46,7 @@ public class EventsResource {
     String visibility;
     String iCalUID;
     String sequence;
-    Attendee[] attendees;
+    ArrayList<Attendee> attendees;
     boolean attendeesOmitted;
     ExtendedProperties extendedProperties;
     String hangoutLink;
@@ -55,7 +57,7 @@ public class EventsResource {
             String created, String updated, String summary, String description, String location, String colorId,
             CalendarPerson creator, CalendarPerson organizer, EventDate start, EventDate end,
             boolean endTimeUnspecified, String[] recurrence, String recurringEventId, EventDate originalStartTime,
-            String transparency, String visibility, String iCalUID, String sequence, Attendee[] attendees,
+            String transparency, String visibility, String iCalUID, String sequence, ArrayList<Attendee> attendees,
             boolean attendeesOmitted, ExtendedProperties extendedProperties, String hangoutLink) {
         this.links = links;
         this.eventId = eventId;
@@ -86,6 +88,59 @@ public class EventsResource {
         this.attendeesOmitted = attendeesOmitted;
         this.extendedProperties = extendedProperties;
         this.hangoutLink = hangoutLink;
+    }
+
+    public ArrayList<DateTimeInterval> freeTime(ArrayList<DateTimeInterval> freeTimeVec) { // Método que recebe um vetor de intervalos de tempo livre e retorna um novo vetor,
+                                                                                           // de intervalos de tempo livre, removendo os intervalos que se sobrepõem
+        ArrayList<DateTimeInterval> freeTimeVecNew = new ArrayList<>();
+        
+        for (DateTimeInterval interval: freeTimeVec){
+
+            LocalDateTime eventStart = this.getStart().getDateTime();
+            LocalDateTime eventEnd = this.getEnd().getDateTime();
+            LocalDateTime freeTimeStart = interval.getStart();
+            LocalDateTime freeTimeEnd = interval.getEnd();
+
+            DateTimeInterval beforeEventFreeTime = new DateTimeInterval();
+            DateTimeInterval afterEventFreeTime = new DateTimeInterval();
+            beforeEventFreeTime.setStart(freeTimeStart);
+            beforeEventFreeTime.setEnd(eventStart);
+            afterEventFreeTime.setStart(eventEnd);
+            afterEventFreeTime.setEnd(freeTimeEnd);
+            
+            System.err.println("BeforeEventFreeTime: "+beforeEventFreeTime.getEnd().toString());
+            // System.err.println("AfterEventFreeTime: "+objMapper.writeValueAsString(afterEventFreeTime));
+            
+            // TODO pois nunca é usado
+            int index = freeTimeVec.indexOf(interval);
+
+            // Não há tempo livre!! ;-;
+            if (eventStart.isBefore(freeTimeStart) && eventEnd.isAfter(freeTimeEnd)){
+                
+            }
+            // Caso onde não temos tempo livre antes do evento
+             else if (eventStart.isBefore(freeTimeStart) && eventEnd.isBefore(freeTimeEnd)){
+                freeTimeVecNew.add(afterEventFreeTime);
+             }
+             // Caso onde não há tempo livre depois do evento
+             else if ((eventStart.isAfter(freeTimeStart) && eventStart.isBefore(freeTimeEnd)) && 
+             eventEnd.isAfter(freeTimeEnd)){
+                freeTimeVecNew.add(beforeEventFreeTime);
+             }
+             // Temos tempo livre antes e depois do evento
+             else if (eventStart.isAfter(freeTimeStart) && eventStart.isBefore(freeTimeEnd) &&
+              eventEnd.isBefore(freeTimeEnd) && eventEnd.isAfter(freeTimeStart)) {
+                freeTimeVecNew.add(beforeEventFreeTime);
+                freeTimeVecNew.add(afterEventFreeTime);
+             }
+             // O evento e o tempo livre são disjuntos
+             else if (eventStart.isAfter(freeTimeEnd)){
+                freeTimeVecNew.add(interval);
+             }
+
+        }
+        //Collections.sort(freeTimeVec);
+        return freeTimeVecNew;
     }
 
     public String getEventId() {
@@ -276,32 +331,21 @@ public class EventsResource {
     public void setSequence(String sequence) {
         this.sequence = sequence;
     }
-    public Attendee[] getAttendees() {
+    public ArrayList<Attendee> getAttendees() {
         return attendees;
     }
-    public void setAttendees(Attendee[] attendees) {
+    public void setAttendees(ArrayList<Attendee> attendees) {
         this.attendees = attendees;
     }
 
     public void addAttendee(Attendee attendee) {
         if (this.attendees == null) {
-            this.attendees = new Attendee[0];
+            this.attendees = new ArrayList<>();
         }
-        Attendee[] newAttendees = new Attendee[this.attendees.length + 1];
-        System.arraycopy(this.attendees, 0, newAttendees, 0, this.attendees.length);
-        newAttendees[this.attendees.length] = attendee;
-        this.attendees = newAttendees;
+        this.attendees.add(attendee);
     }
     public void removeAttendee(Attendee attendee) {
-        if (this.attendees != null) {
-            ArrayList<Attendee> attendeesList = new ArrayList<>();
-            for (Attendee a : this.attendees) {
-                if (!a.getCalendarPerson().id().equals(attendee.getCalendarPerson().id())) {
-                    attendeesList.add(a);
-                }
-            }
-            this.attendees = attendeesList.toArray(new Attendee[0]);
-        }
+        this.attendees.remove(attendee);
     }
 
     public boolean isAttendeesOmitted() {
@@ -321,5 +365,14 @@ public class EventsResource {
     }
     public void setHangoutLink(String hangoutLink) {
         this.hangoutLink = hangoutLink;
+    }
+
+    @Override
+    public String toString() {
+        return "EventsResource{" +
+                "id='" + id + '\'' +
+                ", eventId='" + eventId + '\'' +
+                ", summary=" + summary +
+                ", description='" + description + '\'';
     }
 }

@@ -1,0 +1,105 @@
+.checkbox-container {
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.2em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  /* Hide default checkbox */
+  .checkbox-container input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  /* Custom checkbox */
+  .checkmark {
+    position: relative;
+    display: inline-block;
+    width: 1.2em;
+    aspect-ratio: 1;
+    background-color: white;
+    border: 2px solid var(--main-hoverselect-color);
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  
+  .checkbox-container input:checked ~ .checkmark {
+    background-color: var(--main-hoverselect-color);
+  }
+  
+  /* Checkmark symbol */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 35%;
+    width: 30%;
+    height: 70%;
+    border: solid var(--main-font-color);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  .checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Meet icon styling */
+  .meet-icon {
+    margin-left: auto;
+    color: var(--main-color);
+  }
+
+  .timeslot-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .timeslot-inputs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .time-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+  
+  .timeslot-list {
+    height: 2.75em;
+    width: 20%;
+    position: absolute;
+    right: 20%;
+    padding: 0.3em;
+    background-color: var(--secondary-color);
+    border: 2px var(--main-hoverselect-color) solid;
+    border-radius: 0.4em;
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+    gap: 0.25em;
+    z-index: 2;
+  }
+  
+  .timeslot-list:hover {
+    height: 9.65em;
+    overflow-y: auto;
+  }
+  
+  .timeslot-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.44em;
+    background-color: var(--secondary-hoverselect-color);
+    border-radius: 4px;
+  }

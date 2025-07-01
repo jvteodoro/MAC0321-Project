@@ -1,0 +1,87 @@
+@import url('../../App.css');
+
+#page-header {
+    width: 100%;
+    padding-inline: 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+#page-title {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+}
+
+#nav-buttons {
+    display: flex;
+    gap: 0.5em;
+}
+
+#nav-buttons button{
+    font-size: 1.3em;
+    padding: 0.2em 0.5em;
+    border-radius: 0.4em;
+    font-weight: bold;
+    border: 0;
+}
+
+#notifications-button{
+    position: relative;
+    z-index: 3;
+    min-width: 3.5em;
+    min-height: 2.2em;
+    padding: 0.2em 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e6b720;
+}
+#stats-button {
+    position: relative;
+    z-index: 1;
+    min-width: 3.5em;
+    min-height: 2.2em;
+    padding: 0.2em 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color:blueviolet;
+}
+#salvar {
+        position: relative;
+    z-index: 2;
+    min-width: 3.5em;
+    min-height: 2.2em;
+    padding: 0.2em 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#logout {
+    position: relative;
+    z-index: 2;
+    min-width: 3.5em;
+    min-height: 2.2em;
+    padding: 0.2em 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: red;
+}
+
+#notifications-button.connected-to-list, #stats-button.connected-to-stats{
+    background-color: var(--secondary-hoverselect-color);
+    border-radius: 0.4em 0.4em 0 0;
+    outline: inset 2px var(--main-color);
+    position: relative;
+    z-index: 4;
+}
+
+.menu-button-group {
+    position: relative;
+    display: inline-block;
+}

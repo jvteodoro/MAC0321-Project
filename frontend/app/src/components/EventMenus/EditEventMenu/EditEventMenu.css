@@ -1,0 +1,54 @@
+#event-data-form .submit-button {
+    margin-bottom: 1em;
+    width: auto;
+    align-self: flex-end;
+    max-width: 220px;
+}
+
+#event-data-form .success {
+    margin: 1em 0;
+    padding: 1.5em;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    /* background: #e8f5e9; */
+    color: #388e3c;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+#event-data-form .criar-enquete-btn {
+    margin-bottom: 1em;
+    width: auto;
+    align-self: flex-end;
+    /* max-width: 220px; */
+}
+
+#event-origin-info > * {
+    display: flex;
+    gap: 1em;
+}
+
+#meetLinkHolder {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#meet-link {
+    color: var(--main-color);
+}
+
+#meet-link:hover {
+    color: var(--main-hoverselect-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+    #event-data-form .submit-button,
+    #event-data-form .success,
+    #event-data-form .criar-enquete-btn {
+        max-width: 98vw;
+    }
+}
