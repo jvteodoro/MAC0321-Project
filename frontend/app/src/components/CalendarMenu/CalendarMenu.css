@@ -11,7 +11,7 @@
   justify-content: center;
   gap: 1em;
   align-items: flex-start;
-  position:relative;
+  position: relative;
 }
 
 .month-title {
@@ -57,7 +57,7 @@
   position: relative;
 }
 
-#weekday-headers { /* cabeçalho dos dias da semana */
+#weekday-headers { /* Cabeçalhos dos dias da semana */
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 }

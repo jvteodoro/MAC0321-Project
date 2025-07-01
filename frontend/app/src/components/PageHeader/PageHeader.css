@@ -27,6 +27,12 @@
     border-radius: 0.4em;
     font-weight: bold;
     border: 0;
+    min-width: 3.5em;
+    min-height: 2.2em;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #notifications-button{

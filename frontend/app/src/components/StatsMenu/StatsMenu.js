@@ -12,18 +12,40 @@ const StatsMenu = ({ visible }) => {
   const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
 
+  // Send date-times in ISO 8601 format: 'YYYY-MM-DDTHH:mm:ss'
+  function formatLocalDateTime(date) {
+    if (!date) return "";
+    const pad = (n) => n.toString().padStart(2, "0");
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth() + 1) +
+      "-" +
+      pad(date.getDate()) +
+      "T" +
+      pad(date.getHours()) +
+      ":" +
+      pad(date.getMinutes()) +
+      ":" +
+      pad(date.getSeconds())
+    );
+  }
+
   const handleGenerate = async () => {
     setLoading(true);
     setStats(null);
     setError(null);
     try {
       const params = {
-        start: start ? start.toISOString() : "",
-        end: end ? end.toISOString() : "",
+        start: formatLocalDateTime(start),
+        end: formatLocalDateTime(end),
       };
       const response = await axios.get(
-        `/api/stats/generate`,
-        { params, withCredentials: true }
+        `http://localhost:12003/stats`,
+        {
+          params,
+          withCredentials: true
+        }
       );
       setStats(response.data);
     } catch (err) {
@@ -46,8 +68,8 @@ const StatsMenu = ({ visible }) => {
             dateFormat="dd/MM/yyyy HH:mm"
             timeFormat="HH:mm"
             placeholderText="Selecione início"
-            minTime={new Date(0, 0, 0, 0, 0)}
-            maxTime={new Date(0, 0, 0, 23, 59)}
+            minTime={new Date(0, 0, 0, 0, 0, 0)}
+            maxTime={new Date(0, 0, 0, 23, 59, 59)}
           />
         </label>
         <label>

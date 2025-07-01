@@ -5,24 +5,24 @@
   height: 0;
   width: 0;
   visibility: hidden;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
   border-radius: 0.4em 0 0.4em 0.4em;
   background-color: var(--main-hoverselect-color);
   padding: 0.1em;
-  z-index: 100;
+  z-index: 2;
 }
 
 #stats-menu.extended {
   top: 100%;
   visibility: visible;
-  height: 15em;
-  width: 18em;
+  height: fit-content;
+  width: fit-content;
   background-color: var(--secondary-hoverselect-color);
   outline: inset 2px var(--main-color);
   padding: 1em;
   display: flex;
   flex-direction: column;
-  gap: 0.7em;
 }
 
 #stats-header {
@@ -76,4 +76,10 @@
   color: #d32f2f;
   font-weight: bold;
   margin-top: 0.5em;
+}
+
+/* Ensure datepicker popper is above the menu */
+.react-datepicker-popper {
+  position: fixed !important;
+  z-index: 3;
 }

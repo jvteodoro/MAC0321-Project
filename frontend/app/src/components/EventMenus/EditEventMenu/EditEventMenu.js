@@ -268,10 +268,12 @@ const EditarEventoMenu = (props) => {
         }
       );
       setPollSuccess(true);
+      console.log("Enquete criada com sucesso!");
     } catch (err) {
-      setPollError(
+      console.error(
         err.response?.data?.message || "Erro ao criar enquete."
       );
+      // setPollError(...) removido
     }
   };
 
@@ -288,25 +290,6 @@ const EditarEventoMenu = (props) => {
       <button id="close-button" onClick={aoFechar}>
         <i className="fa-solid fa-close"></i>
       </button>
-
-      <button
-        type="button"
-        className="submit-button"
-        style={{ marginBottom: "1em", width: "auto" }}
-        onClick={handleCreatePoll}
-      >
-        Criar enquete
-      </button>
-      {pollSuccess && (
-        <div className="success" style={{ marginBottom: "1em" }}>
-          Enquete criada com sucesso!
-        </div>
-      )}
-      {pollError && (
-        <div className="error-message" style={{ marginBottom: "1em" }}>
-          {pollError}
-        </div>
-      )}
 
       <div id="event-origin-info">
         <div id="criador-display">
@@ -502,18 +485,24 @@ const EditarEventoMenu = (props) => {
             </div>
           )}
         </div>
-
-        <button type="submit" id="save-button" className="form-field">
-          Salvar Alterações
+        <button
+          type="button"
+          className="submit-button criar-enquete-btn"
+          style={{ marginBottom: "1em", width: "auto" }}
+          onClick={handleCreatePoll}
+        >
+          Criar enquete
         </button>
         <button
           type="button"
-          id="cancelar-button"
+          id="cancel-button"
           className="form-field"
-          style={{ backgroundColor: "#e57373", color: "#fff", marginTop: "10px" }}
           onClick={cancelarEvento}
         >
           Cancelar
+        </button>
+        <button type="submit" id="save-button" className="form-field">
+          Salvar Alterações
         </button>
       </form>
     </main>
