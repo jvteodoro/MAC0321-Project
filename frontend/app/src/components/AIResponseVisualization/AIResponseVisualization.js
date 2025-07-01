@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import "../DataVisualization.css";
+import "./AIResponseVisualization.css";
 
 const AIResponseVisualization = ({ response }) => {
   if (!response) {

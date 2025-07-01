@@ -1,15 +1,15 @@
-# WeeklyParticipationVisualization
+# StatsMenu
 
 <!-- STORY -->
 
 ## Introduction
 
-WeeklyParticipationVisualization is an easy-to-use component.
+StatsMenu is an easy-to-use component.
 
 ## Usage
 
 ```javascript
-import { WeeklyParticipationVisualization } from 'some-package-name';
+import { StatsMenu } from 'some-package-name';
 ```
 
 ## Example use
@@ -18,7 +18,7 @@ import { WeeklyParticipationVisualization } from 'some-package-name';
 const myPage = props => {
   return (
     <main>
-      <WeeklyParticipationVisualization />
+      <StatsMenu />
     </main>
   );
 };
