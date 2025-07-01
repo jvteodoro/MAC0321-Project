@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post("http://localhost:12003/api/auth/logout", null, {
+      await axios.post("http://localhost:12003/logout", {}, {
         withCredentials: true,
       });
     } catch (err) {
