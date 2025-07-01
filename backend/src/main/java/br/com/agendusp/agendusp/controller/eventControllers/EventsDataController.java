@@ -35,6 +35,8 @@ public class EventsDataController {
     UserRepository userRepository;
     @Autowired
     CalendarRepository calendarRepository;
+    @Autowired
+    NotificationService notificationService;
 
     public ArrayList<EventsResource> getEventsOnInterval(String calendarId, LocalDateTime endDate) {
         return eventsRepository.findEventsByEndDate(calendarId, endDate)
@@ -161,6 +163,8 @@ public class EventsDataController {
         event.addAttendee(newAttendee);
         event.addCalendarId(person.getCalendarList().get(0).getCalendarId());
         event.increaseLinks();
+        String message = "You have been invited to event: " + event.getSummary();
+        notificationService.addNotification(new Notification(atendeeUserId, message));
         return eventsRepository.save(event);
     }
 
@@ -187,6 +191,11 @@ public class EventsDataController {
         event.addAttendee(newAttendee);
         event.addCalendarId(person.getCalendarList().get(0).getCalendarId());
         event.increaseLinks();
+
+        String message = "You have been invited to event: " + event.getSummary();
+        notificationService.addNotification(new Notification(atendeeUserId, message));
+
+
         return eventsRepository.save(event);
     }
 
