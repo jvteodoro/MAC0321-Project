@@ -20,6 +20,7 @@
   cursor: pointer;
   color: var(--main-font-color);
   position: relative;
+  width: 7em;
 }
 
 .month-title:hover {
@@ -35,17 +36,9 @@
   padding: 0.5em;
   border: none;
   border-radius: 50%;
-  position: absolute; /* posição absoluta para centralizar */
   text-align: center;
   top: 0%;
 }
-.nav-button:first-of-type { 
-  left: 41.5em;
-}
-.nav-button:last-of-type {
-  right: 41.5em;
-}
-
 
 #calendar { /* container principal do calendário */
   width: 100%;

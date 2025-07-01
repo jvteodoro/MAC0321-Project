@@ -76,7 +76,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: red;
+    background-color: #ff4444;
+    border-color: #ff4444;
+}
+
+#logout:hover {
+    background-color: #cc0000;
 }
 
 #notifications-button.connected-to-list, #stats-button.connected-to-stats{
