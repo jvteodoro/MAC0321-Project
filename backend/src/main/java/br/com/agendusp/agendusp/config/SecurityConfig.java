@@ -29,12 +29,10 @@ import br.com.agendusp.agendusp.services.CustomOAuth2UserService;
 @Profile("test")
 class SecurityConfigNoAuth {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.build();
     }
 }
-
-
 
 @Configuration
 @EnableWebSecurity
@@ -47,7 +45,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler(){
+    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return new CustomAuthenticationSuccessHandler();
     }
 
@@ -72,36 +70,35 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/events/**", "/pool/**", "/logout"))
+                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/events/**", "/pool/**",
+                                "/logout"))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(
-                        "/", 
-                        "/login", 
-                        "/api/auth/**", 
-                        "/oauth2/**",
-                        "/events/update",
-                        "/events/**",
-                        "/pool/**",
-                        "/logout"
-                    ).permitAll();
+                            "/",
+                            "/login",
+                            "/api/auth/**",
+                            "/oauth2/**",
+                            "/logout").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("http://localhost:3000/login-success", true)
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(OAuth2UserService())).successHandler(customAuthenticationSuccessHandler()))
+                                .userService(OAuth2UserService()))
+                        .successHandler(customAuthenticationSuccessHandler()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .logout(logout -> logout
                         .logoutUrl("/logout") // POST é default
                         .logoutSuccessHandler((request, response, authentication) -> {
-                            System.out.println("Logout handler called. Invalidating session and clearing authentication."); // debug log
+                            System.out.println(
+                                    "Logout handler called. Invalidating session and clearing authentication."); // debug
+                                                                                                                 // log
                             response.setStatus(200);
                         })
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .clearAuthentication(true)
-                    )
+                        .clearAuthentication(true))
                 .build();
     }
 

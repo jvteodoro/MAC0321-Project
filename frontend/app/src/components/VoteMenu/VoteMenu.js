@@ -112,7 +112,7 @@ const VoteMenu = (props) => {
         type="button"
         className="submit-button"
         style={{ marginBottom: "1em", width: "auto" }}
-        onClick={() => navigate("/evento/criarEnquete", { state: { eventId } })}
+        onClick={() => navigate("/evento/criarEnquete", {replace: true}, { state: { eventId } })}
       >
         Criar enquete
       </button>
