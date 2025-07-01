@@ -29,8 +29,7 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getMe(
             @AuthenticationPrincipal OAuth2User principal,
-            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient
-    ) {
+            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         if (principal == null || authorizedClient == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

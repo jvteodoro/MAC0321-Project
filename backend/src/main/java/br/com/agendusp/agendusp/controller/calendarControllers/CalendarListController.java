@@ -10,13 +10,14 @@ public interface CalendarListController { // Interface para o controlador de lis
 
     public CalendarListResource get(String calendarId, OAuth2AuthorizedClient authorizedClient);
 
-    public CalendarListResource insert(CalendarListResource calendar,  OAuth2AuthorizedClient authorizedClient);
+    public CalendarListResource insert(CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient);
 
-    public ArrayList<CalendarListResource> list( OAuth2AuthorizedClient authorizedClient);
+    public ArrayList<CalendarListResource> list(OAuth2AuthorizedClient authorizedClient);
 
-    // public String patch(CalendarListResource calendar, @AuthenticationPrincipal CustomOAuth2User customUser);
+    // public String patch(CalendarListResource calendar, @AuthenticationPrincipal
+    // CustomOAuth2User customUser);
 
-    public CalendarListResource update(CalendarListResource calendar,  OAuth2AuthorizedClient authorizedClient); 
+    public CalendarListResource update(CalendarListResource calendar, OAuth2AuthorizedClient authorizedClient);
 
     // public String watch(WatchRequest watchRequest);
 

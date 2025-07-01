@@ -10,15 +10,15 @@ public class WatchRequest {
     String address;
     String params;
     // Corpo da Solicitação de Watch
-    //{
-    //    "id": string,
-    //    "token": string,
-    //    "type": string,
-    //    "address": string,
-    //    "params": {
-    //      "ttl": string
-    //    }
-    //  }
+    // {
+    // "id": string,
+    // "token": string,
+    // "type": string,
+    // "address": string,
+    // "params": {
+    // "ttl": string
+    // }
+    // }
 
     public String getId() {
         return id;
@@ -76,6 +76,5 @@ public class WatchRequest {
         this.address = obj.get("address").getAsString();
         this.params = obj.get("params").getAsString();
     }
-   
 
 }

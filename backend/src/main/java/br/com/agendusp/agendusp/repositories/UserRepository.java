@@ -16,26 +16,27 @@ import br.com.agendusp.agendusp.documents.User;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByGoogleId(String googleId);
+
     Optional<User> findByName(String name);
+
     Optional<User> findByEmail(String email);
+
     @Query("{'id' : ?0}")
     @Update("{$push: {'calendarList' : ?1}}")
     Optional<Integer> insertCalendarListResourceByUserId(String userId, CalendarListResource calendarListResource);
 
-    
-    @Query(value = "{ 'id' : ?0 }")  // Explicit query without projection
+    @Query(value = "{ 'id' : ?0 }") // Explicit query without projection
     public Optional<User> findByUserId(String userId);
-    
-@Aggregation(pipeline = {
-        "{ $match: { 'id': ?0 } }",
-        "{ $unwind: '$calendarList' }",
-        "{ $match: { 'calendarList.id': ?1 } }",
-        "{ $replaceRoot: { newRoot: '$calendarList' } }",
-        "{ $limit: 1 }"
-    })    
+
+    @Aggregation(pipeline = {
+            "{ $match: { 'id': ?0 } }",
+            "{ $unwind: '$calendarList' }",
+            "{ $match: { 'calendarList.id': ?1 } }",
+            "{ $replaceRoot: { newRoot: '$calendarList' } }",
+            "{ $limit: 1 }"
+    })
     Optional<CalendarListResource> findCalendarListResourceByIdAndCalendarId(String userId, String calendarId);
 
-    
     @Query(value = "{ 'id': ?0, 'calendarList.calendarId': ?1 }", exists = true)
     boolean existsByUserIdAndCalendarId(String userId, String calendarId);
 
@@ -49,30 +50,30 @@ public interface UserRepository extends MongoRepository<User, String> {
     @Query("{'id': ?0}")
     @Update("{$push : {'eventPoolNotification' : ?1}}")
     void addEventPoolNotification(String userId, EventPool eventPool);
-    
+
     @Query("{'id': ?0}")
     @Update("{$push : {'eventPoolList' : ?1}}")
     void addEventPool(String userId, EventPool eventPool);
 
     @Aggregation(pipeline = {
-        "{ $match: { 'id': ?0 } }",
-        "{ $unwind: '$eventPoolNotification' }",
-        "{ $match: { 'eventPoolNotification.id': ?1 } }",
-        "{ $replaceRoot: { newRoot: '$eventPoolNotification' } }",
-        "{ $limit: 1 }"
-    })    
+            "{ $match: { 'id': ?0 } }",
+            "{ $unwind: '$eventPoolNotification' }",
+            "{ $match: { 'eventPoolNotification.id': ?1 } }",
+            "{ $replaceRoot: { newRoot: '$eventPoolNotification' } }",
+            "{ $limit: 1 }"
+    })
     EventPool findByEventPoolId(String userId, String eventPoolId);
 
-    @Query(value = "{ 'id' : ?0}", fields = "{'calendarList': 1}") 
+    @Query(value = "{ 'id' : ?0}", fields = "{'calendarList': 1}")
     ArrayList<CalendarListResource> getCalendarList(String userId);
 
     @Query("{ 'id': ?0 }")
     @Update(" {$push: {'calendarList' : ?1 }}")
     void addCalendarListResource(String userId, CalendarListResource item);
     // @Aggregation(pipeline = {
-    //     "{ $match: { 'userId' : ?0 }}",
-    //     "{ $unwind: '$calendarList'}",
-    //     "{ $match: { 'calendarList.'}}"
+    // "{ $match: { 'userId' : ?0 }}",
+    // "{ $unwind: '$calendarList'}",
+    // "{ $match: { 'calendarList.'}}"
     // })
     // CalendarListUserItem insertCalendarListUserItem();
 }

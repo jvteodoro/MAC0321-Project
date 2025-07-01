@@ -35,8 +35,8 @@ public class DataControllerOperationsMockTest {
     @Autowired
     private Gson gson;
 
-     private String userID = "agendusp";
-     private String calendarID = "primeiros";
+    private String userID = "agendusp";
+    private String calendarID = "primeiros";
 
     private CalendarListResource createCalendar() {
         CalendarListResource calendar = new CalendarListResource();

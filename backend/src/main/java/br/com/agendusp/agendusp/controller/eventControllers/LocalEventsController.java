@@ -58,11 +58,11 @@ public class LocalEventsController implements EventsController {
         freeTimeVec.add(freeTime);
 
         for (EventsResource event : allEvents) {
-        if (event.getStart() == null || event.getEnd() == null) {
-            continue; // Ignora eventos sem data de início ou fim
+            if (event.getStart() == null || event.getEnd() == null) {
+                continue; // Ignora eventos sem data de início ou fim
+            }
+            freeTimeVec = event.freeTime(freeTimeVec);
         }
-        freeTimeVec = event.freeTime(freeTimeVec);
-    }
 
         return freeTimeVec;
     }
@@ -145,8 +145,9 @@ public class LocalEventsController implements EventsController {
         String userId = authorizedClient.getPrincipalName();
         return eventsDataController.getEvents(calendarId, userId);
     }
+
     @PostMapping("/events/cancel")
-    public EventsResource cancel(@RequestParam String eventId){
+    public EventsResource cancel(@RequestParam String eventId) {
         return eventsDataController.cancelEvent(eventId);
     }
 

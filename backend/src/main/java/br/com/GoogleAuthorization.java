@@ -7,5 +7,6 @@ package br.com;
 
 public class GoogleAuthorization {
    // final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-   // final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+   // final NetHttpTransport HTTP_TRANSPORT =
+   // GoogleNetHttpTransport.newTrustedTransport();
 }

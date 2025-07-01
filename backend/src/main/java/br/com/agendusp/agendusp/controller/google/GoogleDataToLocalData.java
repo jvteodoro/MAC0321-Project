@@ -36,15 +36,15 @@ public class GoogleDataToLocalData {
     @Autowired
     ObjectMapper objMapper;
 
-      @GetMapping("/google/userInfo")
+    @GetMapping("/google/userInfo")
     public User getUserInfo(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
-        
+
         System.out.println("Running userinfo");
 
         ResponseEntity<UserInfo> response = restClient.get()
-        .uri("https://www.googleapis.com/oauth2/v2/userinfo")
-        .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
-        .retrieve().toEntity(UserInfo.class);
+                .uri("https://www.googleapis.com/oauth2/v2/userinfo")
+                .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
+                .retrieve().toEntity(UserInfo.class);
         UserInfo inf = response.getBody();
         User user = new User();
         user.setEmail(inf.getEmail());
@@ -58,18 +58,19 @@ public class GoogleDataToLocalData {
     }
 
     @GetMapping("/google/cloudToLocal")
-    public void cloudToLocal(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) throws Exception{
+    public void cloudToLocal(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient)
+            throws Exception {
         this.getUserInfo(authorizedClient);
         CalendarListList calList = gCalendarListController.list(authorizedClient);
         String userId = authorizedClient.getPrincipalName();
-        for (CalendarListResource calListResource: calList.getItems()){
+        for (CalendarListResource calListResource : calList.getItems()) {
             boolean isWritable = calListResource.getAccessRole() != null &&
-                (calListResource.getAccessRole().equalsIgnoreCase("owner") ||
-                 calListResource.getAccessRole().equalsIgnoreCase("writer"));
+                    (calListResource.getAccessRole().equalsIgnoreCase("owner") ||
+                            calListResource.getAccessRole().equalsIgnoreCase("writer"));
             boolean userHas = userDataController.userHasCalendar(userId, calListResource.getCalendarId());
             if (!isWritable) {
                 System.out.println("Skipping calendar: " + calListResource.getCalendarId() +
-                    " (accessRole=" + calListResource.getAccessRole() + ")");
+                        " (accessRole=" + calListResource.getAccessRole() + ")");
                 continue;
             }
             if (!userHas) {
@@ -81,17 +82,20 @@ public class GoogleDataToLocalData {
                 try {
                     gEventsController.list(calListResource.getId(), authorizedClient);
                 } catch (Exception e) {
-                    System.out.println("Skipping events for calendar: " + calListResource.getCalendarId() + " due to error: " + e.getMessage());
+                    System.out.println("Skipping events for calendar: " + calListResource.getCalendarId()
+                            + " due to error: " + e.getMessage());
                 }
                 try {
                     gCalendarsController.get(calListResource.getId(), authorizedClient);
                 } catch (IllegalArgumentException ex) {
                     System.out.println("Calendar already exists: " + calListResource.getCalendarId());
                 } catch (Exception ex) {
-                    System.out.println("Skipping calendar: " + calListResource.getCalendarId() + " due to error: " + ex.getMessage());
+                    System.out.println("Skipping calendar: " + calListResource.getCalendarId() + " due to error: "
+                            + ex.getMessage());
                 }
             } catch (Exception outer) {
-                System.out.println("Error processing calendar: " + calListResource.getCalendarId() + " - " + outer.getMessage());
+                System.out.println(
+                        "Error processing calendar: " + calListResource.getCalendarId() + " - " + outer.getMessage());
             }
         }
     }

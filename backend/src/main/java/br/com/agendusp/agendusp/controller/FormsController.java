@@ -28,8 +28,6 @@ import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.repositories.EventPoolRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
-
-
 @RestController
 public class FormsController {
     @Autowired
@@ -42,74 +40,72 @@ public class FormsController {
     SimpMessagingTemplate msgTemplate;
     @Autowired
     ObjectMapper objectMapper;
-    
 
     @MessageMapping("/pool/send/{eventPoolId}")
-    public void sendPool(@PathVariable String eventPoolId){
+    public void sendPool(@PathVariable String eventPoolId) {
         Optional<EventPool> eventPoolOptional = eventPoolRepository.findById(eventPoolId);
-        if (eventPoolOptional.isPresent()){
+        if (eventPoolOptional.isPresent()) {
             EventPool eventPool = eventPoolRepository.save(eventPoolOptional.get());
-            String destination = "/notify/pool/"+eventPoolId;
+            String destination = "/notify/pool/" + eventPoolId;
             msgTemplate.convertAndSend(destination, eventPool);
         }
     }
 
     @MessageMapping("/pool/vote/{eventPoolId}")
-    public void voteEventPool(@PathVariable String eventPoolId, @RequestParam String dateTimeIntervalId){
-        String destination = "/notify/pool/"+eventPoolId;
-         msgTemplate.convertAndSend(destination, this.vote(eventPoolId, dateTimeIntervalId));
+    public void voteEventPool(@PathVariable String eventPoolId, @RequestParam String dateTimeIntervalId) {
+        String destination = "/notify/pool/" + eventPoolId;
+        msgTemplate.convertAndSend(destination, this.vote(eventPoolId, dateTimeIntervalId));
     }
 
-
     @MessageMapping("/pool/create/{eventPoolId}/{dateTimeIntervalId}")
-    public void createEventFromPool(@PathVariable String eventPoolId, 
-    @PathVariable String dateTimeIntervalId){
+    public void createEventFromPool(@PathVariable String eventPoolId,
+            @PathVariable String dateTimeIntervalId) {
 
         this.createEvent(eventPoolId, dateTimeIntervalId);
         eventPoolRepository.findById(eventPoolId);
     }
 
     @GetMapping("/pool/create")
-    public EventPool createPool(@RequestParam String eventId, @RequestParam String startDate, 
-    @RequestParam String endDate,
-    @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient){
+    public EventPool createPool(@RequestParam String eventId, @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         EventsResource event = eventsDataController.getEventById(eventId);
         EventPool eventPool = new EventPool(event);
 
         System.out.println("[DEBUG] 1");
-        
+
         DateTimeInterval dateTimeInterval = new DateTimeInterval();
         dateTimeInterval.setStart(LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME));
         dateTimeInterval.setEnd(LocalDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME));
-        
+
         System.out.println("[DEBUG] 2");
         ArrayList<DateTimeInterval> initialFreeTime = new ArrayList<>();
         initialFreeTime.add(dateTimeInterval);
-        
-        
-        //Pegar todos os eventos no intervalo
+
+        // Pegar todos os eventos no intervalo
         ArrayList<EventsResource> allEvents = eventsDataController.getEventsOnInterval(dateTimeInterval);
         System.out.println("[DEBUG] 3");
-        for (EventsResource ev: allEvents){
+        for (EventsResource ev : allEvents) {
             initialFreeTime = ev.freeTime(initialFreeTime);
             System.out.println("[DEBUG] A");
         }
         eventPool.setPossibleTimesFromDateTimeIntervalList(initialFreeTime);
         System.out.println("[DEBUG] 4");
-        
+
         String ownerId = eventPool.getOwnerId();
         userRepository.addEventPool(ownerId, eventPool);
         eventPoolRepository.insert(eventPool);
         try {
-        System.out.println("CreatedPool: "+objectMapper.writeValueAsString(eventPool));}
-        catch (Exception w){}
+            System.out.println("CreatedPool: " + objectMapper.writeValueAsString(eventPool));
+        } catch (Exception w) {
+        }
         return eventPool;
     }
 
     @PostMapping("/pool/vote")
-    public EventPool vote(@RequestParam String eventPoolId, @RequestParam String dateTimeIntervalId ){
+    public EventPool vote(@RequestParam String eventPoolId, @RequestParam String dateTimeIntervalId) {
         Optional<EventPool> evPool = eventPoolRepository.findById(eventPoolId);
-        if (evPool.isPresent()){
+        if (evPool.isPresent()) {
             evPool.get().vote(dateTimeIntervalId);
             evPool.get().getDone();
             return evPool.get();
@@ -119,17 +115,16 @@ public class FormsController {
 
     }
 
-
     @PostMapping("/pool/createEvent")
-    public EventsResource createEvent(@RequestParam String eventPoolId, @RequestParam String dateTimeIntervalId){
+    public EventsResource createEvent(@RequestParam String eventPoolId, @RequestParam String dateTimeIntervalId) {
         Optional<EventPool> evPool = eventPoolRepository.findById(eventPoolId);
         DateTimeIntervalPool selected;
-        if (evPool.isPresent()){
+        if (evPool.isPresent()) {
             // Continuar a criação de eventos
             ArrayList<DateTimeIntervalPool> dt = evPool.get().getPosibleTimes();
             EventsResource event = eventsDataController.getEventById(evPool.get().getEventId());
-            for (DateTimeIntervalPool dtP: dt){
-                if (dtP.getId() == dateTimeIntervalId){
+            for (DateTimeIntervalPool dtP : dt) {
+                if (dtP.getId() == dateTimeIntervalId) {
                     selected = dtP;
                     EventDate start = new EventDate(selected.getDateTimeInterval().getStart());
                     EventDate end = new EventDate(selected.getDateTimeInterval().getEnd());

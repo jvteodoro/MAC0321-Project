@@ -42,21 +42,22 @@ import br.com.agendusp.agendusp.repositories.EventsRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 import br.com.agendusp.agendusp.services.PromptBuilder;
 import static org.mockito.Mockito.mock;
+
 @SpringBootConfiguration
 class TestConfig {
-     @Bean
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.build();
     }
+
     @Bean
-    public HomeController homeController(){
+    public HomeController homeController() {
         return new HomeController();
     }
 
 }
 
-
-@SpringBootTest(classes=AgendUspApplication.class)
+@SpringBootTest(classes = AgendUspApplication.class)
 @AutoConfigureMockMvc
 public class NewTest {
 
@@ -78,26 +79,24 @@ public class NewTest {
     UserDataController userDataController;
     @Autowired
     FormsController formsController;
-    
 
-    
     @Test
-    public void testHome() throws Exception{
+    public void testHome() throws Exception {
         // TODO pois nunca é usado
         ResultActions result = mockMvc.perform(get("/")).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     @WithMockUser
-    public void testTeste() throws Exception{
+    public void testTeste() throws Exception {
         mockMvc.perform(get("/secured")).andDo(MockMvcResultHandlers.print());
     }
     // private void insertTestEvents(){
-    //     //eventsRepository.insert(ev1);
+    // //eventsRepository.insert(ev1);
 
     // }
 
-    private User setupFind(){
+    private User setupFind() {
         User user = new User();
         String googleId = "4321234";
         String emailTest = "test@gmail.com";
@@ -109,26 +108,27 @@ public class NewTest {
         return user;
     }
     // private CalendarListResource setupCalendarListResource(){
-    //     CalendarListResource calendarListUserItem = new CalendarListResource();
-    //     calendarListUserItem.setCalendarId();
+    // CalendarListResource calendarListUserItem = new CalendarListResource();
+    // calendarListUserItem.setCalendarId();
     // }
 
     @Test
     @WithMockUser
     public void findByGoogleIdTest() throws Exception {
-        User user = setupFind();     
+        User user = setupFind();
         Optional<User> recoveredUser = userRepository.findByGoogleId(user.getGoogleId());
-        if (recoveredUser.isEmpty()){
+        if (recoveredUser.isEmpty()) {
         } else {
-            assertEquals(objectMapper.writeValueAsString(user), 
-                        objectMapper.writeValueAsString(recoveredUser.get()));
+            assertEquals(objectMapper.writeValueAsString(user),
+                    objectMapper.writeValueAsString(recoveredUser.get()));
         }
         userRepository.delete(user);
-        
+
     }
+
     @Test
     @WithMockUser
-    public void updateOneByUserIdTest(){
+    public void updateOneByUserIdTest() {
         // TODO pois nunca é usado
         User user = setupFind();
 
@@ -136,7 +136,7 @@ public class NewTest {
 
     @Test
     @WithMockUser
-    public void genericTest() throws Exception{
+    public void genericTest() throws Exception {
         User user1 = new User();
 
         CalendarListResource calItem = new CalendarListResource();
@@ -146,15 +146,14 @@ public class NewTest {
         calItem.setId("1");
         calItem2.setId("2");
 
-
         user1.setUsername("user");
         user1.setId("12");
-        //Delete pode dar quantas vezes quiser
+        // Delete pode dar quantas vezes quiser
         userRepository.deleteById("12");
         userRepository.deleteById("12");
         userRepository.deleteById("12");
         userRepository.deleteById("12");
-        //Não pode dar insert duas vezes no mesmo item
+        // Não pode dar insert duas vezes no mesmo item
         userRepository.insert(user1);
 
         Optional<User> user = userRepository.findById("12");
@@ -167,22 +166,22 @@ public class NewTest {
         userRepository.insertCalendarListResourceByUserId(user1.getUserId(), calItem);
         userRepository.insertCalendarListResourceByUserId(user1.getUserId(), calItem2);
         Optional<User> newUser = userRepository.findById(user1.getId());
-        if (!newUser.isEmpty()){
-            String str = objectMapper.writeValueAsString(newUser);   
+        if (!newUser.isEmpty()) {
+            String str = objectMapper.writeValueAsString(newUser);
             System.out.println(str);
         }
 
-        Optional<CalendarListResource> findedCalItem =userRepository.findCalendarListResourceByIdAndCalendarId(user1.getUserId(), calItem.getCalendarId());
-        if (!findedCalItem.isEmpty()){
+        Optional<CalendarListResource> findedCalItem = userRepository
+                .findCalendarListResourceByIdAndCalendarId(user1.getUserId(), calItem.getCalendarId());
+        if (!findedCalItem.isEmpty()) {
             System.out.println(objectMapper.writeValueAsString(findedCalItem));
         }
 
     }
 
-   
     @Test
     @WithMockUser
-    public void testEventsDataController() throws Exception{
+    public void testEventsDataController() throws Exception {
         User user1 = new User();
         user1.setUsername("user");
         user1.setId("12");
@@ -195,7 +194,6 @@ public class NewTest {
         calendarDataController.removeCalendar(calendarId, userId);
         calendarDataController.addCalendar(calR, userId);
 
-
         EventsResource eventsResource = new EventsResource();
         eventsResource.setId("1");
         eventsResource.addCalendarId(calendarId);
@@ -206,7 +204,7 @@ public class NewTest {
 
         EventDate eventStart = new EventDate();
         EventDate eventEnd = new EventDate();
-        
+
         eventStart.setDateFromObject(start.toLocalDate());
         eventStart.setDateTimeFromObject(start);
         eventStart.setTimeZone(zoneId);
@@ -221,50 +219,50 @@ public class NewTest {
 
         LocalDateTime endDate = eventsResource.getEnd().getDateTime();
         String eventId = eventsResource.getId();
-        String atendeeUserId = "3"; 
+        String atendeeUserId = "3";
 
         // pega eventos em um intervalo
         ArrayList<EventsResource> eventsResource1 = eventsDataController.getEventsOnInterval(calendarId, endDate);
         System.out.println(objectMapper.writeValueAsString(eventsResource1));
 
-        //cria um evento
+        // cria um evento
         EventsResource eventsResource2 = eventsDataController.createEvent(calendarId, eventsResource, userId);
         System.out.println(objectMapper.writeValueAsString(eventsResource2));
-        
-        //adiciona um calendario ao evento
+
+        // adiciona um calendario ao evento
         EventsResource eventsResource3 = eventsDataController.addCalendarToEvent(calendarId, eventId, userId);
         System.out.println(objectMapper.writeValueAsString(eventsResource3));
-        
-        //adiciona um calendario ao evento
-        EventsResource eventsResource4 = eventsDataController.addAtendeeToEvent(eventId, calendarId, userId, atendeeUserId);
+
+        // adiciona um calendario ao evento
+        EventsResource eventsResource4 = eventsDataController.addAtendeeToEvent(eventId, calendarId, userId,
+                atendeeUserId);
         System.out.println(objectMapper.writeValueAsString(eventsResource4));
 
-        //pega o evento
+        // pega o evento
         EventsResource eventsResource5 = eventsDataController.getEvent(eventId, calendarId, userId);
         System.out.println(objectMapper.writeValueAsString(eventsResource5));
 
-        //atualiza o evento
+        // atualiza o evento
         EventsResource eventsResource6 = eventsDataController.updateEvent(calendarId, eventId, eventsResource, userId);
         System.out.println(objectMapper.writeValueAsString(eventsResource6));
 
-        //atualiza parcialmente a lista de eventos do calendario
+        // atualiza parcialmente a lista de eventos do calendario
         EventsResource eventsResource7 = eventsDataController.patchEvent(calendarId, eventId, eventsResource, userId);
         System.out.println(objectMapper.writeValueAsString(eventsResource7));
 
-        //pega a lista de eventos do calendario
+        // pega a lista de eventos do calendario
         ArrayList<EventsResource> eventsResource8 = eventsDataController.getEvents(calendarId, userId);
         System.out.println(objectMapper.writeValueAsString(eventsResource8));
 
-        //deleta o evento e verifica se apagou
+        // deleta o evento e verifica se apagou
         eventsDataController.removeEvent(eventId, calendarId, userId);
 
         ArrayList<String> eventsRemove = eventsResource.getCalendarIds();
         System.out.println(objectMapper.writeValueAsString(eventsRemove));
-        System.out.println("Veja se o calendário com id " + calendarId +  " foi removido");
+        System.out.println("Veja se o calendário com id " + calendarId + " foi removido");
 
-
-        //cancela o totalmente o evento
-        eventsDataController.cancelEvent( eventId, calendarId, userId);
+        // cancela o totalmente o evento
+        eventsDataController.cancelEvent(eventId, calendarId, userId);
 
         EventsResource eventsRemoveVar = eventsDataController.getEvent(eventId, calendarId, userId);
         System.out.println(objectMapper.writeValueAsString(eventsRemoveVar));
@@ -273,9 +271,9 @@ public class NewTest {
     }
 
     // User Tests
-     @Test
+    @Test
     @WithMockUser
-    public void test() throws Exception{
+    public void test() throws Exception {
         System.out.println("Teste");
         String userId = "teste@gmail.com";
         User user = new User();
@@ -288,7 +286,7 @@ public class NewTest {
         calR1.setCalendarId("calR1");
         calR2.setId("calR2");
         calR2.setCalendarId("calR2");
-        
+
         calendarList.add(calR1);
         calendarList.add(calR2);
 
@@ -296,9 +294,10 @@ public class NewTest {
         userDataController.deleteUser(userId);
         userDataController.createUser(user);
         User fetchedUser = userDataController.findUser(userId);
-        System.out.println("User: "+objectMapper.writeValueAsString(fetchedUser));
+        System.out.println("User: " + objectMapper.writeValueAsString(fetchedUser));
 
-        Optional<CalendarListResource> resp = userRepository.findCalendarListResourceByIdAndCalendarId(user.getUserId(), calR1.getCalendarId());
+        Optional<CalendarListResource> resp = userRepository.findCalendarListResourceByIdAndCalendarId(user.getUserId(),
+                calR1.getCalendarId());
         if (resp.isEmpty()) {
             System.out.println("Resposta vazia");
         } else {
@@ -307,9 +306,9 @@ public class NewTest {
     }
 
     @Test
-    @WithMockUser 
-    public void testEventResourceFreeTime() throws Exception{   //testa a função freeTime de EventsResource
-        EventsResource mockEvent = new EventsResource(); 
+    @WithMockUser
+    public void testEventResourceFreeTime() throws Exception { // testa a função freeTime de EventsResource
+        EventsResource mockEvent = new EventsResource();
         EventDate start = new EventDate();
         EventDate end = new EventDate();
         ArrayList<DateTimeInterval> freeTimeVec = new ArrayList<>();
@@ -326,35 +325,38 @@ public class NewTest {
 
         start.setDateTime("2025-06-19T20:23:12.0000Z");
         end.setDateTime("2025-06-23T20:23:12.0000Z");
-        
+
         mockEvent.setStart(start);
         mockEvent.setEnd(end);
 
         ArrayList<DateTimeInterval> freeTimeVecNew = mockEvent.freeTime(freeTimeVec);
 
-        //System.out.println(freeTimeVec.toString());
-        for (DateTimeInterval interval: freeTimeVecNew){
-            try{System.out.println(objectMapper.writeValueAsString(interval));}
-            catch (Exception e){}
+        // System.out.println(freeTimeVec.toString());
+        for (DateTimeInterval interval : freeTimeVecNew) {
+            try {
+                System.out.println(objectMapper.writeValueAsString(interval));
+            } catch (Exception e) {
+            }
         }
-        MvcResult result = mockMvc.perform(post("/pool/create?start="+initFreeTime.getStart().toString()
-        +"&end="+initFreeTime.getEnd().toString()).content(objectMapper.writeValueAsString(mockEvent))).andReturn();
+        MvcResult result = mockMvc.perform(post("/pool/create?start=" + initFreeTime.getStart().toString()
+                + "&end=" + initFreeTime.getEnd().toString()).content(objectMapper.writeValueAsString(mockEvent)))
+                .andReturn();
         System.out.println(result.getResponse().getContentAsString());
     }
 
     // Testes EventPoolDataController
     @Test
     @WithMockUser
-    public void getAllEventPoolsTest(){
-        
+    public void getAllEventPoolsTest() {
+
     }
 
     // Teste AI
     @Test
     @WithMockUser
-    public void testPrompBuilder() throws Exception{ //testa a classe PromptBuilder
+    public void testPrompBuilder() throws Exception { // testa a classe PromptBuilder
         PromptBuilder promptBuilder = new PromptBuilder();
-        
+
         String calendarId;
         String dataInicial = "2025-06-21T00:00:00Z";
         // TODO pois nunca é usado
@@ -374,38 +376,38 @@ public class NewTest {
         user.setCalendarList(calendarList);
         OAuth2AuthorizedClient authorizedClient = mock(OAuth2AuthorizedClient.class);
 
-
         calendarId = null;
         String promptCalendarioDia = promptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
-        if (promptCalendarioDia != null){
-            System.out.println("Prompt Dia: "+promptCalendarioDia);
+        if (promptCalendarioDia != null) {
+            System.out.println("Prompt Dia: " + promptCalendarioDia);
         }
-
 
         calendarId = "calR1";
         String promptTotalDia = promptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
-        if (promptTotalDia != null){
-            System.out.println("Prompt Dia: "+promptTotalDia);
+        if (promptTotalDia != null) {
+            System.out.println("Prompt Dia: " + promptTotalDia);
         }
 
         // calendarId = null;
-        // String promptCalendarioSemana = promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
+        // String promptCalendarioSemana =
+        // promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial,
+        // calendarId);
         // if (promptCalendarioSemana != null){
-        //     System.out.println("Prompt Semana: "+promptCalendarioSemana);
+        // System.out.println("Prompt Semana: "+promptCalendarioSemana);
         // }
-
 
         // calendarId = "calR1";
-        // String promptTotalSemana = promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial, calendarId);
+        // String promptTotalSemana =
+        // promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial,
+        // calendarId);
         // if (promptTotalSemana != null){
-        //     System.out.println("Prompt Semana: "+promptTotalSemana);
+        // System.out.println("Prompt Semana: "+promptTotalSemana);
         // }
-    
+
         // TODO pois nunca é usado
         ResultActions result = mockMvc.perform(get("/prompt/semana")).andDo(MockMvcResultHandlers.print());
-        // ResultActions result = mockMvc.perform(get("/prompt/dia")).andDo(MockMvcResultHandlers.print());
+        // ResultActions result =
+        // mockMvc.perform(get("/prompt/dia")).andDo(MockMvcResultHandlers.print());
     }
-        
 
-        
 }

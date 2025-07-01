@@ -45,7 +45,7 @@ public class CalendarTest extends MongoTestContainer {
 
     @Test
     @WithMockUser
-    public void addCalendarListResourceFromCalendarTest() throws Exception{
+    public void addCalendarListResourceFromCalendarTest() throws Exception {
         User user1 = new User();
         user1.setId("afadsfsf@ajodjf.com");
         user1.setGoogleId(user1.getId());
@@ -56,21 +56,23 @@ public class CalendarTest extends MongoTestContainer {
         CalendarResource calR = new CalendarResource();
         calR.setCalendarId("1231233@gmail.com");
         calR.setId(calR.getCalendarId());
-        System.out.println("Usuario: "+user1.getUserId());
-        System.out.println("\n\nCalendário passado para addCalendar: "+objectMapper.writeValueAsString(calR));
+        System.out.println("Usuario: " + user1.getUserId());
+        System.out.println("\n\nCalendário passado para addCalendar: " + objectMapper.writeValueAsString(calR));
         calendarDataController.removeCalendar(calR.getCalendarId(), user1.getUserId());
         calendarDataController.addCalendar(calR, user1.getUserId());
 
         // TODO pois nunca é usado
-        CalendarListResource response = calendarDataController.addCalendarListResourceFromCalendar(user1.getUserId(), calR.getCalendarId());
-        CalendarListResource fetched = calendarDataController.getCalendarListResource(calR.getCalendarId(), user1.getUserId());
-        assertEquals(objectMapper.writeValueAsString(calR.toCalendarListResource()), 
-        objectMapper.writeValueAsString(fetched));
+        CalendarListResource response = calendarDataController.addCalendarListResourceFromCalendar(user1.getUserId(),
+                calR.getCalendarId());
+        CalendarListResource fetched = calendarDataController.getCalendarListResource(calR.getCalendarId(),
+                user1.getUserId());
+        assertEquals(objectMapper.writeValueAsString(calR.toCalendarListResource()),
+                objectMapper.writeValueAsString(fetched));
     }
 
     @Test
     @WithMockUser
-    public void testCalendarDataController() throws Exception{
+    public void testCalendarDataController() throws Exception {
         User user1 = new User();
         user1.setUsername("user");
         user1.setId("12");
@@ -81,72 +83,69 @@ public class CalendarTest extends MongoTestContainer {
 
         CalendarResource calResource = new CalendarResource();
         calResource.setId("1");
-        
+
         CalendarListResource calListResource = new CalendarListResource();
         calListResource.setId("1");
 
         String userId = user1.getId();
-        System.out.println("USer ID: "+userId);
+        System.out.println("USer ID: " + userId);
         String calendarId = calItem.getCalendarId();
         // TODO pois nunca é usado
         String calendarResourceId = calResource.getId();
         String calendarListResourceId = calListResource.getId();
 
         userRepository.insertCalendarListResourceByUserId(user1.getUserId(), calItem);
-        
-        //adiciona o calendarlistusaritem
+
+        // adiciona o calendarlistusaritem
         CalendarListResource findedCalItem = calendarDataController.addCalendarListResource(calListResource, userId);
         System.out.println(objectMapper.writeValueAsString(findedCalItem));
 
-        //adiciona o calendar 
+        // adiciona o calendar
         CalendarResource calRes = calendarDataController.addCalendar(calResource, userId);
         System.out.println(objectMapper.writeValueAsString(calRes));
-        
-       
-        //pega lista de calendarios
 
-        CalendarListResource calListResource1 =  calendarDataController.getCalendarListResource(calendarListResourceId, userId);
-        
+        // pega lista de calendarios
+
+        CalendarListResource calListResource1 = calendarDataController.getCalendarListResource(calendarListResourceId,
+                userId);
+
         System.out.println(objectMapper.writeValueAsString(calListResource1));
-        
-        //atualiza o calendar
 
-        CalendarListResource calListResource2 = calendarDataController.updateCalendar(calendarId, calListResource, userId);
+        // atualiza o calendar
+
+        CalendarListResource calListResource2 = calendarDataController.updateCalendar(calendarId, calListResource,
+                userId);
         System.out.println(objectMapper.writeValueAsString(calListResource2));
-        
 
         // pega lista de calendarios do usuario
         ArrayList<CalendarListResource> calListResource3 = calendarDataController.getCalendarList(userId);
-        
-        System.out.println(objectMapper.writeValueAsString(calListResource3));
-        
 
-        //deleta e vê se apagou
+        System.out.println(objectMapper.writeValueAsString(calListResource3));
+
+        // deleta e vê se apagou
         calendarDataController.removeCalendar(calendarId, userId);
 
         // TODO pois nunca é usado
         CalendarListResource calListDelete = calendarDataController.getCalendarListResource(calendarId, userId);
-        
+
         // System.out.println("DELETADO COM SUCESSO");
 
-        
         userRepository.deleteById("12");
         // CalendarListResource.deleteById("1");
         // CalendarResource.deleteById("1");
         // CalendarListResource.deleteById("1");
 
-        
-    }
-     @Test
-    @WithMockUser
-    public void testCalendarListInsert(){
-        
     }
 
-   
     @Test
     @WithMockUser
-    public void testAddCalendarListResource(){
+    public void testCalendarListInsert() {
+
+    }
+
+    @Test
+    @WithMockUser
+    public void testAddCalendarListResource() {
         User user = new User();
         String userId = "testUser";
         user.setId(userId);
@@ -154,7 +153,7 @@ public class CalendarTest extends MongoTestContainer {
         user.setUserId(userId);
         user.setDisplayName("Usuário de Test");
         userDataController.createUser(user);
-        
+
         CalendarListResource calListR = new CalendarListResource();
         String calendarId = "calendario@teste.com";
         calListR.setId(calendarId);

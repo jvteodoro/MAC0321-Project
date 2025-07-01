@@ -10,23 +10,24 @@ import com.google.gson.Gson;
 import br.com.agendusp.agendusp.dataobjects.aiObjects.AIRequest;
 import br.com.agendusp.agendusp.dataobjects.aiObjects.AIResponse;
 
-
-@RestController //para poder fazer requisicoes http 
+@RestController // para poder fazer requisicoes http
 public class AIControler {
 
     @Autowired
-    RestClient restClient; //para o spring poder gerar requisicoes http com java de modo facil
+    RestClient restClient; // para o spring poder gerar requisicoes http com java de modo facil
 
     public AIControler(RestClient restClient) {
         this.restClient = restClient;
     }
 
-    public AIResponse gerarInforme(AIRequest airequest){ //a requisicao da ia precisa mandar isso {"model" : "llama3.2:1b", "prompt": "-prompt para a ia-", "stream": false}
+    public AIResponse gerarInforme(AIRequest airequest) { // a requisicao da ia precisa mandar isso {"model" :
+                                                          // "llama3.2:1b", "prompt": "-prompt para a ia-", "stream":
+                                                          // false}
         ResponseEntity<AIResponse> response = restClient.post()
-            .uri("http://localhost:11434/api/generate")
-            .body(airequest)
-            .retrieve()
-            .toEntity(AIResponse.class);
+                .uri("http://localhost:11434/api/generate")
+                .body(airequest)
+                .retrieve()
+                .toEntity(AIResponse.class);
         return response.getBody();
     }
 }

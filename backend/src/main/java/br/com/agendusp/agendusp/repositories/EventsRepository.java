@@ -1,6 +1,5 @@
 package br.com.agendusp.agendusp.repositories;
 
-
 import java.util.Optional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,12 +11,15 @@ import org.springframework.stereotype.Repository;
 import br.com.agendusp.agendusp.documents.EventsResource;
 
 @Repository
-public interface EventsRepository extends MongoRepository<EventsResource, String>{
-    /*public Optional<EventsResource> findById(String id);
-    public List<EventsResource> findAll();*/
+public interface EventsRepository extends MongoRepository<EventsResource, String> {
+    /*
+     * public Optional<EventsResource> findById(String id);
+     * public List<EventsResource> findAll();
+     */
 
     @Query("{'id': ?0}")
     public Optional<EventsResource> findById(String eventId);
+
     @Query("{'calendarIds': ?0}")
     public Optional<ArrayList<EventsResource>> findAllByCalendarId(String calendarId);
 
@@ -31,6 +33,7 @@ public interface EventsRepository extends MongoRepository<EventsResource, String
     public Optional<ArrayList<EventsResource>> findEventsByEndDate(String calendarId, LocalDateTime endDate);
 
     @Query("{ 'start.dateTime': { $gte: ?0 }, 'end.dateTime': { $lte: ?1 } }")
-    public Optional<ArrayList<EventsResource>> findEventosDentroDoIntervalo(LocalDateTime dataInicio, LocalDateTime dataFim);
+    public Optional<ArrayList<EventsResource>> findEventosDentroDoIntervalo(LocalDateTime dataInicio,
+            LocalDateTime dataFim);
 
 }

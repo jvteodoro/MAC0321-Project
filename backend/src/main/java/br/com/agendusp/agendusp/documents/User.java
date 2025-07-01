@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPool;
 
-
 @Document(collection = "users")
 public class User { // objetos dessa classe serão salvos na coleção users do MongoDB
 
@@ -15,7 +14,7 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
     private String id; // ID gerada pelo MongoDB
     private String userId;
     private String DisplayName;
-    
+
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
@@ -33,7 +32,8 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
         this.userId = userId;
     }
 
-    public User(String googleId, String email, String name) { // Construtor para criar um usuário com Google ID, email e nome
+    public User(String googleId, String email, String name) { // Construtor para criar um usuário com Google ID, email e
+                                                              // nome
         this.id = null; // ID será gerado pelo MongoDB
         this.googleId = googleId;
         this.email = email;
@@ -51,10 +51,9 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
     private void updateCalendarPerson() {
         this.calendarPerson = new CalendarPerson(this.id, this.email, this.name);
     }
-    
 
     public ArrayList<String> getEventPoolList() {
-        if (this.eventPoolList == null) { 
+        if (this.eventPoolList == null) {
             this.eventPoolList = new ArrayList<>();
         }
         return eventPoolList;
@@ -66,7 +65,8 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
         }
         this.eventPoolList = eventPoolList;
     }
-    public void addEventPool(String eventPoolId){
+
+    public void addEventPool(String eventPoolId) {
         if (this.eventPoolList == null) {
             this.eventPoolList = new ArrayList<>();
         }
@@ -94,15 +94,14 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
     public ArrayList<EventPool> getEventPoolNotifications() {
         return eventPoolNotifications;
     }
-    public void addEventPoolNotifications(EventPool eventPoolNotification){
+
+    public void addEventPoolNotifications(EventPool eventPoolNotification) {
         this.eventPoolNotifications.add(eventPoolNotification);
     }
 
     public void setEventPoolNotifications(ArrayList<EventPool> eventPoolNotifications) {
         this.eventPoolNotifications = eventPoolNotifications;
     }
-
-    
 
     public String getDisplayName() {
         return DisplayName;
@@ -115,6 +114,7 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
     public String getId() {
         return this.id;
     }
+
     public String getUserId() {
         return this.userId;
     }
@@ -154,6 +154,7 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
     public ArrayList<CalendarListResource> getCalendarList() {
         return calendarList;
     }
+
     public CalendarListResource addCalendarListResource(CalendarListResource calendarListResource) {
         if (this.calendarList == null) {
             this.calendarList = new ArrayList<>();
@@ -162,28 +163,28 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
         return calendarListResource;
     }
 
-
-
     // @Override
     // public Collection<? extends GrantedAuthority> getAuthorities() {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'getAuthorities'");
     // }
 
     // @Override
     // public String getPassword() {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'getPassword'");
     // }
 
     // @Override
     // public String getUsername() {
-    //     // TODO Auto-generated method stub
+    // // TODO Auto-generated method stub
 
     // // public void runArray(){
-    // //     //implementar
+    // // //implementar
     // // }
-        
-    //     return this.name;   
+
+    // return this.name;
     // }
 }

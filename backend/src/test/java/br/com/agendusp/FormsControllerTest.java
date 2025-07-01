@@ -23,7 +23,6 @@ import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
 
-
 @SpringBootTest(classes = AgendUspApplication.class)
 @AutoConfigureMockMvc
 public class FormsControllerTest extends MongoTestContainer {
@@ -44,15 +43,17 @@ public class FormsControllerTest extends MongoTestContainer {
     static ArrayList<String> attendeeId;
 
     static String eventId = "testEvent";
-    public void createAtendee(String attendeId){
+
+    public void createAtendee(String attendeId) {
         User attendee = new User();
         attendee.setId(attendeId);
         attendee.setEmail(attendeId);
         attendee.setDisplayName(attendeId);
         userDataController.createUser(attendee);
     }
+
     @BeforeEach
-    public void setupDataBase(){
+    public void setupDataBase() {
         User user = new User();
         user.setId(userId);
         user.setEmail(userEmail);
@@ -61,7 +62,6 @@ public class FormsControllerTest extends MongoTestContainer {
         String attende1Id = "at1";
         String attende2Id = "at2";
         String attende3Id = "at3";
-        
 
         attendeeId = new ArrayList<>();
         createAtendee(attende1Id);
@@ -77,36 +77,38 @@ public class FormsControllerTest extends MongoTestContainer {
 
         EventsResource event = new EventsResource();
         event.setId(eventId);
-        try
-       { System.out.println(objectMapper.writeValueAsString(user));}
-       catch (Exception e){}
+        try {
+            System.out.println(objectMapper.writeValueAsString(user));
+        } catch (Exception e) {
+        }
         eventsDataController.createEvent(user.getCalendarList().get(0).getId(), event, user.getId());
         eventsDataController.addAtendeeToEvent(eventId, attende1Id);
         eventsDataController.addAtendeeToEvent(eventId, attende2Id);
         eventsDataController.addAtendeeToEvent(eventId, attende3Id);
 
-
     }
 
     @Test
     @WithMockUser
-    public void sendPoolTest(){
+    public void sendPoolTest() {
         EventsResource event = eventsDataController.getEventById(eventId);
         try {
-        System.out.println(objectMapper.writeValueAsString(userDataController.findUser(userId)));
-        System.out.println("Event:\n"+objectMapper.writeValueAsString(event));
-        } catch (Exception e){}
+            System.out.println(objectMapper.writeValueAsString(userDataController.findUser(userId)));
+            System.out.println("Event:\n" + objectMapper.writeValueAsString(event));
+        } catch (Exception e) {
+        }
     }
+
     @Test
     @WithMockUser
-    public void voteEventPoolTest(){
+    public void voteEventPoolTest() {
 
     }
 
     @Test
     @WithMockUser
-    public void createEventFromPoolTest(){
-        
+    public void createEventFromPoolTest() {
+
     }
 
     @Test
@@ -118,24 +120,24 @@ public class FormsControllerTest extends MongoTestContainer {
         EventsResource event = eventsDataController.getEventById(eventId);
 
         mockMvc.perform(
-            post("/pool/create?startDate="+startDate+"&endDate="+endDate)
-            .content(objectMapper.writeValueAsString(event)))
-            .andDo(MockMvcResultHandlers.print());
+                post("/pool/create?startDate=" + startDate + "&endDate=" + endDate)
+                        .content(objectMapper.writeValueAsString(event)))
+                .andDo(MockMvcResultHandlers.print());
 
         mockMvc.perform(get("/secured")).andDo(MockMvcResultHandlers.print());
-        //System.out.println("RESULT: "+result.getResponse().getContentAsString());
-        
-    }
-
-    @Test
-    @WithMockUser
-    public void voteTest(){
+        // System.out.println("RESULT: "+result.getResponse().getContentAsString());
 
     }
 
     @Test
     @WithMockUser
-    public void createEventTest(){
+    public void voteTest() {
+
+    }
+
+    @Test
+    @WithMockUser
+    public void createEventTest() {
 
     }
 }

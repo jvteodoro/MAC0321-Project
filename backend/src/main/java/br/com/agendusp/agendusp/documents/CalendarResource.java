@@ -9,7 +9,7 @@ import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 
 @Document(collection = "calendars") // objetos dessa classe serão salvos na coleção calendars do MongoDB
 public class CalendarResource {
-    
+
     @Id
     String id;
     String calendarId;
@@ -25,7 +25,7 @@ public class CalendarResource {
     ArrayList<CalendarPerson> freeBusyReaders;
     boolean deleted;
 
-    public CalendarListResource toCalendarListResource(){
+    public CalendarListResource toCalendarListResource() {
         CalendarListResource calR = new CalendarListResource();
         calR.setId(this.calendarId);
         calR.setCalendarId(this.calendarId);
@@ -39,7 +39,8 @@ public class CalendarResource {
         return calR;
     }
 
-    public CalendarListResource toCalendarListResource(String acessRole){ // extrai um CalendarListResource a partir de um CalendarResource
+    public CalendarListResource toCalendarListResource(String acessRole) { // extrai um CalendarListResource a partir de
+                                                                           // um CalendarResource
         if (this.calendarId == null) {
             throw new IllegalArgumentException("Calendar ID cannot be null");
         }
@@ -56,14 +57,15 @@ public class CalendarResource {
         return calR;
     }
 
-    public void setId(String id){
+    public void setId(String id) {
         this.calendarId = id;
         this.id = id;
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
+
     public String getKind() {
         return kind;
     }
@@ -119,7 +121,7 @@ public class CalendarResource {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
-    
+
     public String getCalendarId() {
         return calendarId;
     }

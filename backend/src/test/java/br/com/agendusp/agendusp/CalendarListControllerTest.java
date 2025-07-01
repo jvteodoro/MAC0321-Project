@@ -149,8 +149,8 @@ public class CalendarListControllerTest {
                 assertEquals("writer", result.getAccessRole());
         }
 
-        @Test 
-        void testPatch() throws Exception { 
+        @Test
+        void testPatch() throws Exception {
                 CalendarListResource patch = new CalendarListResource();
                 patch.setCalendarId("cal1");
                 patch.setSummary("Resumão modificado");
