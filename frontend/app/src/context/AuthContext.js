@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
     accessToken: null,
   });
 
-  // Fetch user info and access token from backend
+  // Busca dados do usuário autenticado
   const fetchAuth = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:12003/api/auth/me", {
@@ -40,7 +40,14 @@ export const AuthProvider = ({ children }) => {
   const getAccessToken = () => auth.accessToken;
 
   const logout = async () => {
-    await axios.post("http://localhost:12003/api/auth/logout", {}, { withCredentials: true });
+    try {
+      await axios.post("http://localhost:12003/api/auth/logout", null, {
+        withCredentials: true,
+      });
+    } catch (err) {
+      console.error("Erro ao deslogar no servidor:", err);
+    }
+
     setAuth({
       loading: false,
       authenticated: false,
