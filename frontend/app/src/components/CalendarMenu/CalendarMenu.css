@@ -95,7 +95,7 @@
   position: absolute;
   top: 0.3em;
   right: 0.3em;
-  font-size: 1.2em;
+  font-size: 0.9em;
 }
 
 .calendar-day:hover > .day-number {

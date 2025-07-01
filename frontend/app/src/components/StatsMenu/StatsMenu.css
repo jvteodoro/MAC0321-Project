@@ -14,7 +14,7 @@
 }
 
 #stats-menu.extended {
-  top: 100%;
+  top: 103%;
   visibility: visible;
   height: fit-content;
   width: fit-content;
@@ -65,11 +65,10 @@
 
 .stats-output {
   font-size: 0.95em;
-  background: #fff2;
+  background: var(--secondary-color);
   border-radius: 0.3em;
   padding: 0.5em;
-  white-space: pre-wrap;
-  word-break: break-all;
+  white-space: pre-line;
 }
 
 .error {
