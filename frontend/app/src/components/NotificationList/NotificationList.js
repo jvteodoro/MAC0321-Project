@@ -5,6 +5,7 @@ import { Client } from "@stomp/stompjs";
 import { useAuth } from "../../context/AuthContext"; // <-- import useAuth
 
 const NotificationList = ({ visible }) => {
+
   const [notifications, setNotifications] = useState([]);
   const stompClient = useRef(null);
   const { authenticated, getAccessToken, user } = useAuth();
@@ -116,10 +117,6 @@ const NotificationList = ({ visible }) => {
       </ul>
     </div>
   );
-};
-
-NotificationList.propTypes = {
-  visible: PropTypes.bool.isRequired,
 };
 
 NotificationList.propTypes = {
