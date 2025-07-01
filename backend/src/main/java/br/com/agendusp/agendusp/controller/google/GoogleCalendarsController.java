@@ -1,6 +1,6 @@
-package br.com.agendusp.agendusp.calendar;
+package br.com.agendusp.agendusp.controller.google;
 
-import org.springframework.web.bind.annotation.RestController;
+// import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
 //@RestController

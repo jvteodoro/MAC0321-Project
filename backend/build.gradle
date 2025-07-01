@@ -35,6 +35,10 @@ ext {
 
 dependencies {
 	implementation 'com.google.api-client:google-api-client:1.32.1'
+	implementation 'org.testcontainers:testcontainers:1.21.1'
+	implementation 'org.testcontainers:junit-jupiter:1.21.1'
+	implementation 'org.testcontainers:mongodb:1.21.1'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
  	implementation 'com.google.apis:google-api-services-calendar:v3-rev20250404-2.0.0'
   	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
@@ -49,6 +53,8 @@ dependencies {
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'com.google.apis:google-api-services-calendar:v3-rev20250404-2.0.0'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 }
 
 dependencyManagement {
