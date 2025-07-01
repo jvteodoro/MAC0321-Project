@@ -103,3 +103,7 @@
     background-color: var(--secondary-hoverselect-color);
     border-radius: 4px;
   }
+
+  #create-button {
+    grid-column: span 2;
+  }

@@ -9,6 +9,7 @@
   border-radius: 0.4em 0 0.4em 0.4em;
   background-color: var(--main-hoverselect-color);
   padding: 0.1em;
+  z-index: 2;
 }
 
 #notification-list.extended {
