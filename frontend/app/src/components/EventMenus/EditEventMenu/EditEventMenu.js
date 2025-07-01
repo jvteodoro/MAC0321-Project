@@ -78,7 +78,7 @@ const EditarEventoMenu = (props) => {
             cor: evento.colorId ? parseInt(evento.colorId) : 0,
             descricao: evento.description || "",
             local: evento.location || "",
-            convidados: evento.attendees,
+            convidados: Array.isArray(evento.attendees) ? evento.attendees : [],
             novoConvidado: "",
             hangoutLink: evento.hangoutLink || "",
           });
