@@ -80,8 +80,23 @@ public class EventsDataController {
         eventResource.addCalendarId(calendarId);
         eventResource.setCreator(user.getAsCalendarPerson());
         eventResource.setOrganizer(user.getAsCalendarPerson()); // Inicialmente, o criador é o organizador
-        eventResource.addAttendee(new Attendee(user.getAsCalendarPerson(), true)); // Adicionando o criador como
-                                                                                   // participante
+
+        // Só adiciona o criador como participante caso ele já não tenha feito isso manualmente
+        boolean creatorAlreadyAttendee = false;
+        if (eventResource.getAttendees() != null) {
+            String creatorEmail = user.getEmail();
+            for (Attendee attendee : eventResource.getAttendees()) {
+                if (attendee != null && attendee.getCalendarPerson() != null
+                        && creatorEmail.equalsIgnoreCase(attendee.getCalendarPerson().getEmail())) {
+                    creatorAlreadyAttendee = true;
+                    break;
+                }
+            }
+        }
+        if (!creatorAlreadyAttendee) {
+            eventResource.addAttendee(new Attendee(user.getAsCalendarPerson(), true)); // Adicionando o criador como participante
+        }
+
         eventResource.setStatus("confirmed"); // Definindo o status do evento como confirmado
 
         // Atualiza os attendees e calendarIds conforme solicitado
