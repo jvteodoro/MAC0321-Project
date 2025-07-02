@@ -21,9 +21,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
-import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPool;
+import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPoll;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventDate;
-import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPool;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.repositories.EventPoolRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
@@ -43,9 +43,9 @@ public class FormsController {
 
     @MessageMapping("/pool/send/{eventPoolId}")
     public void sendPool(@PathVariable String eventPoolId) {
-        Optional<EventPool> eventPoolOptional = eventPoolRepository.findById(eventPoolId);
+        Optional<EventPoll> eventPoolOptional = eventPoolRepository.findById(eventPoolId);
         if (eventPoolOptional.isPresent()) {
-            EventPool eventPool = eventPoolRepository.save(eventPoolOptional.get());
+            EventPoll eventPool = eventPoolRepository.save(eventPoolOptional.get());
             String destination = "/notify/pool/" + eventPoolId;
             msgTemplate.convertAndSend(destination, eventPool);
         }
@@ -66,11 +66,11 @@ public class FormsController {
     }
 
     @GetMapping("/pool/create")
-    public EventPool createPool(@RequestParam String eventId, @RequestParam String startDate,
+    public EventPoll createPool(@RequestParam String eventId, @RequestParam String startDate,
             @RequestParam String endDate,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         EventsResource event = eventsDataController.getEventById(eventId);
-        EventPool eventPool = new EventPool(event);
+        EventPoll eventPool = new EventPoll(event);
 
         System.out.println("[DEBUG] 1");
 
@@ -103,27 +103,27 @@ public class FormsController {
     }
 
     @PostMapping("/pool/vote")
-    public EventPool vote(@RequestParam String eventPoolId, @RequestParam String dateTimeIntervalId) {
-        Optional<EventPool> evPool = eventPoolRepository.findById(eventPoolId);
+    public EventPoll vote(@RequestParam String eventPoolId, @RequestParam String dateTimeIntervalId) {
+        Optional<EventPoll> evPool = eventPoolRepository.findById(eventPoolId);
         if (evPool.isPresent()) {
             evPool.get().vote(dateTimeIntervalId);
             evPool.get().getDone();
             return evPool.get();
         } else {
-            return new EventPool();
+            return new EventPoll();
         }
 
     }
 
     @PostMapping("/pool/createEvent")
     public EventsResource createEvent(@RequestParam String eventPoolId, @RequestParam String dateTimeIntervalId) {
-        Optional<EventPool> evPool = eventPoolRepository.findById(eventPoolId);
-        DateTimeIntervalPool selected;
+        Optional<EventPoll> evPool = eventPoolRepository.findById(eventPoolId);
+        DateTimeIntervalPoll selected;
         if (evPool.isPresent()) {
             // Continuar a criação de eventos
-            ArrayList<DateTimeIntervalPool> dt = evPool.get().getPosibleTimes();
+            ArrayList<DateTimeIntervalPoll> dt = evPool.get().getPosibleTimes();
             EventsResource event = eventsDataController.getEventById(evPool.get().getEventId());
-            for (DateTimeIntervalPool dtP : dt) {
+            for (DateTimeIntervalPoll dtP : dt) {
                 if (dtP.getId() == dateTimeIntervalId) {
                     selected = dtP;
                     EventDate start = new EventDate(selected.getDateTimeInterval().getStart());

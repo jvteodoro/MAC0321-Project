@@ -1,5 +1,6 @@
 package br.com.agendusp.agendusp.dataobjects.eventObjects;
 
+// notificacao de eventos
 public class Notification {
     private String id;
     private String userId;
@@ -9,6 +10,10 @@ public class Notification {
         this.id = java.util.UUID.randomUUID().toString();
         this.userId = userId;
         this.message = message;
+    }
+
+    public Notification() {
+        this.id = java.util.UUID.randomUUID().toString();
     }
 
     public String getId() {

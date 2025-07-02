@@ -1,18 +1,21 @@
 package br.com.agendusp.agendusp.dataobjects;
 
-import java.util.ArrayList;
+// representa a contagem de votos de um horario
+public class DateTimeIntervalPoll {
 
-public class DateTimeIntervalPool {
+    private DateTimeInterval dateTimeInterval;
+    private String id;
+    private int votes;
 
-    DateTimeInterval dateTimeInterval;
-    String id;
-    int votes;
+    public DateTimeIntervalPoll() {}
 
-    public DateTimeIntervalPool() {
+    public DateTimeIntervalPoll(DateTimeInterval dt) {
+        setDateTimeInterval(dt);
     }
 
-    public DateTimeIntervalPool(DateTimeInterval dt) {
-        this.dateTimeInterval = dt;
+    public DateTimeIntervalPoll(DateTimeInterval dt, String id) {
+        this(dt);
+        this.id = id;
     }
 
     public void setDateTimeInterval(DateTimeInterval dt) {

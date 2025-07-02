@@ -3,45 +3,46 @@ package br.com.agendusp.agendusp.dataobjects.eventObjects;
 import java.util.ArrayList;
 
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
-import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPool;
+import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPoll;
 import br.com.agendusp.agendusp.documents.EventsResource;
 
-public class EventPool {
+// representa enquete de melhor horario para um evento
+public class EventPoll {
     ArrayList<Attendee> attendees;
-    // Inicia com o número de atendee e toda vez que alguém responde diminui um
+    // Inicia com o numero de atendee e toda vez que alguém responde diminui um
     // Quando estiver em zero => todos responderam
     int done;
     String id;
     String ownerId;
     String eventId;
-    ArrayList<DateTimeIntervalPool> posibleTimes;
+    ArrayList<DateTimeIntervalPoll> posibleTimes;
 
-    public EventPool (){}
+    public EventPoll () {}
 
-    public EventPool (EventsResource event){
+    public EventPoll (EventsResource event) {
       this.setEvent(event);
     }
 
-    public void addPossibleTimesFromDateTimeIntervalList(ArrayList<DateTimeInterval> dtList){
-        if (this.posibleTimes == null){this.posibleTimes = new ArrayList<>();}
-        for (DateTimeInterval dt:  dtList){
-            this.posibleTimes.add(new DateTimeIntervalPool(dt));
+    public void addPossibleTimesFromDateTimeIntervalList(ArrayList<DateTimeInterval> dtList) {
+        if (this.posibleTimes == null) {
+            this.posibleTimes = new ArrayList<>();
+        }
+        for (DateTimeInterval dt : dtList) {
+            this.posibleTimes.add(new DateTimeIntervalPoll(dt));
         }
     }
-    public void setPossibleTimesFromDateTimeIntervalList(ArrayList<DateTimeInterval> dtList){
-        ArrayList<DateTimeIntervalPool> intervalPool = new ArrayList<>();
-        for (DateTimeInterval dt:  dtList){
-            intervalPool.add(new DateTimeIntervalPool(dt));
+    public void setPossibleTimesFromDateTimeIntervalList(ArrayList<DateTimeInterval> dtList) {
+        ArrayList<DateTimeIntervalPoll> intervalPoll = new ArrayList<>();
+        for (DateTimeInterval dt : dtList) {
+            intervalPoll.add(new DateTimeIntervalPoll(dt));
         }
-        this.posibleTimes = intervalPool;
+        this.posibleTimes = intervalPoll;
     }
 
-
-
-    public void vote(String dateTimeIntervalPoolId){
-        for (DateTimeIntervalPool dtPool: this.posibleTimes){
-            if (dtPool.getId() == dateTimeIntervalPoolId){
-                dtPool.vote();
+    public void vote(String dateTimeIntervalPollId) {
+        for (DateTimeIntervalPoll dtPoll : this.posibleTimes){
+            if (dtPoll.getId() == dateTimeIntervalPollId){
+                dtPoll.vote();
             }
         }
     }
@@ -91,10 +92,10 @@ public class EventPool {
                 ", eventId=" + eventId +
                 '}';
     }
-    public ArrayList<DateTimeIntervalPool> getPosibleTimes() {
+    public ArrayList<DateTimeIntervalPoll> getPosibleTimes() {
         return posibleTimes;
     }
-    public void setPosibleTimes(ArrayList<DateTimeIntervalPool> posibleTimes) {
+    public void setPosibleTimes(ArrayList<DateTimeIntervalPoll> posibleTimes) {
         this.posibleTimes = posibleTimes;
     }
     

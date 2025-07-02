@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
 import org.springframework.stereotype.Repository;
 
-import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPool;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 
@@ -49,11 +49,11 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     @Query("{'id': ?0}")
     @Update("{$push : {'eventPoolNotification' : ?1}}")
-    void addEventPoolNotification(String userId, EventPool eventPool);
+    void addEventPoolNotification(String userId, EventPoll eventPool);
 
     @Query("{'id': ?0}")
     @Update("{$push : {'eventPoolList' : ?1}}")
-    void addEventPool(String userId, EventPool eventPool);
+    void addEventPool(String userId, EventPoll eventPool);
 
     @Aggregation(pipeline = {
             "{ $match: { 'id': ?0 } }",
@@ -62,7 +62,7 @@ public interface UserRepository extends MongoRepository<User, String> {
             "{ $replaceRoot: { newRoot: '$eventPoolNotification' } }",
             "{ $limit: 1 }"
     })
-    EventPool findByEventPoolId(String userId, String eventPoolId);
+    EventPoll findByEventPoolId(String userId, String eventPoolId);
 
     @Query(value = "{ 'id' : ?0}", fields = "{'calendarList': 1}")
     ArrayList<CalendarListResource> getCalendarList(String userId);
