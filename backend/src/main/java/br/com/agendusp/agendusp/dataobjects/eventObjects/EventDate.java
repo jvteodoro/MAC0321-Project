@@ -1,6 +1,5 @@
 package br.com.agendusp.agendusp.dataobjects.eventObjects;
 
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -53,6 +52,22 @@ public class EventDate {
         this.timeZone = timeZone;
     }
 
-    
+    public LocalDateTime toLocalDateTime() {
+        if (dateTime != null) {
+            return dateTime;
+        } else if (date != null) {
+            return date.atStartOfDay();
+        } else {
+            throw new IllegalStateException("EventDate does not have date or dateTime set.");
+        }
+    }
+
+    public boolean isBefore(LocalDateTime other) {
+        return toLocalDateTime().isBefore(other);
+    }
+
+    public boolean isAfter(LocalDateTime other) {
+        return toLocalDateTime().isAfter(other);
+    }
 
 }
