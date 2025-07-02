@@ -1,16 +1,14 @@
 package br.com.agendusp.agendusp.dataobjects.calendarObjects;
 
-public class AbstractCalendarReminder {
-    String method;
-    int minutes;
+// armazena os lembretes, que podem ser enviados por email ou em forma de pop-up
+public class CalendarReminder { 
+    private String method;
+    private int minutes;
 
-    public AbstractCalendarReminder(String method, int minutes) {
+    public CalendarReminder(String method, int minutes) {
         if (method == null || method.isEmpty()) {
             throw new IllegalArgumentException("Método não pode ser nulo ou vazio");
         }
-        // if (minutes == null) {
-        // throw new IllegalArgumentException("Minutos não pode ser nulo");
-        // }
         if (!method.equals("email") && !method.equals("popup")) {
             throw new IllegalArgumentException("Método inválido: " + method);
         }
@@ -21,5 +19,13 @@ public class AbstractCalendarReminder {
         }
         this.method = method;
         this.minutes = minutes;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public int getMinutes() {
+        return minutes;
     }
 }

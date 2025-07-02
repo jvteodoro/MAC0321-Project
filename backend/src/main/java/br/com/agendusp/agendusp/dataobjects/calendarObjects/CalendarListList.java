@@ -1,21 +1,19 @@
 package br.com.agendusp.agendusp.dataobjects.calendarObjects;
 
 import java.util.ArrayList;
+import java.util.List;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 
+// representa a lista de calendários do usuário retornada pela Google Calendar API
 public class CalendarListList {
-    String kind = "calendar#calendarList";
-    String etag;
-    String nextPageToken;
-    String nextSyncToken;
-    ArrayList<CalendarListResource> items;
+    private final String kind = "calendar#calendarList";
+    private String etag;
+    private String nextPageToken;
+    private String nextSyncToken;
+    private List<CalendarListResource> items = new ArrayList<>();
 
     public String getKind() {
         return kind;
-    }
-
-    public void setKind(String kind) {
-        this.kind = kind;
     }
 
     public String getEtag() {
@@ -42,12 +40,11 @@ public class CalendarListList {
         this.nextSyncToken = nextSyncToken;
     }
 
-    public ArrayList<CalendarListResource> getItems() {
+    public List<CalendarListResource> getItems() {
         return items;
     }
 
-    public void setItems(ArrayList<CalendarListResource> items) {
-
+    public void setItems(List<CalendarListResource> items) {
         this.items = items;
     }
 }

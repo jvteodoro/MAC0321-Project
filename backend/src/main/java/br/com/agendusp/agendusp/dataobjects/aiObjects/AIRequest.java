@@ -3,7 +3,7 @@ package br.com.agendusp.agendusp.dataobjects.aiObjects;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-public class AIRequest { //contem as informações necessarias para que o AIControler gere a requisição http
+public class AIRequest { // contem as informacoes necessarias para que o AIControler gere a requisicao http
     String model;
     String prompt;
     String stream;
