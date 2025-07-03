@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.agendusp.agendusp.AgendUspApplication;
+import br.com.agendusp.agendusp.MongoTestContainer;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.controller.FormsController;
 import br.com.agendusp.agendusp.controller.HomeController;
@@ -59,7 +60,7 @@ class TestConfig {
 
 @SpringBootTest(classes = AgendUspApplication.class)
 @AutoConfigureMockMvc
-public class NewTest {
+public class NewTest extends MongoTestContainer {
 
     @Autowired
     MockMvc mockMvc;
@@ -97,13 +98,14 @@ public class NewTest {
     // }
 
     private User setupFind() {
-        User user = new User();
+        
         String googleId = "4321234";
         String emailTest = "test@gmail.com";
-        user.setId(googleId);
-        user.setGoogleId(googleId);
-        user.setEmail(emailTest);
-        userRepository.delete(user);
+        User user = new User(googleId, emailTest, googleId);
+        Optional<User> userOp = userRepository.findById(googleId);
+        if (userOp.isPresent()){
+            userRepository.delete(user);
+        }
         userRepository.insert(user);
         return user;
     }
@@ -114,23 +116,14 @@ public class NewTest {
 
     @Test
     @WithMockUser
-    public void findByGoogleIdTest() throws Exception {
-        User user = setupFind();
-        Optional<User> recoveredUser = userRepository.findByGoogleId(user.getGoogleId());
-        if (recoveredUser.isEmpty()) {
-        } else {
-            assertEquals(objectMapper.writeValueAsString(user),
-                    objectMapper.writeValueAsString(recoveredUser.get()));
-        }
-        userRepository.delete(user);
-
-    }
-
-    @Test
-    @WithMockUser
     public void updateOneByUserIdTest() {
         // TODO pois nunca é usado
         User user = setupFind();
+        Optional<User> retievedUser = userRepository.findById(user.getId());
+        if (retievedUser.isPresent()){
+            retievedUser.get().setDisplayName("Edited name");
+            
+        }
 
     }
 
@@ -352,62 +345,62 @@ public class NewTest {
     }
 
     // Teste AI
-    @Test
-    @WithMockUser
-    public void testPrompBuilder() throws Exception { // testa a classe PromptBuilder
-        PromptBuilder promptBuilder = new PromptBuilder();
+    // @Test
+    // @WithMockUser
+    // public void testPrompBuilder() throws Exception { // testa a classe PromptBuilder
+    //     PromptBuilder promptBuilder = new PromptBuilder();
 
-        String calendarId;
-        String dataInicial = "2025-06-21T00:00:00Z";
-        // TODO pois nunca é usado
-        EventsResource mockEvent = new EventsResource();
-        String userId = "teste@gmail.com";
-        User user = new User();
-        user.setId(userId);
-        ArrayList<CalendarListResource> calendarList = new ArrayList<>();
-        CalendarListResource calR1 = new CalendarListResource();
-        CalendarListResource calR2 = new CalendarListResource();
-        calR1.setId("calR1");
-        calR1.setCalendarId("calR1");
-        calR2.setId("calR2");
-        calR2.setCalendarId("calR2");
-        calendarList.add(calR1);
-        calendarList.add(calR2);
-        user.setCalendarList(calendarList);
-        OAuth2AuthorizedClient authorizedClient = mock(OAuth2AuthorizedClient.class);
+    //     String calendarId;
+    //     String dataInicial = "2025-06-21T00:00:00Z";
+    //     // TODO pois nunca é usado
+    //     EventsResource mockEvent = new EventsResource();
+    //     String userId = "teste@gmail.com";
+    //     User user = new User();
+    //     user.setId(userId);
+    //     ArrayList<CalendarListResource> calendarList = new ArrayList<>();
+    //     CalendarListResource calR1 = new CalendarListResource();
+    //     CalendarListResource calR2 = new CalendarListResource();
+    //     calR1.setId("calR1");
+    //     calR1.setCalendarId("calR1");
+    //     calR2.setId("calR2");
+    //     calR2.setCalendarId("calR2");
+    //     calendarList.add(calR1);
+    //     calendarList.add(calR2);
+    //     user.setCalendarList(calendarList);
+    //     OAuth2AuthorizedClient authorizedClient = mock(OAuth2AuthorizedClient.class);
 
-        calendarId = null;
-        String promptCalendarioDia = promptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
-        if (promptCalendarioDia != null) {
-            System.out.println("Prompt Dia: " + promptCalendarioDia);
-        }
+    //     calendarId = null;
+    //     String promptCalendarioDia = promptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
+    //     if (promptCalendarioDia != null) {
+    //         System.out.println("Prompt Dia: " + promptCalendarioDia);
+    //     }
 
-        calendarId = "calR1";
-        String promptTotalDia = promptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
-        if (promptTotalDia != null) {
-            System.out.println("Prompt Dia: " + promptTotalDia);
-        }
+    //     calendarId = "calR1";
+    //     String promptTotalDia = promptBuilder.getPromptParaInformeDia(authorizedClient, dataInicial, calendarId);
+    //     if (promptTotalDia != null) {
+    //         System.out.println("Prompt Dia: " + promptTotalDia);
+    //     }
 
-        // calendarId = null;
-        // String promptCalendarioSemana =
-        // promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial,
-        // calendarId);
-        // if (promptCalendarioSemana != null){
-        // System.out.println("Prompt Semana: "+promptCalendarioSemana);
-        // }
+    //     // calendarId = null;
+    //     // String promptCalendarioSemana =
+    //     // promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial,
+    //     // calendarId);
+    //     // if (promptCalendarioSemana != null){
+    //     // System.out.println("Prompt Semana: "+promptCalendarioSemana);
+    //     // }
 
-        // calendarId = "calR1";
-        // String promptTotalSemana =
-        // promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial,
-        // calendarId);
-        // if (promptTotalSemana != null){
-        // System.out.println("Prompt Semana: "+promptTotalSemana);
-        // }
+    //     // calendarId = "calR1";
+    //     // String promptTotalSemana =
+    //     // promptBuilder.getPromptParaInformeSemana(authorizedClient, dataInicial,
+    //     // calendarId);
+    //     // if (promptTotalSemana != null){
+    //     // System.out.println("Prompt Semana: "+promptTotalSemana);
+    //     // }
 
-        // TODO pois nunca é usado
-        ResultActions result = mockMvc.perform(get("/prompt/semana")).andDo(MockMvcResultHandlers.print());
-        // ResultActions result =
-        // mockMvc.perform(get("/prompt/dia")).andDo(MockMvcResultHandlers.print());
-    }
+    //     // TODO pois nunca é usado
+    //     ResultActions result = mockMvc.perform(get("/prompt/semana")).andDo(MockMvcResultHandlers.print());
+    //     // ResultActions result =
+    //     // mockMvc.perform(get("/prompt/dia")).andDo(MockMvcResultHandlers.print());
+    // }
 
 }

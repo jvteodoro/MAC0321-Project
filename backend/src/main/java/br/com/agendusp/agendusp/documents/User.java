@@ -24,17 +24,20 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
     private CalendarPerson calendarPerson;
 
     public User() {
+        eventPoolList = new ArrayList<>();
+        eventPoolNotifications = new ArrayList<>();
+        calendarList = new ArrayList<>();
     }
 
     public User(String userId) { // Construtor para criar um usuário com um ID específico
-        this.id = null; // ID será gerado pelo MongoDB
+        this.id = userId; // 
         this.googleId = null; // Google ID pode ser nulo se o usuário não se autenticou com o Google
         this.userId = userId;
     }
 
     public User(String googleId, String email, String name) { // Construtor para criar um usuário com Google ID, email e
                                                               // nome
-        this.id = null; // ID será gerado pelo MongoDB
+        this.id = googleId;
         this.googleId = googleId;
         this.email = email;
         this.name = name;
@@ -49,7 +52,12 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
     }
 
     private void updateCalendarPerson() {
-        this.calendarPerson = new CalendarPerson(this.id, this.email, this.name);
+        if (this.calendarPerson == null){
+            this.calendarPerson = new CalendarPerson();
+        }
+        this.calendarPerson.setId(this.id);
+        this.calendarPerson.setEmail(this.email);
+        this.calendarPerson.setDisplayName(name);
     }
 
     public ArrayList<String> getEventPoolList() {
@@ -139,7 +147,7 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
 
     public void setEmail(String email) {
         this.email = email;
-        updateCalendarPerson();
+        //updateCalendarPerson();
     }
 
     public String getName() {

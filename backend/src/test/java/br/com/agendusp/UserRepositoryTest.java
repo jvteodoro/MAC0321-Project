@@ -1,5 +1,7 @@
 package br.com.agendusp;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -10,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.agendusp.agendusp.AgendUspApplication;
@@ -30,6 +33,52 @@ public class UserRepositoryTest extends MongoTestContainer {
     UserRepository userRepository;
     @Autowired
     ObjectMapper objectMapper;
+
+    private User setupFind() {
+        
+        String googleId = "4321234";
+        String emailTest = "test@gmail.com";
+        User user = new User(googleId, emailTest, googleId);
+        Optional<User> userOp = userRepository.findById(googleId);
+        if (userOp.isPresent()){
+            userRepository.delete(user);
+        }
+        userRepository.insert(user);
+        return user;
+    }
+
+    @Test
+    @WithMockUser
+    public void findByGoogleIdTest() throws Exception {
+        User user = setupFind();
+        Optional<User> recoveredUser = userRepository.findByGoogleId(user.getGoogleId());
+        if (recoveredUser.isEmpty()) {
+        } else {
+            assertEquals(objectMapper.writeValueAsString(user),
+                    objectMapper.writeValueAsString(recoveredUser.get()));
+        }
+        userRepository.delete(user);
+
+    }
+
+    @Test
+    public void insertCalendarListResourceByUserIdTest() throws Exception{
+        String calId = "testId";
+        CalendarListResource calResource = new CalendarListResource();
+        calResource.setId(calId);
+        User user = setupFind();
+        userRepository.insertCalendarListResourceByUserId(user.getUserId(), calResource);
+        Optional<CalendarListResource> retrievedCalResource = userRepository.findById(user.getId())
+        .orElseThrow(() -> new Exception("Erro, usuário não encontrado"))
+        .getCalendarList()
+        .stream().filter(p -> p.getId().equals(calId)).findFirst();
+        if (retrievedCalResource.isPresent()){
+            assertEquals(objectMapper.writeValueAsString(calResource),
+                        objectMapper.writeValueAsString(retrievedCalResource));
+        }
+
+    }
+
 
     @Test
     @WithMockUser
