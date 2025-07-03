@@ -49,23 +49,22 @@ public class CalendarTest extends MongoTestContainer {
         User user1 = new User();
         user1.setId("afadsfsf@ajodjf.com");
         user1.setGoogleId(user1.getId());
-        user1.setUserId(user1.getGoogleId());
         userRepository.delete(user1);
         userRepository.insert(user1);
         System.out.println(objectMapper.writeValueAsString(user1));
         CalendarResource calR = new CalendarResource();
         calR.setCalendarId("1231233@gmail.com");
         calR.setId(calR.getCalendarId());
-        System.out.println("Usuario: " + user1.getUserId());
+        System.out.println("Usuario: " + user1.getId());
         System.out.println("\n\nCalendário passado para addCalendar: " + objectMapper.writeValueAsString(calR));
-        calendarDataController.removeCalendar(calR.getCalendarId(), user1.getUserId());
-        calendarDataController.addCalendar(calR, user1.getUserId());
+        calendarDataController.removeCalendar(calR.getCalendarId(), user1.getId());
+        calendarDataController.addCalendar(calR, user1.getId());
 
         // TODO pois nunca é usado
-        CalendarListResource response = calendarDataController.addCalendarListResourceFromCalendar(user1.getUserId(),
+        CalendarListResource response = calendarDataController.addCalendarListResourceFromCalendar(user1.getId(),
                 calR.getCalendarId());
         CalendarListResource fetched = calendarDataController.getCalendarListResource(calR.getCalendarId(),
-                user1.getUserId());
+                user1.getId());
         assertEquals(objectMapper.writeValueAsString(calR.toCalendarListResource()),
                 objectMapper.writeValueAsString(fetched));
     }
@@ -94,7 +93,7 @@ public class CalendarTest extends MongoTestContainer {
         String calendarResourceId = calResource.getId();
         String calendarListResourceId = calListResource.getId();
 
-        userRepository.insertCalendarListResourceByUserId(user1.getUserId(), calItem);
+        userRepository.insertCalendarListResourceByUserId(user1.getId(), calItem);
 
         // adiciona o calendarlistusaritem
         CalendarListResource findedCalItem = calendarDataController.addCalendarListResource(calListResource, userId);
@@ -150,7 +149,6 @@ public class CalendarTest extends MongoTestContainer {
         String userId = "testUser";
         user.setId(userId);
         user.setGoogleId(userId);
-        user.setUserId(userId);
         user.setDisplayName("Usuário de Test");
         userDataController.createUser(user);
 
@@ -168,7 +166,6 @@ public class CalendarTest extends MongoTestContainer {
     public void testAddCalendar() throws Exception {
         User user1 = new User();
         user1.setUsername("user");
-        user1.setUserId("12");
         user1.setId("12");
         userDataController.deleteUser(user1.getId());
         userDataController.createUser(user1);

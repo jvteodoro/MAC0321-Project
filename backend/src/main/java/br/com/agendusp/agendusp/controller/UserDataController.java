@@ -90,7 +90,7 @@ public class UserDataController {
         public CalendarPerson getCalendarPerson(String userId) {
                 User user = findUser(userId);
                 CalendarPerson calPerson = new CalendarPerson();
-                calPerson.setId(user.getUserId());
+                calPerson.setId(user.getId());
                 calPerson.setEmail(user.getEmail());
                 calPerson.setDisplayName(user.getDisplayName());
                 return calPerson;

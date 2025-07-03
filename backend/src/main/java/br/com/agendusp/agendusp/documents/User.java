@@ -12,7 +12,6 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
 
     @Id
     private String id; // ID gerada pelo MongoDB
-    private String userId;
     private String DisplayName;
 
     private String googleId; // Guarda o 'sub' (estável) do Google
@@ -32,7 +31,6 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
     public User(String userId) { // Construtor para criar um usuário com um ID específico
         this.id = userId; // 
         this.googleId = null; // Google ID pode ser nulo se o usuário não se autenticou com o Google
-        this.userId = userId;
     }
 
     public User(String googleId, String email, String name) { // Construtor para criar um usuário com Google ID, email e
@@ -81,13 +79,6 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
         this.eventPoolList.add(eventPoolId);
     }
 
-    public void setUserId(String userId) {
-        if (userId == null || userId.isEmpty()) {
-            throw new IllegalArgumentException("User ID cannot be null or empty");
-        }
-        this.userId = userId;
-    }
-
     public void setName(String name) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty");
@@ -121,10 +112,6 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
 
     public String getId() {
         return this.id;
-    }
-
-    public String getUserId() {
-        return this.userId;
     }
 
     public void setId(String id) {
