@@ -45,25 +45,25 @@ public interface UserRepository extends MongoRepository<User, String> {
     void deleteCalendarListResourceById(String userId, String calendarId);
 
     @Query("{'calendarList.calendarId': ?0}")
-    @Update("{$pull : {'calendarList.calendarId' : ?0} ")
+    @Update("{ '$pull': { 'calendarList': { 'calendarId': ?0 } } }")    
     void refreshLinks(String calendarId);
 
     @Query("{'id': ?0}")
-    @Update("{$push : {'eventPoolNotification' : ?1}}")
+    @Update("{$push : {'eventPoolNotifications' : ?1}}")
     void addEventPoolNotification(String userId, EventPoll eventPool);
 
     @Query("{'id': ?0}")
     @Update("{$push : {'eventPoolList' : ?1}}")
-    void addEventPool(String userId, EventPoll eventPool);
+    void addEventPool(String userId, String eventPoolId);
 
     @Aggregation(pipeline = {
             "{ $match: { 'id': ?0 } }",
-            "{ $unwind: '$eventPoolNotification' }",
-            "{ $match: { 'eventPoolNotification.id': ?1 } }",
-            "{ $replaceRoot: { newRoot: '$eventPoolNotification' } }",
+            "{ $unwind: '$eventPoolNotifications' }",
+            "{ $match: { 'eventPoolNotifications.id': ?1 } }",
+            "{ $replaceRoot: { newRoot: '$eventPoolNotifications' } }",
             "{ $limit: 1 }"
     })
-    EventPoll findByEventPoolId(String userId, String eventPoolId);
+    Optional<EventPoll> findEventPoolNotificationByEventPoolId(String userId, String eventPoolId);
 
     @Query(value = "{ 'id' : ?0}", fields = "{'calendarList': 1}")
     ArrayList<CalendarListResource> getCalendarList(String userId);

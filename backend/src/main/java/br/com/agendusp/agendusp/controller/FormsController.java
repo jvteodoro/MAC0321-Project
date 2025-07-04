@@ -93,7 +93,7 @@ public class FormsController {
         System.out.println("[DEBUG] 4");
 
         String ownerId = eventPool.getOwnerId();
-        userRepository.addEventPool(ownerId, eventPool);
+        userRepository.addEventPool(ownerId, eventPool.getId());
         eventPoolRepository.insert(eventPool);
         try {
             System.out.println("CreatedPool: " + objectMapper.writeValueAsString(eventPool));

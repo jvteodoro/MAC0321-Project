@@ -2,6 +2,7 @@ package br.com.agendusp;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -21,7 +22,11 @@ import br.com.agendusp.agendusp.AgendUspApplication;
 import br.com.agendusp.agendusp.MongoTestContainer;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
@@ -47,6 +52,17 @@ public class UserRepositoryTest extends MongoTestContainer {
         }
         userRepository.insert(user);
         return user;
+    }
+
+    EventPoll createEventPoll(){
+        EventPoll evPool = new EventPoll();
+        EventsResource ev = new EventsResource();
+        ev.setId("testEvent");
+        Attendee at1 = new Attendee();
+        at1.setCalendarPerson(new CalendarPerson("attende1", "attende@email.com", "Attendee 1"));
+        ev.addAttendee(at1);
+        evPool.setEvent(ev);
+        return evPool;
     }
 
 
@@ -131,8 +147,21 @@ public class UserRepositoryTest extends MongoTestContainer {
         userRepository.deleteCalendarListResourceById(userId, calId);
         assertTrue(userRepository.findCalendarListResourceByIdAndCalendarId(userId, calId).isEmpty());
     }
+    @Test
+    @Order(5)
+    public void refreshLinksTest(){
+        String calId = "testId";
+        CalendarListResource calResource = new CalendarListResource();
+        calResource.setId(calId);
+        User user = setupFind();
+        String userId = user.getId();
+        userRepository.insertCalendarListResourceByUserId(userId, calResource);
+        userRepository.refreshLinks(calId);
+        assertTrue(userRepository.findCalendarListResourceByIdAndCalendarId(userId, calId).isEmpty());
+    }
 
     @Test
+    @Order(6)
     public void existsByUserIdAndCalendarIdTest() {
 
         String userId = "testUser";
@@ -145,6 +174,64 @@ public class UserRepositoryTest extends MongoTestContainer {
         assertTrue(userRepository.existsByUserIdAndCalendarId(userId, calendarId));
     }
 
+    @Test
+    @Order(7)
+    public void addEventPoolNotificationTest() throws Exception {
+        String eventId = "testEvent";
+        User user = setupFind();
+        String userId = user.getId();
+        EventPoll evPoll = new EventPoll();
+        evPoll.setId(eventId);
+        userRepository.addEventPoolNotification(userId, evPoll);
+        Optional<User> retrievedUser = userRepository.findById(userId);
+        if (retrievedUser.isPresent()){
+            EventPoll retrievedEvPoll = retrievedUser.get()
+                .getEventPoolNotifications()
+                .stream()
+                .filter(p -> p.getId().equals( evPoll.getId() )).findFirst().get();
+
+            assertEquals(
+                objectMapper.writeValueAsString(evPoll),
+                objectMapper.writeValueAsString(retrievedEvPoll)
+                );
+        }
+    }
+
+    @Test
+    @Order(8)
+    public void addEventPoolTest() throws Exception {
+        User user = setupFind();
+        EventPoll evPoll = createEventPoll();
+        String userId = user.getId();
+
+        userRepository.addEventPool(userId, evPoll.getId());
+        User recoveredUser = userRepository.findById(userId).orElseThrow(() -> new Exception("Erro ao adicionar o usuário"));
+        assertTrue(evPoll
+        .getId()
+        .equals(recoveredUser
+            .getEventPoolList()
+            .stream()
+            .filter(p -> p.equals(evPoll.getId())).findFirst().get()
+             ));
+        
+    }
+
+    @Test
+    @Order(9)
+    public void findEventPoolNotificationByEventPoolIdTest() throws Exception {
+        User user = setupFind();
+        EventPoll evPoll = createEventPoll();
+        String userId = user.getId();
+
+        userRepository.addEventPoolNotification(userId, evPoll);
+        
+        EventPoll recoveredEvPoll = userRepository
+        .findEventPoolNotificationByEventPoolId(userId, evPoll.getId())
+        .orElseThrow(() -> new Exception("Erro ao adicionar event pool notification"));
+
+        assertEquals(objectMapper.writeValueAsString(evPoll), 
+        objectMapper.writeValueAsString(recoveredEvPoll));
+    }
 
 
     @Test
