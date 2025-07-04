@@ -49,7 +49,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     void refreshLinks(String calendarId);
 
     @Query("{'id': ?0}")
-    @Update("{$push : {'eventPoolNotification' : ?1}}")
+    @Update("{$push : {'eventPoolNotifications' : ?1}}")
     void addEventPoolNotification(String userId, EventPoll eventPool);
 
     @Query("{'id': ?0}")

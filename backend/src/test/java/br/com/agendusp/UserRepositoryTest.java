@@ -2,6 +2,7 @@ package br.com.agendusp;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import br.com.agendusp.agendusp.AgendUspApplication;
 import br.com.agendusp.agendusp.MongoTestContainer;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
@@ -156,6 +158,29 @@ public class UserRepositoryTest extends MongoTestContainer {
         user.addCalendarListResource(calendarListResource);
         userRepository.insert(user);
         assertTrue(userRepository.existsByUserIdAndCalendarId(userId, calendarId));
+    }
+
+    @Test
+    @Order(7)
+    public void addEventPoolNotificationTest() throws Exception {
+        String eventId = "testEvent";
+        User user = setupFind();
+        String userId = user.getId();
+        EventPoll evPoll = new EventPoll();
+        evPoll.setId(eventId);
+        userRepository.addEventPoolNotification(userId, evPoll);
+        Optional<User> retrievedUser = userRepository.findById(userId);
+        if (retrievedUser.isPresent()){
+            EventPoll retrievedEvPoll = retrievedUser.get()
+                .getEventPoolNotifications()
+                .stream()
+                .filter(p -> p.getId().equals( evPoll.getId() )).findFirst().get();
+
+            assertEquals(
+                objectMapper.writeValueAsString(evPoll),
+                objectMapper.writeValueAsString(retrievedEvPoll)
+                );
+        }
     }
 
 
