@@ -17,15 +17,12 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
-    private ArrayList<String> eventPoolList;
-    private ArrayList<EventPoll> eventPoolNotifications;
-    private ArrayList<CalendarListResource> calendarList; // Índice 0 é o calendário principal do usuário
+    private ArrayList<String> eventPoolList = new ArrayList<>();
+    private ArrayList<EventPoll> eventPoolNotifications = new ArrayList<>(); 
+    private ArrayList<CalendarListResource> calendarList = new ArrayList<>(); // Índice 0 é o calendário principal do usuário
     private CalendarPerson calendarPerson;
 
     public User() {
-        eventPoolList = new ArrayList<>();
-        eventPoolNotifications = new ArrayList<>();
-        calendarList = new ArrayList<>();
     }
 
     public User(String userId) { // Construtor para criar um usuário com um ID específico

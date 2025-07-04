@@ -1,5 +1,6 @@
 package br.com.agendusp;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class UserRepositoryTest extends MongoTestContainer {
 
 
     @Test
+    @Order(1)
     @WithMockUser
     public void findByGoogleIdTest() throws Exception {
         User user = setupFind();
@@ -63,6 +65,7 @@ public class UserRepositoryTest extends MongoTestContainer {
 
     }  
     @Test
+    @Order(2)
     @WithMockUser
     public void findByUserIdTest() throws Exception {
         User user = setupFind();
@@ -77,6 +80,7 @@ public class UserRepositoryTest extends MongoTestContainer {
     }
 
     @Test
+    @Order(3)
     public void insertCalendarListResourceByUserIdTest() throws Exception{
         String calId = "testId";
         CalendarListResource calResource = new CalendarListResource();
@@ -95,21 +99,50 @@ public class UserRepositoryTest extends MongoTestContainer {
     }
 
     @Test
-    @Order(3)
-    public void testExistsByCalendarId() {
+    @Order(4)
+    public void findCalendarListResourceByIdAndCalendarIdTest() throws Exception{
+        String calId = "testId";
+        CalendarListResource calResource = new CalendarListResource();
+        calResource.setId(calId);
+        User user = setupFind();
+        String userId = user.getId();
+        userRepository.insertCalendarListResourceByUserId(userId, calResource);
+        user = userRepository.findById(user.getId()).orElseThrow(() -> new Exception("Error creating user"));
+        Optional<CalendarListResource> retrievedCalRes = userRepository.findCalendarListResourceByIdAndCalendarId(userId, calId);
+        if  (retrievedCalRes.isPresent()){
+            assertEquals(
+                objectMapper.writeValueAsString(calResource), 
+                objectMapper.writeValueAsString(retrievedCalRes));
+        } else {
+            throw new Exception("Error retrieving calendar list resource");
+        }
 
-        User user = new User("testuser2");
+    }
+
+    @Test
+    @Order(5)
+    public void deleteCalendarListResourceByIdTest(){
+        String calId = "testId";
+        CalendarListResource calResource = new CalendarListResource();
+        calResource.setId(calId);
+        User user = setupFind();
+        String userId = user.getId();
+        userRepository.insertCalendarListResourceByUserId(userId, calResource);
+        userRepository.deleteCalendarListResourceById(userId, calId);
+        assertTrue(userRepository.findCalendarListResourceByIdAndCalendarId(userId, calId).isEmpty());
+    }
+
+    @Test
+    public void existsByUserIdAndCalendarIdTest() {
+
+        String userId = "testUser";
+        String calendarId = "test-calendar-id";
+        User user = new User(userId);
         CalendarListResource calendarListResource = new CalendarListResource();
-        calendarListResource.setCalendarId("test-calendar-id");
+        calendarListResource.setCalendarId(calendarId);
         user.addCalendarListResource(calendarListResource);
         userRepository.insert(user);
-        User user2 = userRepository.findByUserId("testuser2").orElseThrow(() -> new RuntimeException("User not found"));
-        User user1 = userRepository.findByUserId("testuser").orElseThrow(() -> new RuntimeException("User not found"));
-        System.err.println(gson.toJson(user1));
-        System.err.println(gson.toJson(user2));
-
-        boolean exists = userRepository.existsByUserIdAndCalendarId("testuser2", "test-calendar-id");
-        assertEquals(true, exists);
+        assertTrue(userRepository.existsByUserIdAndCalendarId(userId, calendarId));
     }
 
 
