@@ -27,7 +27,11 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
   };
 
   const relatorioGerado = (firstDay, lastDay) => {
-    }
+    navigate("relatorioIA", {
+      replace: true,
+      state: { calendarId: calendarId, firstDay: firstDay, lastDay: lastDay },
+    });
+  }
 
   const goToCreateMenu = (clickDayInfo) => {
     navigate("evento/criar", {
