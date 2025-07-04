@@ -9,6 +9,7 @@ import br.com.agendusp.agendusp.AgendUspApplication;
 import br.com.agendusp.agendusp.MongoTestContainer;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventPollDataController;
+import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
@@ -16,10 +17,12 @@ import br.com.agendusp.agendusp.documents.User;
 @SpringBootTest(classes = AgendUspApplication.class)
 @AutoConfigureMockMvc
 public class EventPollDataControllerTest extends MongoTestContainer {
-    // @Autowired
-    // EventPollDataController eventPollDataController;
+    @Autowired
+    EventPollDataController eventPollDataController;
     @Autowired
     UserDataController userDataController;
+    @Autowired
+    EventsDataController eventsDataController;
 
     String userId = "user1";
     String atendee1Id = "at1";
@@ -45,14 +48,16 @@ public class EventPollDataControllerTest extends MongoTestContainer {
         userDataController.createUser(atendee2);
         userDataController.createUser(atendee3);
 
+        eventsDataController.addEvent(event);
+
     }
 
     @Test
     public void createTest(){
-        //setupDatabase();
-        //  String startDate = "2025-07-01T20:00:0000Z";
-        //  String endDate = "2025-07-20T20:00:0000Z";
-        // eventPollDataController.create(eventId, startDate, endDate);
+        setupDatabase();
+         String startDate = "2025-07-01T20:00:0000Z";
+         String endDate = "2025-07-20T20:00:0000Z";
+        eventPollDataController.create(eventId, startDate, endDate);
 
         
     }

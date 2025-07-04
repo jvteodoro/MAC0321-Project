@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import br.com.agendusp.agendusp.dataobjects.PollNotification;
 import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
-import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
-import br.com.agendusp.agendusp.events.EventPollNotification;
 
 @Document(collection = "users")
 public class User { // objetos dessa classe serão salvos na coleção users do MongoDB
@@ -19,7 +18,7 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
     private String email;
     private String name;
     private ArrayList<String> eventPoolList = new ArrayList<>();
-    private ArrayList<EventPollNotification> eventPoolNotifications = new ArrayList<>(); 
+    private ArrayList<PollNotification> eventPoolNotifications = new ArrayList<>(); 
     private ArrayList<CalendarListResource> calendarList = new ArrayList<>(); // Índice 0 é o calendário principal do usuário
     private CalendarPerson calendarPerson;
 
@@ -88,15 +87,15 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
         this.calendarList = calendarList;
     }
 
-    public ArrayList<EventPollNotification> getEventPoolNotifications() {
+    public ArrayList<PollNotification> getEventPoolNotifications() {
         return eventPoolNotifications;
     }
 
-    public void addEventPoolNotifications(EventPollNotification eventPoolNotification) {
+    public void addEventPoolNotifications(PollNotification eventPoolNotification) {
         this.eventPoolNotifications.add(eventPoolNotification);
     }
 
-    public void setEventPoolNotifications(ArrayList<EventPollNotification> eventPoolNotifications) {
+    public void setEventPoolNotifications(ArrayList<PollNotification> eventPoolNotifications) {
         this.eventPoolNotifications = eventPoolNotifications;
     }
 

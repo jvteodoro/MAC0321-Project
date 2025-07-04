@@ -14,6 +14,7 @@ import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventPollDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
+import br.com.agendusp.agendusp.dataobjects.PollNotification;
 import br.com.agendusp.agendusp.dataobjects.aiObjects.AIRequest;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
@@ -52,7 +53,7 @@ public class PromptBuilder {
         List<EventsResource> commitments = getEventsForDateRange(user.getId(), calendars, calendarId, startDate, startDate.plusDays(7));
         List<EventsResource> cancelledEvents = commitments.stream().filter(e -> "cancelled".equals(e.getStatus())).collect(Collectors.toList());
         List<EventPoll> createdPolls = eventPoolDataController.getAllEventPools(user.getEventPoolList());
-        List<EventPollNotification> answeredPolls = user.getEventPoolNotifications();
+        List<PollNotification> answeredPolls = user.getEventPoolNotifications();
 
         String prompt = promptService.getPromptParaInformeSemana(user, calendars, commitments, cancelledEvents, createdPolls, answeredPolls, startDate);
 
@@ -70,7 +71,8 @@ public class PromptBuilder {
         List<EventsResource> commitments = getEventsForDateRange(user.getId(), calendars, calendarId, startDate, startDate.plusDays(1));
         List<EventsResource> cancelledEvents = commitments.stream().filter(e -> "cancelled".equals(e.getStatus())).collect(Collectors.toList());
         List<EventPoll> createdPolls = eventPoolDataController.getAllEventPools(user.getEventPoolList());
-        List<EventPollNotification> answeredPolls = user.getEventPoolNotifications();
+        List<PollNotification> answeredPolls = user.getEventPoolNotifications();
+
 
         String prompt = promptService.getPromptParaInformeDia(user, calendars, commitments, cancelledEvents, createdPolls, answeredPolls, startDate);
 

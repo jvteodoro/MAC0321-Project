@@ -4,6 +4,7 @@ import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.events.EventPollNotification;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.dataobjects.PollNotification;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class PromptServiceImpl implements PromptService {
     @Override
     public String getPromptParaInformeSemana(User user, List<CalendarListResource> calendars, List<EventsResource> commitments,
                                     List<EventsResource> cancelledEvents, List<EventPoll> createdPolls,
-                                    List<EventPollNotification> answeredPolls, LocalDateTime startDate) {
+                                    List<PollNotification> answeredPolls, LocalDateTime startDate) {
         StringBuilder prompt = new StringBuilder();
 
         prompt.append("Você é uma inteligência artificial que gera relatórios de compromissos semanais.\n");
@@ -38,7 +39,7 @@ public class PromptServiceImpl implements PromptService {
     @Override
     public String getPromptParaInformeDia(User user, List<CalendarListResource> calendars, List<EventsResource> commitments,
                                    List<EventsResource> cancelledEvents, List<EventPoll> createdPolls,
-                                   List<EventPollNotification> answeredPolls, LocalDateTime startDate) {
+                                   List<PollNotification> answeredPolls, LocalDateTime startDate) {
         StringBuilder prompt = new StringBuilder();
 
         prompt.append("Você é uma inteligência artificial que gera relatórios de compromissos diários.\n");
@@ -67,7 +68,7 @@ public class PromptServiceImpl implements PromptService {
         }
     }
 
-    private void appendPolls(StringBuilder prompt, List<EventPoll> createdPolls, List<EventPollNotification> answeredPolls) {
+    private void appendPolls(StringBuilder prompt, List<EventPoll> createdPolls, List<PollNotification> answeredPolls) {
         prompt.append("\nEnquetes criadas pelo usuário:\n");
         if (createdPolls == null || createdPolls.isEmpty()) {
             prompt.append("Não há enquetes criadas pelo usuário.\n");

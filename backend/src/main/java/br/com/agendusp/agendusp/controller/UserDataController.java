@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestClient;
 
+import br.com.agendusp.agendusp.dataobjects.PollNotification;
 import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
@@ -140,7 +141,7 @@ public class UserDataController {
                 }
         }
 
-        public void addEventPollNotification(String userId, EventPollNotification evPoll){
+        public void addEventPollNotification(String userId, PollNotification evPoll){
                 User user = findUser(userId);
                 user.addEventPoolNotifications(evPoll);
                 userRepository.save(user);

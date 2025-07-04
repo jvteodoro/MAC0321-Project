@@ -22,6 +22,7 @@ import br.com.agendusp.agendusp.AgendUspApplication;
 import br.com.agendusp.agendusp.MongoTestContainer;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
+import br.com.agendusp.agendusp.dataobjects.PollNotification;
 import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
@@ -193,7 +194,7 @@ public class UserRepositoryTest extends MongoTestContainer {
         userRepository.addEventPoolNotification(userId, evPoll);
         Optional<User> retrievedUser = userRepository.findById(userId);
         if (retrievedUser.isPresent()){
-            EventPollNotification retrievedEvPoll = retrievedUser.get()
+            PollNotification retrievedEvPoll = retrievedUser.get()
                 .getEventPoolNotifications()
                 .stream()
                 .filter(p -> p.getId().equals( evPoll.getId() )).findFirst().get();
