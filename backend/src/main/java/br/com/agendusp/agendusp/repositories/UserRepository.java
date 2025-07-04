@@ -45,7 +45,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     void deleteCalendarListResourceById(String userId, String calendarId);
 
     @Query("{'calendarList.calendarId': ?0}")
-    @Update("{$pull : {'calendarList.calendarId' : ?0} ")
+    @Update("{ '$pull': { 'calendarList': { 'calendarId': ?0 } } }")    
     void refreshLinks(String calendarId);
 
     @Query("{'id': ?0}")

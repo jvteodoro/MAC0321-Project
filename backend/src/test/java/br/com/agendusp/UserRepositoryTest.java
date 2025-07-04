@@ -131,8 +131,21 @@ public class UserRepositoryTest extends MongoTestContainer {
         userRepository.deleteCalendarListResourceById(userId, calId);
         assertTrue(userRepository.findCalendarListResourceByIdAndCalendarId(userId, calId).isEmpty());
     }
+    @Test
+    @Order(5)
+    public void refreshLinksTest(){
+        String calId = "testId";
+        CalendarListResource calResource = new CalendarListResource();
+        calResource.setId(calId);
+        User user = setupFind();
+        String userId = user.getId();
+        userRepository.insertCalendarListResourceByUserId(userId, calResource);
+        userRepository.refreshLinks(calId);
+        assertTrue(userRepository.findCalendarListResourceByIdAndCalendarId(userId, calId).isEmpty());
+    }
 
     @Test
+    @Order(6)
     public void existsByUserIdAndCalendarIdTest() {
 
         String userId = "testUser";
