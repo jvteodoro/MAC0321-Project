@@ -22,8 +22,11 @@ import br.com.agendusp.agendusp.AgendUspApplication;
 import br.com.agendusp.agendusp.MongoTestContainer;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
+import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
@@ -49,6 +52,17 @@ public class UserRepositoryTest extends MongoTestContainer {
         }
         userRepository.insert(user);
         return user;
+    }
+
+    EventPoll createEventPoll(){
+        EventPoll evPool = new EventPoll();
+        EventsResource ev = new EventsResource();
+        ev.setId("testEvent");
+        Attendee at1 = new Attendee();
+        at1.setCalendarPerson(new CalendarPerson("attende1", "attende@email.com", "Attendee 1"));
+        ev.addAttendee(at1);
+        evPool.setEvent(ev);
+        return evPool;
     }
 
 
@@ -183,6 +197,24 @@ public class UserRepositoryTest extends MongoTestContainer {
         }
     }
 
+    @Test
+    @Order(8)
+    public void addEventPoolTest() throws Exception {
+        User user = setupFind();
+        EventPoll evPoll = createEventPoll();
+        String userId = user.getId();
+
+        userRepository.addEventPool(userId, evPoll.getId());
+        User recoveredUser = userRepository.findById(userId).orElseThrow(() -> new Exception("Erro ao adicionar o usuário"));
+        assertTrue(evPoll
+        .getId()
+        .equals(recoveredUser
+            .getEventPoolList()
+            .stream()
+            .filter(p -> p.equals(evPoll.getId())).findFirst().get()
+             ));
+        
+    }
 
 
     @Test

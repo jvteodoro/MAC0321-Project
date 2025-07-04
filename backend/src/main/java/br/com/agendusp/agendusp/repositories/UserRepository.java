@@ -54,7 +54,7 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     @Query("{'id': ?0}")
     @Update("{$push : {'eventPoolList' : ?1}}")
-    void addEventPool(String userId, EventPoll eventPool);
+    void addEventPool(String userId, String eventPoolId);
 
     @Aggregation(pipeline = {
             "{ $match: { 'id': ?0 } }",
