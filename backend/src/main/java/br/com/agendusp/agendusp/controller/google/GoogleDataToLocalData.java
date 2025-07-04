@@ -50,7 +50,6 @@ public class GoogleDataToLocalData {
         user.setEmail(inf.getEmail());
         user.setGoogleId(inf.getId());
         user.setId(inf.getId());
-        user.setUserId(inf.getId());
         user.setUsername(inf.getName());
         userDataController.findUserOrCreate(user);
         User addedUser = userDataController.findUserByName(user.getName());

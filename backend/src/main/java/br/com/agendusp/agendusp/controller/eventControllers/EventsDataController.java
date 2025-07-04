@@ -61,6 +61,10 @@ public class EventsDataController {
         if (eventResource.getId() == null || eventResource.getId().isEmpty()) {
             eventResource.setId(generateRandomId(26));
         }
+        // Caso onde o evento já existe
+        if (getEventById(eventResource.getId()) != null){
+            return eventResource;
+        }
         User user = userDataController.findUser(userId);
 
         CalendarListResource calResource = userDataController.findCalendarListResource(userId, calendarId);
@@ -197,7 +201,9 @@ public class EventsDataController {
         ArrayList<Attendee> attendees = event.getAttendees();
         for (Attendee attendee : attendees) {
             if (attendee.getCalendarPerson().getId().equals(atendeeUserId)) {
-                throw new IllegalArgumentException("Pessoa já está convidada para este evento.");
+                // Caso o usuário já esteja convidade, não precisamos de fazer nada
+                return event;
+                // throw new IllegalArgumentException("Pessoa já está convidada para este evento.");
             }
         }
 
@@ -221,7 +227,7 @@ public class EventsDataController {
         }
         Optional<EventsResource> evRoptional = eventsRepository.findById(eventId);
         if (evRoptional.isEmpty()) {
-            return new EventsResource();
+            return null;
         }
         return evRoptional.get();
     }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.agendusp.agendusp.controller.eventControllers.EventPollDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPoll;
@@ -30,6 +31,7 @@ import br.com.agendusp.agendusp.repositories.UserRepository;
 
 @RestController
 public class FormsController {
+
     @Autowired
     EventsDataController eventsDataController;
     @Autowired
@@ -40,12 +42,14 @@ public class FormsController {
     SimpMessagingTemplate msgTemplate;
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    EventPollDataController eventPoolDataController;
 
     @MessageMapping("/pool/send/{eventPoolId}")
     public void sendPool(@PathVariable String eventPoolId) {
         Optional<EventPoll> eventPoolOptional = eventPoolRepository.findById(eventPoolId);
         if (eventPoolOptional.isPresent()) {
-            EventPoll eventPool = eventPoolRepository.save(eventPoolOptional.get());
+            EventPoll eventPool = eventPoolOptional.get();
             String destination = "/notify/pool/" + eventPoolId;
             msgTemplate.convertAndSend(destination, eventPool);
         }
@@ -67,39 +71,10 @@ public class FormsController {
 
     @GetMapping("/pool/create")
     public EventPoll createPool(@RequestParam String eventId, @RequestParam String startDate,
-            @RequestParam String endDate,
-            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
-        EventsResource event = eventsDataController.getEventById(eventId);
-        EventPoll eventPool = new EventPoll(event);
+        @RequestParam String endDate,
+        @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
 
-        System.out.println("[DEBUG] 1");
-
-        DateTimeInterval dateTimeInterval = new DateTimeInterval();
-        dateTimeInterval.setStart(LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME));
-        dateTimeInterval.setEnd(LocalDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME));
-
-        System.out.println("[DEBUG] 2");
-        ArrayList<DateTimeInterval> initialFreeTime = new ArrayList<>();
-        initialFreeTime.add(dateTimeInterval);
-
-        // Pegar todos os eventos no intervalo
-        ArrayList<EventsResource> allEvents = eventsDataController.getEventsOnInterval(dateTimeInterval);
-        System.out.println("[DEBUG] 3");
-        for (EventsResource ev : allEvents) {
-            initialFreeTime = ev.freeTime(initialFreeTime);
-            System.out.println("[DEBUG] A");
-        }
-        eventPool.setPossibleTimesFromDateTimeIntervalList(initialFreeTime);
-        System.out.println("[DEBUG] 4");
-
-        String ownerId = eventPool.getOwnerId();
-        userRepository.addEventPool(ownerId, eventPool.getId());
-        eventPoolRepository.insert(eventPool);
-        try {
-            System.out.println("CreatedPool: " + objectMapper.writeValueAsString(eventPool));
-        } catch (Exception w) {
-        }
-        return eventPool;
+        return eventPoolDataController.create(eventId, startDate, endDate);
     }
 
     @PostMapping("/pool/vote")

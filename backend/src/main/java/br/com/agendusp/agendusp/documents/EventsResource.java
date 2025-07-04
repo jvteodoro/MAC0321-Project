@@ -403,6 +403,15 @@ public class EventsResource { // objetos dessa classe serão salvos na coleção
         this.attendees.add(attendee);
     }
 
+     public void addAttendee(User user) {
+        if (this.attendees == null) {
+            this.attendees = new ArrayList<>();
+        }
+        Attendee atendee = new Attendee();
+        atendee.setCalendarPerson(user.getAsCalendarPerson());
+        this.attendees.add(atendee);
+    }
+
     public void removeAttendee(Attendee attendee) {
         this.attendees.remove(attendee);
     }

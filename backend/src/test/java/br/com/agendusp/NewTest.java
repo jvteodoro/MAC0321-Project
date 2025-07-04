@@ -156,8 +156,8 @@ public class NewTest extends MongoTestContainer {
             System.out.println(user.get().getName());
         }
 
-        userRepository.insertCalendarListResourceByUserId(user1.getUserId(), calItem);
-        userRepository.insertCalendarListResourceByUserId(user1.getUserId(), calItem2);
+        userRepository.insertCalendarListResourceByUserId(user1.getId(), calItem);
+        userRepository.insertCalendarListResourceByUserId(user1.getId(), calItem2);
         Optional<User> newUser = userRepository.findById(user1.getId());
         if (!newUser.isEmpty()) {
             String str = objectMapper.writeValueAsString(newUser);
@@ -165,7 +165,7 @@ public class NewTest extends MongoTestContainer {
         }
 
         Optional<CalendarListResource> findedCalItem = userRepository
-                .findCalendarListResourceByIdAndCalendarId(user1.getUserId(), calItem.getCalendarId());
+                .findCalendarListResourceByIdAndCalendarId(user1.getId(), calItem.getCalendarId());
         if (!findedCalItem.isEmpty()) {
             System.out.println(objectMapper.writeValueAsString(findedCalItem));
         }
@@ -289,7 +289,7 @@ public class NewTest extends MongoTestContainer {
         User fetchedUser = userDataController.findUser(userId);
         System.out.println("User: " + objectMapper.writeValueAsString(fetchedUser));
 
-        Optional<CalendarListResource> resp = userRepository.findCalendarListResourceByIdAndCalendarId(user.getUserId(),
+        Optional<CalendarListResource> resp = userRepository.findCalendarListResourceByIdAndCalendarId(user.getId(),
                 calR1.getCalendarId());
         if (resp.isEmpty()) {
             System.out.println("Resposta vazia");

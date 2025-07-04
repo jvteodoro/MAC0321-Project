@@ -21,6 +21,11 @@ public class HomeController {
     @Autowired
     EventsDataController eventsDataController;
 
+    @GetMapping("/test")
+    public String test(){
+        return "Working!";
+    }
+
     @GetMapping("/stats")
     public String generateStats(
             @RequestParam("start") LocalDateTime start,

@@ -12,13 +12,13 @@ import org.springframework.web.client.RestClient;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
-import br.com.agendusp.agendusp.controller.eventControllers.EventPoolDataController;
+import br.com.agendusp.agendusp.controller.eventControllers.EventPollDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.dataobjects.aiObjects.AIRequest;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
-
+import br.com.agendusp.agendusp.events.EventPollNotification;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -37,7 +37,7 @@ public class PromptBuilder {
     @Autowired
     private EventsDataController eventsDataController;
     @Autowired
-    private EventPoolDataController eventPoolDataController;
+    private EventPollDataController eventPoolDataController;
     @Autowired
     private RestClient restClient;
 
@@ -52,7 +52,7 @@ public class PromptBuilder {
         List<EventsResource> commitments = getEventsForDateRange(user.getId(), calendars, calendarId, startDate, startDate.plusDays(7));
         List<EventsResource> cancelledEvents = commitments.stream().filter(e -> "cancelled".equals(e.getStatus())).collect(Collectors.toList());
         List<EventPoll> createdPolls = eventPoolDataController.getAllEventPools(user.getEventPoolList());
-        List<EventPoll> answeredPolls = user.getEventPoolNotifications();
+        List<EventPollNotification> answeredPolls = user.getEventPoolNotifications();
 
         String prompt = promptService.getPromptParaInformeSemana(user, calendars, commitments, cancelledEvents, createdPolls, answeredPolls, startDate);
 
@@ -70,7 +70,7 @@ public class PromptBuilder {
         List<EventsResource> commitments = getEventsForDateRange(user.getId(), calendars, calendarId, startDate, startDate.plusDays(1));
         List<EventsResource> cancelledEvents = commitments.stream().filter(e -> "cancelled".equals(e.getStatus())).collect(Collectors.toList());
         List<EventPoll> createdPolls = eventPoolDataController.getAllEventPools(user.getEventPoolList());
-        List<EventPoll> answeredPolls = user.getEventPoolNotifications();
+        List<EventPollNotification> answeredPolls = user.getEventPoolNotifications();
 
         String prompt = promptService.getPromptParaInformeDia(user, calendars, commitments, cancelledEvents, createdPolls, answeredPolls, startDate);
 

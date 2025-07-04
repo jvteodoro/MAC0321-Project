@@ -28,6 +28,7 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
+import br.com.agendusp.agendusp.events.EventPollNotification;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
@@ -192,7 +193,7 @@ public class UserRepositoryTest extends MongoTestContainer {
         userRepository.addEventPoolNotification(userId, evPoll);
         Optional<User> retrievedUser = userRepository.findById(userId);
         if (retrievedUser.isPresent()){
-            EventPoll retrievedEvPoll = retrievedUser.get()
+            EventPollNotification retrievedEvPoll = retrievedUser.get()
                 .getEventPoolNotifications()
                 .stream()
                 .filter(p -> p.getId().equals( evPoll.getId() )).findFirst().get();
