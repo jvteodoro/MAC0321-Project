@@ -50,7 +50,7 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
         if (this.calendarPerson == null){
             this.calendarPerson = new CalendarPerson();
         }
-        this.calendarPerson.setId(this.id);
+        this.calendarPerson.setId(this.googleId);
         this.calendarPerson.setEmail(this.email);
         this.calendarPerson.setDisplayName(name);
     }
