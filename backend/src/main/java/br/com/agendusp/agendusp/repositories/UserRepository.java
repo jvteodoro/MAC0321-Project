@@ -58,12 +58,12 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     @Aggregation(pipeline = {
             "{ $match: { 'id': ?0 } }",
-            "{ $unwind: '$eventPoolNotification' }",
-            "{ $match: { 'eventPoolNotification.id': ?1 } }",
-            "{ $replaceRoot: { newRoot: '$eventPoolNotification' } }",
+            "{ $unwind: '$eventPoolNotifications' }",
+            "{ $match: { 'eventPoolNotifications.id': ?1 } }",
+            "{ $replaceRoot: { newRoot: '$eventPoolNotifications' } }",
             "{ $limit: 1 }"
     })
-    EventPoll findByEventPoolId(String userId, String eventPoolId);
+    Optional<EventPoll> findEventPoolNotificationByEventPoolId(String userId, String eventPoolId);
 
     @Query(value = "{ 'id' : ?0}", fields = "{'calendarList': 1}")
     ArrayList<CalendarListResource> getCalendarList(String userId);

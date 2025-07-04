@@ -216,6 +216,23 @@ public class UserRepositoryTest extends MongoTestContainer {
         
     }
 
+    @Test
+    @Order(9)
+    public void findEventPoolNotificationByEventPoolIdTest() throws Exception {
+        User user = setupFind();
+        EventPoll evPoll = createEventPoll();
+        String userId = user.getId();
+
+        userRepository.addEventPoolNotification(userId, evPoll);
+        
+        EventPoll recoveredEvPoll = userRepository
+        .findEventPoolNotificationByEventPoolId(userId, evPoll.getId())
+        .orElseThrow(() -> new Exception("Erro ao adicionar event pool notification"));
+
+        assertEquals(objectMapper.writeValueAsString(evPoll), 
+        objectMapper.writeValueAsString(recoveredEvPoll));
+    }
+
 
     @Test
     @WithMockUser
