@@ -14,13 +14,14 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.events.EventPollNotification;
 
 @Component
-public class InvitePollListener {
+public class InvitePollListener implements ApplicationListener<EventPollNotification> {
     @Autowired
     UserDataController userDataController;
     @Autowired
     EventPollDataController eventPoolDataController;
 
-    public void onApplicationEvent(EventPollNotification event){
+    @Override
+    public void onApplicationEvent(EventPollNotification event) {
         EventPoll evPoll = eventPoolDataController.getById(event.getEventPollId());
         ArrayList<Attendee> attendees = evPoll.getAttendees();
         PollNotification notification = new PollNotification(event);
