@@ -1,7 +1,6 @@
 /* Container principal */
 .visualization-container.ai-response {
-  background: #f8fafc;
-  border: 1px solid #d1d5db;
+  height: 100%;
   border-radius: 10px;
   padding: 24px 32px;
   margin: 20px auto;
@@ -56,12 +55,4 @@
 .timestamp small {
   color: #64748b;
   font-style: italic;
-}
-
-/* Responsividade */
-@media (max-width: 700px) {
-  .visualization-container.ai-response {
-    padding: 14px 8px;
-    max-width: 98vw;
-  }
 }
