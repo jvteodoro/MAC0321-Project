@@ -64,7 +64,9 @@ public interface UserRepository extends MongoRepository<User, String> {
             "{ $limit: 1 }"
     })
     Optional<EventPoll> findEventPoolNotificationByEventPoolId(String userId, String eventPoolId);
-
+    
+    // Essa função não pode retornar apenas um arrya. O mongo requer
+    // que seja retornado o document todo
     @Query(value = "{ 'id' : ?0}", fields = "{'calendarList': 1}")
     ArrayList<CalendarListResource> getCalendarList(String userId);
 

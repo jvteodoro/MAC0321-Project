@@ -65,6 +65,13 @@ public class UserRepositoryTest extends MongoTestContainer {
         return evPool;
     }
 
+    public CalendarListResource createDummyCalListRes(String id){
+        CalendarListResource calRes = new CalendarListResource();
+        calRes.setId(id);
+        calRes.setCalendarId(id);
+        return calRes;
+    }
+
 
     @Test
     @Order(1)
@@ -224,7 +231,7 @@ public class UserRepositoryTest extends MongoTestContainer {
         String userId = user.getId();
 
         userRepository.addEventPoolNotification(userId, evPoll);
-        
+
         EventPoll recoveredEvPoll = userRepository
         .findEventPoolNotificationByEventPoolId(userId, evPoll.getId())
         .orElseThrow(() -> new Exception("Erro ao adicionar event pool notification"));
@@ -233,37 +240,30 @@ public class UserRepositoryTest extends MongoTestContainer {
         objectMapper.writeValueAsString(recoveredEvPoll));
     }
 
+    // @Test
+    // @Order (9)
+    // public void getCalendarListTest() throws Exception {
+    //     User user = setupFind();
+    //     String userId = user.getId();
+    //     String calRes1Id = "testCalRes1";
+    //     String calRes2Id = "testCalRes2";
+    //     String calRes3Id = "testCalRes3";
+    //     String calRes4Id = "testCalRes4";
+    //     CalendarListResource calRes1 = createDummyCalListRes(calRes1Id);
+    //     CalendarListResource calRes2 = createDummyCalListRes(calRes2Id);
+    //     CalendarListResource calRes3 = createDummyCalListRes(calRes3Id);
+    //     CalendarListResource calRes4 = createDummyCalListRes(calRes4Id);
 
-    @Test
-    @WithMockUser
-    public void test() throws Exception {
-        System.out.println("Teste");
-        String userId = "teste@gmail.com";
-        User user = new User();
-        user.setId(userId);
-        ArrayList<CalendarListResource> calendarList = new ArrayList<>();
+    //     userRepository.addCalendarListResource(userId, calRes1);
+    //     userRepository.addCalendarListResource(userId, calRes2);
+    //     userRepository.addCalendarListResource(userId, calRes3);
+    //     userRepository.addCalendarListResource(userId, calRes4);
 
-        CalendarListResource calR1 = new CalendarListResource();
-        CalendarListResource calR2 = new CalendarListResource();
-        calR1.setId("calR1");
-        calR1.setCalendarId("calR1");
-        calR2.setId("calR2");
-        calR2.setCalendarId("calR2");
+    //     ArrayList<CalendarListResource> expected = userRepository.findById(userId)
+    //     .orElseThrow(() -> new Exception("Erro ao adicionar o usuário")).getCalendarList();
 
-        calendarList.add(calR1);
-        calendarList.add(calR2);
-
-        user.setCalendarList(calendarList);
-        userDataController.createUser(user);
-
-        System.out.println("USer: " + objectMapper.writeValueAsString(userDataController.findUser(userId)));
-
-        Optional<CalendarListResource> resp = userRepository.findCalendarListResourceByIdAndCalendarId(user.getId(),
-                calR1.getCalendarId());
-        if (resp.isEmpty()) {
-            System.out.println("Resposta vazia");
-        } else {
-            System.out.println(objectMapper.writeValueAsString(resp.get()));
-        }
-    }
+    //     ArrayList<CalendarListResource> retrieved = userRepository.getCalendarList(userId);
+    //     assertEquals(objectMapper.writeValueAsString(expected),
+    //     objectMapper.writeValueAsString(retrieved));
+    // }
 }
