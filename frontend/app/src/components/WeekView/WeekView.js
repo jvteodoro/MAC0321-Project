@@ -26,7 +26,7 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
     ).toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
   };
 
-  const relatorioGerado = (firstDay, lastDay) => {
+  const relatorioGerado = (firstDay, lastDay) => { 
     navigate("relatorioIA", {
       replace: true,
       state: { calendarId: calendarId, firstDay: firstDay, lastDay: lastDay },
