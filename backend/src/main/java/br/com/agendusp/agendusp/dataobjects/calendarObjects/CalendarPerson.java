@@ -19,9 +19,9 @@ public class CalendarPerson {
     }
 
     public void setId(String id) {
-        if (id == null || id.isEmpty()) {
-            throw new IllegalArgumentException("ID não pode ser nulo ou vazio.");
-        }
+        // if (id == null || id.isEmpty()) {
+        //     throw new IllegalArgumentException("ID não pode ser nulo ou vazio.");
+        // }
         this.id = id;
     }
 
@@ -41,9 +41,9 @@ public class CalendarPerson {
     }
 
     public void setDisplayName(String displayName) {
-        if (displayName == null || displayName.isEmpty()) {
-            throw new IllegalArgumentException("DisplayName não pode ser nulo ou vazio.");
-        }
+        // if (displayName == null || displayName.isEmpty()) {
+        //     throw new IllegalArgumentException("DisplayName não pode ser nulo ou vazio.");
+        // }
         this.displayName = displayName;
     }
 }
