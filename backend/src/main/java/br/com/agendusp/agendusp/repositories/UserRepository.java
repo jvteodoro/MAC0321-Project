@@ -49,21 +49,21 @@ public interface UserRepository extends MongoRepository<User, String> {
     void refreshLinks(String calendarId);
 
     @Query("{'id': ?0}")
-    @Update("{$push : {'eventPoolNotifications' : ?1}}")
-    void addEventPoolNotification(String userId, EventPoll eventPool);
+    @Update("{$push : {'eventPollNotifications' : ?1}}")
+    void addEventPollNotification(String userId, EventPoll eventPoll);
 
     @Query("{'id': ?0}")
-    @Update("{$push : {'eventPoolList' : ?1}}")
-    void addEventPool(String userId, String eventPoolId);
+    @Update("{$push : {'eventPollList' : ?1}}")
+    void addEventPoll(String userId, String eventPollId);
 
     @Aggregation(pipeline = {
             "{ $match: { 'id': ?0 } }",
-            "{ $unwind: '$eventPoolNotifications' }",
-            "{ $match: { 'eventPoolNotifications.id': ?1 } }",
-            "{ $replaceRoot: { newRoot: '$eventPoolNotifications' } }",
+            "{ $unwind: '$eventPollNotifications' }",
+            "{ $match: { 'eventPollNotifications.id': ?1 } }",
+            "{ $replaceRoot: { newRoot: '$eventPollNotifications' } }",
             "{ $limit: 1 }"
     })
-    Optional<EventPoll> findEventPoolNotificationByEventPoolId(String userId, String eventPoolId);
+    Optional<EventPoll> findEventPollNotificationByEventPollId(String userId, String eventPollId);
     
     // Essa função não pode retornar apenas um arrya. O mongo requer
     // que seja retornado o document todo

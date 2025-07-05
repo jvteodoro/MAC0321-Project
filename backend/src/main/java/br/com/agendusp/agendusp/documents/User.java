@@ -17,8 +17,8 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
-    private ArrayList<String> eventPoolList = new ArrayList<>();
-    private ArrayList<PollNotification> eventPoolNotifications = new ArrayList<>(); 
+    private ArrayList<String> eventPollList = new ArrayList<>();
+    private ArrayList<PollNotification> eventPollNotifications = new ArrayList<>(); 
     private ArrayList<CalendarListResource> calendarList = new ArrayList<>(); // Índice 0 é o calendário principal do usuário
     private CalendarPerson calendarPerson;
 
@@ -55,25 +55,25 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
         this.calendarPerson.setDisplayName(name);
     }
 
-    public ArrayList<String> getEventPoolList() {
-        if (this.eventPoolList == null) {
-            this.eventPoolList = new ArrayList<>();
+    public ArrayList<String> getEventPollList() {
+        if (this.eventPollList == null) {
+            this.eventPollList = new ArrayList<>();
         }
-        return eventPoolList;
+        return eventPollList;
     }
 
-    public void setEventPoolList(ArrayList<String> eventPoolList) {
-        if (eventPoolList == null) {
-            eventPoolList = new ArrayList<>();
+    public void setEventPollList(ArrayList<String> eventPollList) {
+        if (eventPollList == null) {
+            eventPollList = new ArrayList<>();
         }
-        this.eventPoolList = eventPoolList;
+        this.eventPollList = eventPollList;
     }
 
-    public void addEventPool(String eventPoolId) {
-        if (this.eventPoolList == null) {
-            this.eventPoolList = new ArrayList<>();
+    public void addEventPoll(String eventPollId) {
+        if (this.eventPollList == null) {
+            this.eventPollList = new ArrayList<>();
         }
-        this.eventPoolList.add(eventPoolId);
+        this.eventPollList.add(eventPollId);
     }
 
     public void setName(String name) {
@@ -87,16 +87,16 @@ public class User { // objetos dessa classe serão salvos na coleção users do 
         this.calendarList = calendarList;
     }
 
-    public ArrayList<PollNotification> getEventPoolNotifications() {
-        return eventPoolNotifications;
+    public ArrayList<PollNotification> getEventPollNotifications() {
+        return eventPollNotifications;
     }
 
-    public void addEventPoolNotifications(PollNotification eventPoolNotification) {
-        this.eventPoolNotifications.add(eventPoolNotification);
+    public void addEventPollNotifications(PollNotification eventPollNotification) {
+        this.eventPollNotifications.add(eventPollNotification);
     }
 
-    public void setEventPoolNotifications(ArrayList<PollNotification> eventPoolNotifications) {
-        this.eventPoolNotifications = eventPoolNotifications;
+    public void setEventPollNotifications(ArrayList<PollNotification> eventPollNotifications) {
+        this.eventPollNotifications = eventPollNotifications;
     }
 
     public String getDisplayName() {

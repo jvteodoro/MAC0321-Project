@@ -85,7 +85,7 @@ public class EventPoll {
 
     @Override
     public String toString() {
-        return "EventPool{" +
+        return "EventPoll{" +
                 "attendees=" + attendees +
                 ", done=" + done +
                 ", id='" + id + '\'' +

@@ -14,7 +14,7 @@ import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.events.EventPollNotification;
-import br.com.agendusp.agendusp.repositories.EventPoolRepository;
+import br.com.agendusp.agendusp.repositories.EventPollRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
 public class FormsDataController {

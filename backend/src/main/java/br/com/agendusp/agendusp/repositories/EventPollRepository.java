@@ -6,7 +6,7 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 
 import java.util.Optional;
 
-public interface EventPoolRepository extends MongoRepository<EventPoll, String> {
+public interface EventPollRepository extends MongoRepository<EventPoll, String> {
     public Optional<EventPoll> findById(String id);
 
     // Find poll by eventId
