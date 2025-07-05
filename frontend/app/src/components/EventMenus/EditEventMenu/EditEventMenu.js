@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../EventMenu.css";
 import "./EditEventMenu.css";
 import ptBR from "date-fns/locale/pt-BR";
+import { useAuth } from "../../../context/AuthContext"; // <-- ADD THIS
 
 const EditarEventoMenu = (props) => {
   const colorMap = {
@@ -26,6 +27,8 @@ const EditarEventoMenu = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { calendarId, eventId } = location.state || {};
+
+  const { user } = useAuth(); // <-- ADD THIS
 
   // Estados do componente
   const [formData, setFormData] = useState({
@@ -54,8 +57,8 @@ const EditarEventoMenu = (props) => {
   const [originalEvent, setOriginalEvent] = useState(null);
   const [pollSuccess, setPollSuccess] = useState(false);
   const [pollError, setPollError] = useState(null);
-  const [createdPollId, setCreatedPollId] = useState(null); // NEW STATE
-
+  const [createdPollId, setCreatedPollId] = useState(null);
+  const [isOrganizer, setIsOrganizer] = useState(false);
   useEffect(() => {
     registerLocale("pt-BR", ptBR);
     const carregarEvento = async () => {
@@ -125,6 +128,13 @@ const EditarEventoMenu = (props) => {
       carregarEvento();
     }
   }, [calendarId, eventId]);
+
+  // Check if user is organizer
+  useEffect(() => {
+    if (user && dadosOrganizador.email) {
+      setIsOrganizer(user.email === dadosOrganizador.email);
+    }
+  }, [user, dadosOrganizador.email]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -302,6 +312,9 @@ const EditarEventoMenu = (props) => {
     );
   }
 
+  // Disable all form controls if not organizer
+  const disableInputs = !isOrganizer;
+
   return (
     <main id="event-menu">
       <button id="close-button" onClick={aoFechar}>
@@ -337,6 +350,7 @@ const EditarEventoMenu = (props) => {
             onChange={handleInputChange}
             className={errosFormulario.titulo ? "error-input" : ""}
             autoComplete="off"
+            disabled={disableInputs}
           />
         </label>
 
@@ -364,6 +378,7 @@ const EditarEventoMenu = (props) => {
             }
             placeholderText="dd/mm/aaaa hh:mm"
             locale="pt-BR"
+            disabled={disableInputs}
           />
         </label>
 
@@ -388,6 +403,7 @@ const EditarEventoMenu = (props) => {
             placeholderText="dd/mm/aaaa hh:mm"
             locale="pt-BR"
             minDate={formData.dataInicio}
+            disabled={disableInputs}
           />
         </label>
 
@@ -397,9 +413,9 @@ const EditarEventoMenu = (props) => {
             <div
               className="color-preview"
               style={{ backgroundColor: colorMap[formData.cor] }}
-              onClick={() => setMostrarSeletorCor(!mostrarSeletorCor)}
+              onClick={() => !disableInputs && setMostrarSeletorCor(!mostrarSeletorCor)}
             />
-            {mostrarSeletorCor && (
+            {mostrarSeletorCor && !disableInputs && (
               <div className="color-palette">
                 {Object.entries(colorMap).map(([colorId, colorValue]) => (
                   <div
@@ -441,6 +457,7 @@ const EditarEventoMenu = (props) => {
                   state: { eventId: createdPollId }
                 });
               }}
+              disabled={disableInputs}
             >
               Visualizar enquete
             </button>
@@ -448,8 +465,8 @@ const EditarEventoMenu = (props) => {
             <button
               type="button"
               className="submit-button criar-enquete-btn"
-              style={{ marginBottom: "1em", width: "auto" }}
               onClick={handleCreatePoll}
+              disabled={disableInputs}
             >
               Criar enquete
             </button>
@@ -465,6 +482,7 @@ const EditarEventoMenu = (props) => {
             onChange={handleInputChange}
             placeholder="Onde a reunião acontecerá"
             autoComplete="off"
+            disabled={disableInputs}
           />
         </label>
 
@@ -476,6 +494,7 @@ const EditarEventoMenu = (props) => {
             onChange={handleInputChange}
             rows="1"
             autoComplete="off"
+            disabled={disableInputs}
           />
         </label>
 
@@ -494,11 +513,13 @@ const EditarEventoMenu = (props) => {
                   (e.preventDefault(), adicionarConvidado())
                 }
                 autoComplete="off"
+                disabled={disableInputs}
               />
               <button
                 type="button"
                 className="adicionar"
                 onClick={adicionarConvidado}
+                disabled={disableInputs}
               >
                 Adicionar
               </button>
@@ -520,6 +541,7 @@ const EditarEventoMenu = (props) => {
                       type="button"
                       className="remover"
                       onClick={() => removerConvidado(email)}
+                      disabled={disableInputs}
                     >
                       <i className="fa-solid fa-close"></i>
                     </button>
@@ -534,10 +556,11 @@ const EditarEventoMenu = (props) => {
           id="cancel-button"
           className="form-field"
           onClick={cancelarEvento}
+          disabled={disableInputs}
         >
           Cancelar
         </button>
-        <button type="submit" id="save-button" className="form-field">
+        <button type="submit" id="save-button" className="form-field" disabled={disableInputs}>
           Salvar Alterações
         </button>
       </form>

@@ -11,10 +11,8 @@
 }
 
 #event-data-form .criar-enquete-btn {
-    margin-bottom: 1em;
     width: auto;
     align-self: flex-end;
-    /* max-width: 220px; */
 }
 
 #event-origin-info > * {
