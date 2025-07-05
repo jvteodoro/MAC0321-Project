@@ -80,6 +80,7 @@ public class EventPoll {
         this.id = event.getId();
         this.done = event.getAttendees().size();
         this.attendees = event.getAttendees();
+        this.ownerId = event.getOrganizer().getId();
     }
 
     @Override

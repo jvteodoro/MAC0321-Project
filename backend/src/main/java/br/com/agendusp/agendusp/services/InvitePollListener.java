@@ -11,7 +11,6 @@ import br.com.agendusp.agendusp.controller.eventControllers.EventPollDataControl
 import br.com.agendusp.agendusp.dataobjects.PollNotification;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
-import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
 import br.com.agendusp.agendusp.events.EventPollNotification;
 
 @Component
@@ -27,17 +26,14 @@ public class InvitePollListener implements ApplicationListener<EventPollNotifica
     public void onApplicationEvent(EventPollNotification event) {
         EventPoll evPoll = eventPoolDataController.getById(event.getEventPollId());
         ArrayList<Attendee> attendees = evPoll.getAttendees();
-        PollNotification notification = new PollNotification(event);
         String organizerId = evPoll.getOwnerId();
         for (Attendee at: attendees){
             String userId = at.getCalendarPerson().getId();
             if (userId == null || userId.equals(organizerId)) continue; // skip organizer
-            userDataController.addEventPollNotification(userId, notification);
+            PollNotification notification = new PollNotification(userId, event);
+            userDataController.addEventPollNotification(notification);
             // Add to NotificationService for WebSocket and REST API
-            notificationService.addNotification(new Notification(
-                userId,
-                "Você foi convidado a votar em uma enquete para o evento: " + evPoll.getEventId()
-            ));
+            notificationService.addNotification(notification);
         }
     }
 }

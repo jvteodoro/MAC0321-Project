@@ -12,7 +12,6 @@ public class EventPollNotification extends ApplicationEvent {
         this.eventPollId = eventPollId;
     }
 
-
     public String getMessage() {
         return message;
     }

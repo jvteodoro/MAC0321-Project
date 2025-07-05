@@ -1,33 +1,14 @@
 package br.com.agendusp.agendusp.dataobjects;
 
+import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
 import br.com.agendusp.agendusp.events.EventPollNotification;
 
-public class PollNotification {
-    String id;
-    String message;
+public class PollNotification extends Notification {
 
     public PollNotification(){}
 
-    public PollNotification(EventPollNotification event){
-        this.id = event.getEventPollId();
-        this.message = event.getMessage();
+    public PollNotification(String userId, EventPollNotification event){
+        super(userId, event.getMessage(), event.getEventPollId());
     }
-
-
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-    public String getMessage() {
-        return message;
-    }
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-
-
     
 }

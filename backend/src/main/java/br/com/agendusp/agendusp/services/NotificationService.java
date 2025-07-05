@@ -5,7 +5,6 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +20,7 @@ public class NotificationService {
     public void addNotification(Notification notification) {
         // Prevent duplicate notifications for the same user and message
         boolean exists = notifications.stream()
-            .anyMatch(n -> n.getUserId().equals(notification.getUserId())
-                        && n.getMessage().equals(notification.getMessage()));
+            .anyMatch(n -> n.getUserId().equals(notification.getUserId()));
         if (!exists) {
             notifications.add(notification);
             // Send notification to the specific user via WebSocket
