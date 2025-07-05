@@ -12,9 +12,7 @@ public interface CalendarRepository extends MongoRepository<CalendarResource, St
     public Optional<CalendarResource> findByCalendarId(String calendarId);
 
     public Optional<CalendarResource> findById(String id);
-    // public Optional<CalendarListResource> findById(String id);
-    // public CalendarListResource insert(CalendarListResource
-    // calendarListResource);
+    
     // public CalendarListResource insert(CalendarListResource
     // calendarListResource);
 }
