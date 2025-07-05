@@ -51,8 +51,13 @@ public class EventPollDataController {
 
     }
 
-    public EventPoll create(String eventId,  String startDate, String endDate){
+    public EventPoll create(String eventId,  String startDate, String endDate, String userId){
         EventsResource event = eventsDataController.getEventById(eventId);
+        // Only organizer can create poll
+        if (event.getOrganizer() == null || event.getOrganizer().getId() == null
+            || !event.getOrganizer().getId().equals(userId)) {
+            throw new IllegalArgumentException("Apenas o organizador pode criar uma enquete para este evento.");
+        }
         EventPoll eventPool = new EventPoll(event);
 
         System.out.println("[DEBUG] 1");
@@ -87,5 +92,11 @@ public class EventPollDataController {
         applicationPublisher.publishEvent(notification);
 
         return eventPool;
+    }
+
+    // Deprecated: keep for compatibility, but throw if called
+    @Deprecated
+    public EventPoll create(String eventId,  String startDate, String endDate){
+        throw new UnsupportedOperationException("Use create(eventId, startDate, endDate, userId) instead.");
     }
 }

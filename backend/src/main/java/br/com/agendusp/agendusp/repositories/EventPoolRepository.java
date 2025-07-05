@@ -8,4 +8,7 @@ import java.util.Optional;
 
 public interface EventPoolRepository extends MongoRepository<EventPoll, String> {
     public Optional<EventPoll> findById(String id);
+
+    // Find poll by eventId
+    Optional<EventPoll> findByEventId(String eventId);
 }

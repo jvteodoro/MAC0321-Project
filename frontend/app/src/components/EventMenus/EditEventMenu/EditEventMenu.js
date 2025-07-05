@@ -54,6 +54,7 @@ const EditarEventoMenu = (props) => {
   const [originalEvent, setOriginalEvent] = useState(null);
   const [pollSuccess, setPollSuccess] = useState(false);
   const [pollError, setPollError] = useState(null);
+  const [createdPollId, setCreatedPollId] = useState(null); // NEW STATE
 
   useEffect(() => {
     registerLocale("pt-BR", ptBR);
@@ -93,6 +94,24 @@ const EditarEventoMenu = (props) => {
             displayName:
               evento.organizer?.displayName || "Organizador não identificado",
           });
+
+          // Check if a poll already exists for this event
+          try {
+            const pollResp = await axios.get(
+              `http://localhost:12003/pool/byEvent?eventId=${evento.id}`,
+              { withCredentials: true }
+            );
+            if (pollResp.data && pollResp.data.id) {
+              setPollSuccess(true);
+              setCreatedPollId(pollResp.data.id);
+            } else {
+              setPollSuccess(false);
+              setCreatedPollId(null);
+            }
+          } catch (pollErr) {
+            setPollSuccess(false);
+            setCreatedPollId(null);
+          }
         }
       } catch (erro) {
         console.error("Erro ao carregar reunião:", erro);
@@ -258,13 +277,14 @@ const EditarEventoMenu = (props) => {
     }
     const [startDate, endDate] = getDayInterval(formData.dataInicio);
     try {
-      await axios.get(
+      const response = await axios.get(
         `http://localhost:12003/pool/create?eventId=${originalEvent.id}&startDate=${startDate}&endDate=${endDate}`,
         {
           withCredentials: true,
         }
       );
       setPollSuccess(true);
+      setCreatedPollId(response.data.id); // Save poll id for navigation
       console.log("Enquete criada com sucesso!");
     } catch (err) {
       console.error(
@@ -404,21 +424,36 @@ const EditarEventoMenu = (props) => {
                 rel="noopener noreferrer"
                 id="meet-link"
               >
-
-
                 {formData.hangoutLink}
               </a>
             </div>
           )}
 
-          <button
-            type="button"
-            className="submit-button criar-enquete-btn"
-            style={{ marginBottom: "1em", width: "auto" }}
-            onClick={handleCreatePoll}
-          >
-            Criar enquete
-          </button>
+          {pollSuccess ? (
+            <button
+              type="button"
+              className="submit-button criar-enquete-btn"
+              style={{ marginBottom: "1em", width: "auto" }}
+              onClick={() => {
+                // Navigate to voting page for this poll
+                navigate("/votar", {
+                  replace: true,
+                  state: { eventId: createdPollId }
+                });
+              }}
+            >
+              Visualizar enquete
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="submit-button criar-enquete-btn"
+              style={{ marginBottom: "1em", width: "auto" }}
+              onClick={handleCreatePoll}
+            >
+              Criar enquete
+            </button>
+          )}
         </div>
 
         <label htmlFor="local" className="form-field full-width">

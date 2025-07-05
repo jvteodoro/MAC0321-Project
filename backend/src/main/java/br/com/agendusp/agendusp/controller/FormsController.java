@@ -71,9 +71,17 @@ public class FormsController {
         @RequestParam String endDate,
         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
 
-        EventPoll poll = eventPoolDataController.create(eventId, startDate, endDate);
-        sendPool(poll.getId()); // TODO: Checar se deve ser movido para outro lugar
-        return poll;
+        String userId = authorizedClient.getPrincipalName();
+        try {
+            EventPoll poll = eventPoolDataController.create(eventId, startDate, endDate, userId);
+            sendPool(poll.getId()); // TODO: Checar se deve ser movido para outro lugar
+            return poll;
+        } catch (IllegalArgumentException ex) {
+            // Return an empty poll with error message (or handle as preferred)
+            EventPoll errorPoll = new EventPoll();
+            // Optionally, set a field or log the error
+            throw ex;
+        }
     }
 
     @PostMapping("/pool/vote")
@@ -110,5 +118,10 @@ public class FormsController {
             return eventsDataController.updateByObject(event);
         }
         return new EventsResource();
+    }
+
+    @GetMapping("/pool/byEvent")
+    public EventPoll getPollByEvent(@RequestParam String eventId) {
+        return eventPoolRepository.findByEventId(eventId).orElse(null);
     }
 }
