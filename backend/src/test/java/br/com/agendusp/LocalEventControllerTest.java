@@ -14,7 +14,7 @@ import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.documents.User;
 
 
-
+//TODO arrumar testes para tirar error creating bean with name 
 
 @SpringBootTest(classes = AgendUspApplication.class)
 public class LocalEventControllerTest extends MongoTestContainer {
