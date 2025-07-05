@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import "./NotificationList.css";
 import { Client } from "@stomp/stompjs";
-import { useAuth } from "../../context/AuthContext"; // <-- import useAuth
+import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
 
 const NotificationList = ({ visible }) => {
-
   const [notifications, setNotifications] = useState([]);
   const stompClient = useRef(null);
   const { authenticated, getAccessToken, user } = useAuth();
@@ -29,13 +29,12 @@ const NotificationList = ({ visible }) => {
           // Existing pool subscription
           stompClient.current.subscribe("/notify/pool/*", (message) => {
             const notification = JSON.parse(message.body);
-            setNotifications((prev) => [
-              {
-                id: Date.now(),
-                message: `Pool update: ${notification.eventId}`,
-              },
-              ...prev,
-            ]);
+            const notifObj = {
+              id: Date.now(),
+              message: `Pool update: ${notification.eventId}`,
+            };
+            setNotifications((prev) => [notifObj, ...prev]);
+            alert(notifObj.message); // Alert on pool notification
           });
 
           // user-specific notification subscription
@@ -44,13 +43,12 @@ const NotificationList = ({ visible }) => {
               `/user/${user.id}/queue/notifications`,
               (message) => {
                 const notification = JSON.parse(message.body);
-                setNotifications((prev) => [
-                  {
-                    id: notification.id || Date.now(),
-                    message: notification.message,
-                  },
-                  ...prev,
-                ]);
+                const notifObj = {
+                  id: notification.id || Date.now(),
+                  message: notification.message,
+                };
+                setNotifications((prev) => [notifObj, ...prev]);
+                alert(notifObj.message); // Alert on user notification
               }
             );
           }
@@ -70,31 +68,38 @@ const NotificationList = ({ visible }) => {
 
     return () => {
       if (stompClient.current) {
-        stompClient.current.deactivate();
+        if (stompClient.current.active) {
+          stompClient.current.deactivate();
+        }
+        stompClient.current = null;
       }
     };
   }, [authenticated, getAccessToken, user]);
 
-
   useEffect(() => {
-    if (authenticated && visible && user?.id) {
-      fetch(`/api/notifications/${user.id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setNotifications((prev) => [
-            ...data
-              .filter(
-                (n) => !prev.some((p) => p.id === n.id && p.message === n.message)
-              )
-              .map((n) => ({
-                id: n.id || Date.now() + Math.random(),
-                message: n.message,
-              })),
-            ...prev,
-          ]);
+    if (authenticated && visible) {
+      axios
+        .get("http://localhost:12003/api/notifications/me", {
+          withCredentials: true,
+        })
+        .then((res) => {
+          const data = res.data;
+          const newNotifications = data
+            .filter(
+              (n) =>
+                !notifications.some(
+                  (p) => p.id === n.id && p.message === n.message
+                )
+            )
+            .map((n) => ({
+              id: n.id || Date.now() + Math.random(),
+              message: n.message,
+            }));
+          setNotifications((prev) => [...newNotifications, ...prev]);
         })
         .catch((err) => console.error("Falha ao buscar as notificações", err));
     }
+    // eslint-disable-next-line
   }, [authenticated, visible, user]);
 
   const sendVote = (eventPoolId, dateTimeIntervalId) => {
