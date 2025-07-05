@@ -89,7 +89,7 @@ public class EventPollDataControllerTest extends MongoTestContainer {
         }
     
         @Test
-        public void testGetAllEventPools() {
+        public void testGetAllEventPolls() {
             String startDate = "2025-07-01T20:00:00Z";
             String endDate = "2025-07-20T20:00:00Z";
             String startDate2 = "2025-07-22T20:00:00Z";
@@ -126,12 +126,12 @@ public class EventPollDataControllerTest extends MongoTestContainer {
         }
     
         @Test
-        public void testGetAllEventPoolsThrowsOnNullOrEmpty() {
+        public void testGetAllEventPollsThrowsOnNullOrEmpty() {
             assertThrows(IllegalArgumentException.class, () -> {
-                eventPollDataController.getAllEventPools(null);
+                eventPollDataController.getAllEventPolls(null);
             });
             assertThrows(IllegalArgumentException.class, () -> {
-                eventPollDataController.getAllEventPools(new ArrayList<>());
+                eventPollDataController.getAllEventPolls(new ArrayList<>());
             });
         }
 
