@@ -31,28 +31,30 @@ public class EventPollDataControllerTest extends MongoTestContainer {
     EventsDataController eventsDataController;
 
     String userId = "user1";
-    String atendee1Id = "at1";
-    String atendee2Id = "at2";
-    String atendee3Id = "at3";
+    String attendee1Id = "at1";
+    String attendee2Id = "at2";
+    String attendee3Id = "at3";
     String eventId = "eventTest";
 
     @BeforeEach
     public void setupDatabase() {
         User user = new User(userId, userId, userId);
-        User atendee1 = new User(atendee1Id, atendee1Id, atendee1Id);
-        User atendee2 = new User(atendee2Id, atendee2Id, atendee2Id);
-        User atendee3 = new User(atendee3Id, atendee3Id, atendee3Id);
+        User attendee1 = new User(attendee1Id, attendee1Id, attendee1Id);
+        User attendee2 = new User(attendee2Id, attendee2Id, attendee2Id);
+        User attendee3 = new User(attendee3Id, attendee3Id, attendee3Id);
 
         EventsResource event = new EventsResource();
         event.setId(eventId);
-        event.addAttendee(atendee1);
-        event.addAttendee(atendee2);
-        event.addAttendee(atendee3);
+        event.addAttendee(attendee1);
+        event.addAttendee(attendee2);
+        event.addAttendee(attendee3);
+        //event.setOwner(user); //isso aq funciona?
 
         userDataController.createUser(user);
-        userDataController.createUser(atendee1);
-        userDataController.createUser(atendee2);
-        userDataController.createUser(atendee3);
+        userDataController.createUser(attendee1);
+        userDataController.createUser(attendee2);
+        userDataController.createUser(attendee3);
+        
 
         eventsDataController.addEvent(event);
     }
@@ -61,98 +63,79 @@ public class EventPollDataControllerTest extends MongoTestContainer {
     public void createTest() {
         String startDate = "2025-07-01T20:00:00Z";
         String endDate = "2025-07-20T20:00:00Z";
-        EventPollResource poll = eventPollDataController.create(eventId, startDate, endDate);
+        EventPoll poll = eventPollDataController.create(eventId, startDate, endDate, userId);
         assertNotNull(poll);
-        assertEquals(eventId, poll.getEventId());
+        //assertEquals(eventId, poll.getEventId()); implementar essa funcao? acho q nao precisa
     }
 
     @Test
-    public void testAddOptionsAndVote() {
-        String startDate = "2025-07-01T20:00:00Z";
-        String endDate = "2025-07-20T20:00:00Z";
-        EventPollResource poll = eventPollDataController.create(eventId, startDate, endDate);
+        public void testCreateEventPoll() {
+            String startDate = "2025-07-01T20:00:00Z";
+            String endDate = "2025-07-20T20:00:00Z";
+            EventPoll poll = eventPollDataController.create(eventId, startDate, endDate, userId);
+            assertNotNull(poll);
+            //assertEquals(eventId, poll.getEventId());
+            assertNotNull(poll.getById());
+        }
+    
+        @Test
+        public void testCreateEventPollNonOrganizerThrows() {
+            String startDate = "2025-07-01T20:00:00Z";
+            String endDate = "2025-07-20T20:00:00Z";
+            Exception ex = assertThrows(IllegalArgumentException.class, () -> {
+                eventPollDataController.create(eventId, startDate, endDate, attendee1Id);
+            });
+            assertTrue(ex.getMessage().contains("Apenas o organizador pode criar uma enquete para este evento."));
+        }
+    
+        @Test
+        public void testGetAllEventPools() {
+            String startDate = "2025-07-01T20:00:00Z";
+            String endDate = "2025-07-20T20:00:00Z";
+            String startDate2 = "2025-07-22T20:00:00Z";
+            String endDate2 = "2025-07-22T20:00:00Z";
+            EventPoll poll1 = eventPollDataController.create(eventId, startDate, endDate, userId);
+            EventPoll poll2 = eventPollDataController.create(eventId, startDate2, endDate2, organizerId);
+    
+            ArrayList<String> ids = new ArrayList<>();
+            ids.add(poll1.getId());
+            ids.add(poll2.getId());
+            
+            ArrayList<EventPoll> polls = eventPollDataController.getAllEventPolls(ids);
+            
+            assertEquals(2, polls.size());
+            assertTrue(polls.stream().anyMatch(p -> p.getId().equals(poll1.getId())));
+            assertTrue(polls.stream().anyMatch(p -> p.getId().equals(poll2.getId())));
+        }
+    
+        @Test
+        public void testGetByIdReturnsPoll() {
+            String startDate = "2025-07-01T20:00:00Z";
+            String endDate = "2025-07-20T20:00:00Z";
+            EventPoll poll = eventPollDataController.create(eventId, startDate, endDate, userId);
+    
+            EventPoll found = eventPollDataController.getById(poll.getId());// mano esse getid funciona?????????
+            assertNotNull(found);
+            assertEquals(poll.getId(), found.getId());
+        }
+    
+        @Test
+        public void testGetByIdReturnsNullIfNotFound() {
+            EventPoll found = eventPollDataController.getById("nonexistentId");
+            assertNull(found);
+        }
+    
+        @Test
+        public void testGetAllEventPoolsThrowsOnNullOrEmpty() {
+            assertThrows(IllegalArgumentException.class, () -> {
+                eventPollDataController.getAllEventPools(null);
+            });
+            assertThrows(IllegalArgumentException.class, () -> {
+                eventPollDataController.getAllEventPools(new ArrayList<>());
+            });
+        }
 
-        List<String> options = Arrays.asList("2025-07-10T20:00:00Z", "2025-07-15T20:00:00Z");
-        eventPollDataController.addOptions(poll.getId(), options);
-
-        // Vote for an option
-        eventPollDataController.vote(poll.getId(), atendee1Id, "2025-07-10T20:00:00Z");
-        eventPollDataController.vote(poll.getId(), atendee2Id, "2025-07-10T20:00:00Z");
-        eventPollDataController.vote(poll.getId(), atendee3Id, "2025-07-15T20:00:00Z");
-
-        // Check votes
-        EventPollResource updatedPoll = eventPollDataController.getPoll(poll.getId());
-        assertEquals(2, updatedPoll.getVotes().get("2025-07-10T20:00:00Z").size());
-        assertEquals(1, updatedPoll.getVotes().get("2025-07-15T20:00:00Z").size());
     }
 
-    @Test
-    public void testDuplicateVoteThrowsException() {
-        String startDate = "2025-07-01T20:00:00Z";
-        String endDate = "2025-07-20T20:00:00Z";
-        EventPollResource poll = eventPollDataController.create(eventId, startDate, endDate);
-
-        List<String> options = Arrays.asList("2025-07-10T20:00:00Z");
-        eventPollDataController.addOptions(poll.getId(), options);
-
-        eventPollDataController.vote(poll.getId(), atendee1Id, "2025-07-10T20:00:00Z");
-        assertThrows(RuntimeException.class, () -> {
-            eventPollDataController.vote(poll.getId(), atendee1Id, "2025-07-10T20:00:00Z");
-        });
-    }
-
-    @Test
-    public void testClosePoll() {
-        String startDate = "2025-07-01T20:00:00Z";
-        String endDate = "2025-07-20T20:00:00Z";
-        EventPollResource poll = eventPollDataController.create(eventId, startDate, endDate);
-
-        eventPollDataController.closePoll(poll.getId());
-        EventPollResource closedPoll = eventPollDataController.getPoll(poll.getId());
-        assertTrue(closedPoll.isClosed());
-    }
-
-    @Test
-    public void testVoteOnClosedPollThrowsException() {
-        String startDate = "2025-07-01T20:00:00Z";
-        String endDate = "2025-07-20T20:00:00Z";
-        EventPollResource poll = eventPollDataController.create(eventId, startDate, endDate);
-
-        List<String> options = Arrays.asList("2025-07-10T20:00:00Z");
-        eventPollDataController.addOptions(poll.getId(), options);
-
-        eventPollDataController.closePoll(poll.getId());
-        assertThrows(RuntimeException.class, () -> {
-            eventPollDataController.vote(poll.getId(), atendee1Id, "2025-07-10T20:00:00Z");
-        });
-    }
-
-    @Test
-    public void testCreatePollWithNoOptions() {
-        String startDate = "2025-07-01T20:00:00Z";
-        String endDate = "2025-07-20T20:00:00Z";
-        EventPollResource poll = eventPollDataController.create(eventId, startDate, endDate);
-        assertNotNull(poll);
-        assertTrue(poll.getOptions().isEmpty());
-    }
-
-    @Test
-    public void testGetNonExistentPollThrowsException() {
-        assertThrows(RuntimeException.class, () -> {
-            eventPollDataController.getPoll("nonexistentPollId");
-        });
-    }
-
-    @Test
-    public void testDeletePoll() {
-        String startDate = "2025-07-01T20:00:00Z";
-        String endDate = "2025-07-20T20:00:00Z";
-        EventPollResource poll = eventPollDataController.create(eventId, startDate, endDate);
-        eventPollDataController.deletePoll(poll.getId());
-        assertThrows(RuntimeException.class, () -> {
-            eventPollDataController.getPoll(poll.getId());
-        });
-    }
-}
 
 

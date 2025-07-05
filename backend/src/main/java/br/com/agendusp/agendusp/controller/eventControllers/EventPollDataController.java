@@ -15,7 +15,7 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.events.EventPollNotification;
-import br.com.agendusp.agendusp.repositories.EventPoolRepository;
+import br.com.agendusp.agendusp.repositories.EventPollRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
 public class EventPollDataController {
@@ -25,25 +25,28 @@ public class EventPollDataController {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    EventPoolRepository eventPoolRepository;
+    EventPollRepository eventPollRepository;
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
     ApplicationEventPublisher applicationPublisher;
 
-    public ArrayList<EventPoll> getAllEventPools(ArrayList<String> eventPoolIdList) {
+    public ArrayList<EventPoll> getAllEventPolls(ArrayList<String> eventPollIdList) {
         // Verifica se a lista de IDs está vazia
-        if (eventPoolIdList == null || eventPoolIdList.isEmpty()) {
-            throw new IllegalArgumentException("A lista de IDs de EventPool não pode ser nula ou vazia.");
+        if (eventPollIdList == null || eventPollIdList.isEmpty()) {
+            throw new IllegalArgumentException("A lista de IDs de EventPoll não pode ser nula ou vazia.");
         }
-        ArrayList<EventPoll> allEventPools = new ArrayList<>();
-        for (String id : eventPoolIdList) {
-            allEventPools.add(eventPoolRepository.findById(id).orElse(null));
+        ArrayList<EventPoll> allEventPolls = new ArrayList<>();
+        for (String id : eventPollIdList) {
+            allEventPolls.add(eventPollRepository.findById(id).orElse(null));
         }
-        return allEventPools;
+        return allEventPolls;
     }
+
+
+
     public EventPoll getById(String eventPollId){
-        Optional<EventPoll> evPollOptional = eventPoolRepository.findById(eventPollId);
+        Optional<EventPoll> evPollOptional = eventPollRepository.findById(eventPollId);
         if (evPollOptional.isPresent()){
             return evPollOptional.get();
         } else {
@@ -59,7 +62,7 @@ public class EventPollDataController {
             || !event.getOrganizer().getId().equals(userId)) {
             throw new IllegalArgumentException("Apenas o organizador pode criar uma enquete para este evento.");
         }
-        EventPoll eventPool = new EventPoll(event);
+        EventPoll eventPoll = new EventPoll(event);
 
         System.out.println("[DEBUG] 1");
         DateTimeInterval dateTimeInterval = new DateTimeInterval();
@@ -77,33 +80,33 @@ public class EventPollDataController {
             initialFreeTime = ev.freeTime(initialFreeTime);
             System.out.println("[DEBUG] A");
         }
-        eventPool.setPossibleTimesFromDateTimeIntervalList(initialFreeTime);
+        eventPoll.setPossibleTimesFromDateTimeIntervalList(initialFreeTime);
         System.out.println("[DEBUG] 4");
 
-        String ownerId = eventPool.getOwnerId();
-        userRepository.addEventPool(ownerId, eventPool.getId());
-        eventPoolRepository.insert(eventPool);
+        String ownerId = eventPoll.getOwnerId();
+        userRepository.addEventPoll(ownerId, eventPoll.getId());
+        eventPollRepository.insert(eventPoll);
         try {
-            System.out.println("CreatedPool: " + objectMapper.writeValueAsString(eventPool));
+            System.out.println("CreatedPoll: " + objectMapper.writeValueAsString(eventPoll));
         } catch (Exception w) {
         }
 
         String message = "Você foi convidado a votar em uma enquete de evento!";
-        EventPollNotification notification = new EventPollNotification(this, eventPool.getId(), message);
+        EventPollNotification notification = new EventPollNotification(this, eventPoll.getId(), message);
         applicationPublisher.publishEvent(notification);
 
-        return eventPool;
+        return eventPoll;
     }
-    public EventPoll vote( String eventPoolId, String dateTimeIntervalId) {
-        Optional<EventPoll> evPool = eventPollRepository.findById(eventPoolId);
-        if (evPool.isPresent()) {
-            evPool.get().vote(dateTimeIntervalId);
-            evPool.get().getDone();
+    public EventPoll vote( String eventPollId, String dateTimeIntervalId) {
+        Optional<EventPoll> evPoll = eventPollRepository.findById(eventPollId);
+        if (evPoll.isPresent()) {
+            evPoll.get().vote(dateTimeIntervalId);
+            evPoll.get().getDone();
             String message = "Voto novo  no horário "+dateTimeIntervalId;
-            EventPollNotification notification = new EventPollNotification(this, eventPoolId, message);
-            // if evPool.get().getDone()
+            EventPollNotification notification = new EventPollNotification(this, eventPollId, message);
+            // if evPoll.get().getDone()
             applicationPublisher.publishEvent(notification);
-            return evPool.get();
+            return evPoll.get();
         } else {
             return new EventPoll();
         }
