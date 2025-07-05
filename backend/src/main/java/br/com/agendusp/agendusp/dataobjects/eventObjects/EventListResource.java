@@ -1,5 +1,7 @@
 package br.com.agendusp.agendusp.dataobjects.eventObjects;
 
+import java.util.ArrayList;
+
 import br.com.agendusp.agendusp.dataobjects.DefaultReminderResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 
@@ -14,7 +16,7 @@ public class EventListResource {
   DefaultReminderResource[] defaultRemindersList;
   String nextPageToken;
   String nextSyncToken;
-  EventsResource[] items;
+  ArrayList<EventsResource> items = new ArrayList<>();;
   public String getKind() {
     return kind;
   }
@@ -75,10 +77,10 @@ public class EventListResource {
   public void setNextSyncToken(String nextSyncToken) {
     this.nextSyncToken = nextSyncToken;
   }
-  public EventsResource[] getItems() {
+  public ArrayList<EventsResource> getItems() {
     return items;
   }
-  public void setItems(EventsResource[] items) {
+  public void setItems(ArrayList<EventsResource> items) {
     this.items = items;
   } 
 

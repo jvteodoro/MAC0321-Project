@@ -124,12 +124,16 @@ public class GoogleCloudAndLocalController {
 
         // 2. Para cada calendário local, sincronizar com Google
         for (CalendarListResource calendar : localCalendars) {
-            try {
-                // Tenta obter o calendário na nuvem
-                CalendarListResource checkIfGoogleCalendarExist = gCalendarListController.get(calendar.getId(), authorizedClient);
-                gCalendarListController.update(calendar);
-                // Se não lançar exceção, já existe na nuvem
-            } catch (Exception e) {
+            boolean googleCalendarAlreadyExists = false;
+            for (CalendarListResource googleCalendar: gCalendarListController.list(authorizedClient).getItems()) {
+                if (googleCalendar.getId().equals(calendar.getId())) {
+                    // Se o calendário já existe na nuvem, não precisa criar, só atualizar
+                    gCalendarListController.update(calendar);
+                    googleCalendarAlreadyExists = true;
+                    break;
+                }
+            }
+            if (googleCalendarAlreadyExists == false) {
                 // Não existe na nuvem, criar
                 gCalendarListController.insert(calendar, authorizedClient);
             }
@@ -138,16 +142,19 @@ public class GoogleCloudAndLocalController {
             // 3. Para cada evento local do calendário, sincronizar
             ArrayList<EventsResource> localEvents = eventsDataController.getEvents(calendar.getCalendarId(), user.getId());
             for (EventsResource event : localEvents) {
-                try {
-                    // Tenta obter o evento na nuvem
-                    EventsResource checkIfGoogleEventExist = gEventsController.get(calendar.getId(), event.getId(), authorizedClient);
-                    gEventsController.update(event, calendar.getId(), authorizedClient);
-                    // Se não lançar exceção, já existe
-                } catch (Exception e) {
+                boolean googleEventAlreadyExists = false;
+                for(EventsResource googleEvent: gEventsController.list(calendar.getId(), authorizedClient).getItems()) {
+                    if (googleEvent.getId().equals(event.getId())) {
+                        // Se o evento já existe na nuvem, não precisa criar, só atualizar
+                        gEventsController.update(event, calendar.getId(), authorizedClient);
+                        googleEventAlreadyExists = true;
+                        break;
+                    }
+                }
+                if (googleEventAlreadyExists == false) {
                     // Não existe, criar
                     gEventsController.insert(event, calendar.getId(), "none", authorizedClient);
                 }
-                syncedEvents.add(event.getId());
             }
         }
         syncReport.put("calendars", syncedCalendars);

@@ -1,6 +1,7 @@
 package br.com.agendusp.agendusp.controller.google;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,9 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
+import com.google.gson.Gson;
+
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventListResource;
+import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,6 +28,8 @@ public class GoogleEventsController {
     EventsDataController eventsDataController;
     @Autowired
     UserDataController userDataController;
+    @Autowired
+    private Gson gson;
 
     @DeleteMapping("/google/events/delete")
     public String delete(@RequestParam String calendarId,
@@ -106,14 +112,16 @@ public class GoogleEventsController {
         if (event.getStart() == null || event.getEnd() == null) {
             throw new IllegalArgumentException("Event must have a start and end time.");
         }       
-        String userId = authorizedClient.getPrincipalName();
-        // Atualiza o evento no banco de dados local
-        eventsDataController.updateEvent(calendarId, event.getId(), event, userId);
-        // Atualiza o evento no Google Calendar
-        return restClient.put()
+        ResponseEntity<String> response = restClient.put()
                 .uri("https://www.googleapis.com/calendar/v3/calendars/" + calendarId + "/events/" + event.getId())
-                .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
-                .body(event).retrieve().toEntity(EventsResource.class).getBody();
+                /*.headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))*/
+                .body(gson.toJson(event))
+                .retrieve()
+                .toEntity(String.class);
+
+        EventsResource updatedEventResource = gson.fromJson(response.getBody(),
+                    EventsResource.class);
+            return updatedEventResource;
         }
         
     // Pensar no tipo de dado que um Json somente com as partes escolhidas
