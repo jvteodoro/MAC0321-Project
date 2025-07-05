@@ -36,7 +36,7 @@ public class PromptBuilder {
     @Autowired
     private EventsDataController eventsDataController;
     @Autowired
-    private EventPollDataController eventPoolDataController;
+    private EventPollDataController eventPollDataController;
     @Autowired
     private RestClient restClient;
 
@@ -50,8 +50,8 @@ public class PromptBuilder {
 
         List<EventsResource> commitments = getEventsForDateRange(user.getId(), calendars, calendarId, startDate, startDate.plusDays(7));
         List<EventsResource> cancelledEvents = commitments.stream().filter(e -> "cancelled".equals(e.getStatus())).collect(Collectors.toList());
-        List<EventPoll> createdPolls = eventPoolDataController.getAllEventPools(user.getEventPoolList());
-        List<PollNotification> answeredPolls = user.getEventPoolNotifications();
+        List<EventPoll> createdPolls = eventPollDataController.getAllEventPolls(user.getEventPollList());
+        List<PollNotification> answeredPolls = user.getEventPollNotifications();
 
         String prompt = promptService.getPromptParaInformeSemana(user, calendars, commitments, cancelledEvents, createdPolls, answeredPolls, startDate);
 
@@ -68,8 +68,8 @@ public class PromptBuilder {
 
         List<EventsResource> commitments = getEventsForDateRange(user.getId(), calendars, calendarId, startDate, startDate.plusDays(1));
         List<EventsResource> cancelledEvents = commitments.stream().filter(e -> "cancelled".equals(e.getStatus())).collect(Collectors.toList());
-        List<EventPoll> createdPolls = eventPoolDataController.getAllEventPools(user.getEventPoolList());
-        List<PollNotification> answeredPolls = user.getEventPoolNotifications();
+        List<EventPoll> createdPolls = eventPollDataController.getAllEventPolls(user.getEventPollList());
+        List<PollNotification> answeredPolls = user.getEventPollNotifications();
 
 
         String prompt = promptService.getPromptParaInformeDia(user, calendars, commitments, cancelledEvents, createdPolls, answeredPolls, startDate);

@@ -18,13 +18,13 @@ public class InvitePollListener implements ApplicationListener<EventPollNotifica
     @Autowired
     UserDataController userDataController;
     @Autowired
-    EventPollDataController eventPoolDataController;
+    EventPollDataController eventPollDataController;
     @Autowired
     NotificationService notificationService;
 
     @Override
     public void onApplicationEvent(EventPollNotification event) {
-        EventPoll evPoll = eventPoolDataController.getById(event.getEventPollId());
+        EventPoll evPoll = eventPollDataController.getById(event.getEventPollId());
         ArrayList<Attendee> attendees = evPoll.getAttendees();
         String organizerId = evPoll.getOwnerId();
         for (Attendee at: attendees){

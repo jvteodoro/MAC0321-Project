@@ -142,7 +142,7 @@ public class UserDataController {
 
         public void addEventPollNotification(PollNotification evPoll){
                 User user = findUser(evPoll.getUserId());
-                user.addEventPoolNotifications(evPoll);
+                user.addEventPollNotifications(evPoll);
                 userRepository.save(user);
         }
 }

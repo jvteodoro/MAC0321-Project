@@ -326,16 +326,16 @@ public class NewTest extends MongoTestContainer {
             } catch (Exception e) {
             }
         }
-        MvcResult result = mockMvc.perform(post("/pool/create?start=" + initFreeTime.getStart().toString()
+        MvcResult result = mockMvc.perform(post("/poll/create?start=" + initFreeTime.getStart().toString()
                 + "&end=" + initFreeTime.getEnd().toString()).content(objectMapper.writeValueAsString(mockEvent)))
                 .andReturn();
         System.out.println(result.getResponse().getContentAsString());
     }
 
-    // Testes EventPoolDataController
+    // Testes EventPollDataController
     @Test
     @WithMockUser
-    public void getAllEventPoolsTest() {
+    public void getAllEventPollsTest() {
 
     }
 
