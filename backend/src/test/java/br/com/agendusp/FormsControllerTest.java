@@ -97,43 +97,43 @@ public class FormsControllerTest extends MongoTestContainer {
 
     @Test
     @WithMockUser
-    public void sendPoolTest() throws Exception {
+    public void sendPollTest() throws Exception {
         setupDataBase();
         EventsResource event = eventsDataController.getEventById(eventId);
         System.out.println(objectMapper.writeValueAsString(userDataController.findUser(userId)));
         System.out.println("Event:\n" + objectMapper.writeValueAsString(event));
-        formsController.sendPool(eventId);
+        formsController.sendPoll(eventId);
         User atendee1 = userDataController.findUser(attende1Id);
         User atendee2 = userDataController.findUser(attende2Id);
         User atendee3 = userDataController.findUser(attende3Id);
 
-        System.err.println(objectMapper.writeValueAsString(atendee1.getEventPoolNotifications()));
+        System.err.println(objectMapper.writeValueAsString(atendee1.getEventPollNotifications()));
 
 
     }
 
     @Test
     @WithMockUser
-    public void voteEventPoolTest() throws Exception {
+    public void voteEventPollTest() throws Exception {
         mockMvc.perform(get("/test")).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     @WithMockUser
-    public void createEventFromPoolTest() {
+    public void createEventFromPollTest() {
 
     }
 
     @Test
     @WithMockUser
-    public void createPoolTest() throws Exception {
+    public void createPollTest() throws Exception {
         String startDate = "2025-06-22T12:23:00Z";
         String endDate = "2025-06-25T13:34:00Z";
 
         EventsResource event = eventsDataController.getEventById(eventId);
 
         ResultActions result = mockMvc.perform(
-                post("/pool/create?startDate=" + startDate + "&endDate=" + endDate)
+                post("/poll/create?startDate=" + startDate + "&endDate=" + endDate)
                         .content(objectMapper.writeValueAsString(event)))
                 .andDo(MockMvcResultHandlers.print());
 

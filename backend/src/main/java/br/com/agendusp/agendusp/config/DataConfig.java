@@ -35,7 +35,7 @@ public class DataConfig {
         return new UserDataController();
     }
     @Bean
-    public EventPollDataController eventPoolDataController(){
+    public EventPollDataController eventPollDataController(){
         return new EventPollDataController();
     }
     @Bean
