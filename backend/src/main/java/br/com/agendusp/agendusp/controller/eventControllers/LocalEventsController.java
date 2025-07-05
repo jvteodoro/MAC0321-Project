@@ -40,31 +40,17 @@ public class LocalEventsController implements EventsController {
     public LocalEventsController() {
     }
 
+    @GetMapping("/events/teste")
+    public String teste(){
+        return "Teste funciona";
+    }
+
     @GetMapping("/events/listWindows2")
     public ArrayList<DateTimeInterval> listWindows2(@RequestParam String calendarId,
             @RequestParam String endDateTime,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
 
-        ArrayList<EventsResource> allEvents = eventsDataController.getEvents(calendarId,
-                authorizedClient.getPrincipalName());
-
-        ArrayList<DateTimeInterval> freeTimeVec = new ArrayList<>();
-        LocalDateTime endDateTimeObj = LocalDateTime.parse(endDateTime, DateTimeFormatter.ISO_DATE);
-        DateTimeInterval freeTime = new DateTimeInterval();
-
-        freeTime.setStart(LocalDateTime.now());
-        freeTime.setEnd(endDateTimeObj);
-
-        freeTimeVec.add(freeTime);
-
-        for (EventsResource event : allEvents) {
-            if (event.getStart() == null || event.getEnd() == null) {
-                continue; // Ignora eventos sem data de início ou fim
-            }
-            freeTimeVec = event.freeTime(freeTimeVec);
-        }
-
-        return freeTimeVec;
+        return eventsDataController.listWindows2(calendarId, endDateTime, authorizedClient.getPrincipalName());
     }
 
     @GetMapping("/events/listWindows")

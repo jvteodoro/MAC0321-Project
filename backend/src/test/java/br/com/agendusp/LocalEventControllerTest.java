@@ -1,5 +1,7 @@
 package br.com.agendusp;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,6 +36,7 @@ public class LocalEventControllerTest extends MongoTestContainer {
     public void setupDataBase() {
         // Configura o banco de dados com um usuário e um evento de teste
         User user = new User(userId, userEmail, userName);
+        userDataController.deleteUser(user.getId());
         userDataController.createUser(user);
     }
     
@@ -74,7 +77,7 @@ public class LocalEventControllerTest extends MongoTestContainer {
         setupDataBase(); // Configura o banco de dados antes do teste
         String calendarId = "testCalendar"; // ID do calendário de teste
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/events/delete/{eventId}", eventId)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/events/delete/"+eventId)
                 .param("calendarId", calendarId))
                 .andExpect(MockMvcResultMatchers.status().isNoContent()) // Verifica se a resposta é 204 No Content
                 .andDo(MockMvcResultHandlers.print()); // Imprime os detalhes da requisição e resposta
