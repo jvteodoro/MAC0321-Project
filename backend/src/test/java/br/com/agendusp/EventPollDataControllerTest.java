@@ -10,7 +10,6 @@ import br.com.agendusp.agendusp.MongoTestContainer;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventPollDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
-import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
 

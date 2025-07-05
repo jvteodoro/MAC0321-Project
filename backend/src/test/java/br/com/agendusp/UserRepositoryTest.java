@@ -2,12 +2,9 @@ package br.com.agendusp;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,13 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.agendusp.agendusp.AgendUspApplication;
 import br.com.agendusp.agendusp.MongoTestContainer;
 import br.com.agendusp.agendusp.controller.UserDataController;
-import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
 import br.com.agendusp.agendusp.dataobjects.PollNotification;
 import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
@@ -29,8 +24,6 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
-import br.com.agendusp.agendusp.events.EventPollNotification;
-import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
 @SpringBootTest(classes = AgendUspApplication.class)

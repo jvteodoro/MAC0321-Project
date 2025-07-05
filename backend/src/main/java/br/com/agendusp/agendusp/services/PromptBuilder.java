@@ -2,7 +2,6 @@ package br.com.agendusp.agendusp.services;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -19,7 +18,6 @@ import br.com.agendusp.agendusp.dataobjects.aiObjects.AIRequest;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
-import br.com.agendusp.agendusp.events.EventPollNotification;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.List;

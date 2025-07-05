@@ -3,7 +3,6 @@ package br.com.agendusp.agendusp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
@@ -12,7 +11,7 @@ import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController
 import br.com.agendusp.agendusp.controller.google.GoogleCalendarListController;
 import br.com.agendusp.agendusp.controller.google.GoogleCalendarsController;
 import br.com.agendusp.agendusp.controller.google.GoogleEventsController;
-import br.com.agendusp.agendusp.services.InvitePollListener;
+
 
 @Configuration
 public class DataConfig {

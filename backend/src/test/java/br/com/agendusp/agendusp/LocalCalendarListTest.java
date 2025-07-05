@@ -8,15 +8,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import com.google.gson.Gson;
 
-import br.com.agendusp.agendusp.controller.UserDataController;
-import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
 import br.com.agendusp.agendusp.controller.calendarControllers.LocalCalendarListController;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
