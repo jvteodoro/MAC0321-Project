@@ -1,11 +1,8 @@
 package br.com.agendusp;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
-
 import java.util.ArrayList;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +27,15 @@ import br.com.agendusp.agendusp.documents.User;
 @SpringBootTest(classes = AgendUspApplication.class)
 @AutoConfigureMockMvc
 public class FormsControllerTest extends MongoTestContainer {
+
+    @BeforeEach
+    public void cleanDatabase() {
+        userDataController.deleteUser(userId);
+        userDataController.deleteUser(attende1Id);
+        userDataController.deleteUser(attende2Id);
+        userDataController.deleteUser(attende3Id);
+    }
+
 
     @Autowired
     FormsController formsController;
