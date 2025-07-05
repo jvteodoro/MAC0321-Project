@@ -1,10 +1,14 @@
 package br.com.agendusp.agendusp.controller.eventControllers;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -472,5 +476,29 @@ public class EventsDataController {
         }
         eventResource.setAttendees(updatedAttendees);
         eventResource.setCalendarIds(calendarIds);
+    }
+
+
+     public ArrayList<DateTimeInterval> listWindows2(String calendarId, String endDateTime, String userId) {
+
+        ArrayList<EventsResource> allEvents = getEvents(calendarId, userId);
+
+        ArrayList<DateTimeInterval> freeTimeVec = new ArrayList<>();
+        LocalDateTime endDateTimeObj = LocalDateTime.parse(endDateTime, DateTimeFormatter.ISO_DATE);
+        DateTimeInterval freeTime = new DateTimeInterval();
+
+        freeTime.setStart(LocalDateTime.now());
+        freeTime.setEnd(endDateTimeObj);
+
+        freeTimeVec.add(freeTime);
+
+        for (EventsResource event : allEvents) {
+            if (event.getStart() == null || event.getEnd() == null) {
+                continue; // Ignora eventos sem data de início ou fim
+            }
+            freeTimeVec = event.freeTime(freeTimeVec);
+        }
+
+        return freeTimeVec;
     }
 }

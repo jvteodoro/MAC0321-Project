@@ -120,7 +120,7 @@ public class GoogleCloudAndLocalController {
         // Relatório de sincronização
         Map<String, Object> syncReport = new HashMap<>();
         ArrayList<String> syncedCalendars = new ArrayList<>();
-        //ArrayList<String> syncedEvents = new ArrayList<>();
+        ArrayList<String> syncedEvents = new ArrayList<>();
 
         // 2. Para cada calendário local, sincronizar com Google
         for (CalendarListResource calendar : localCalendars) {
@@ -136,7 +136,7 @@ public class GoogleCloudAndLocalController {
             syncedCalendars.add(calendar.getCalendarId());
 
             // 3. Para cada evento local do calendário, sincronizar
-            /*ArrayList<EventsResource> localEvents = eventsDataController.getEvents(calendar.getCalendarId(), user.getId());
+            ArrayList<EventsResource> localEvents = eventsDataController.getEvents(calendar.getCalendarId(), user.getId());
             for (EventsResource event : localEvents) {
                 try {
                     // Tenta obter o evento na nuvem
@@ -145,17 +145,13 @@ public class GoogleCloudAndLocalController {
                     // Se não lançar exceção, já existe
                 } catch (Exception e) {
                     // Não existe, criar
-                    restClient.post()
-                        .uri("https://www.googleapis.com/calendar/v3/calendars/" + calendar.getCalendarId() + "/events")
-                        .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
-                        .body(event)
-                        .retrieve().toEntity(EventsResource.class).getBody();
+                    gEventsController.insert(event, calendar.getId(), "none", authorizedClient);
                 }
                 syncedEvents.add(event.getId());
-            }*/
+            }
         }
         syncReport.put("calendars", syncedCalendars);
-        /*syncReport.put("events", syncedEvents);*/
+        syncReport.put("events", syncedEvents);
         return syncReport;
     }
     

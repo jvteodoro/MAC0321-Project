@@ -1,7 +1,10 @@
 package br.com.agendusp;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,13 +20,14 @@ import br.com.agendusp.agendusp.documents.User;
 //TODO arrumar testes para tirar error creating bean with name 
 
 @SpringBootTest(classes = AgendUspApplication.class)
+@AutoConfigureMockMvc
 public class LocalEventControllerTest extends MongoTestContainer {
 
     @Autowired
     MockMvc mockMvc; // MockMvc é usado para simular requisições HTTP
     @Autowired
     UserDataController userDataController; // Controlador de dados do usuário
-    @Autowired
+
     static String userId = "testUser"; // ID do usuário de teste
     static String userEmail = "test@gmail.com"; // Email do usuário de teste
     static String userName = "Usuário de Teste"; // Nome do usuário de teste
@@ -32,6 +36,7 @@ public class LocalEventControllerTest extends MongoTestContainer {
     public void setupDataBase() {
         // Configura o banco de dados com um usuário e um evento de teste
         User user = new User(userId, userEmail, userName);
+        userDataController.deleteUser(user.getId());
         userDataController.createUser(user);
     }
     
@@ -72,7 +77,7 @@ public class LocalEventControllerTest extends MongoTestContainer {
         setupDataBase(); // Configura o banco de dados antes do teste
         String calendarId = "testCalendar"; // ID do calendário de teste
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/events/delete/{eventId}", eventId)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/events/delete/"+eventId)
                 .param("calendarId", calendarId))
                 .andExpect(MockMvcResultMatchers.status().isNoContent()) // Verifica se a resposta é 204 No Content
                 .andDo(MockMvcResultHandlers.print()); // Imprime os detalhes da requisição e resposta
