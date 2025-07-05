@@ -46,11 +46,13 @@ public class LocalEventsController implements EventsController {
     }
 
     @GetMapping("/events/listWindows2")
-    public ArrayList<DateTimeInterval> listWindows2(@RequestParam String calendarId,
+    public ArrayList<DateTimeInterval> listWindows2(
+            @RequestParam String calendarId,
+            @RequestParam String startDateTime,
             @RequestParam String endDateTime,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
 
-        return eventsDataController.listWindows2(calendarId, endDateTime, authorizedClient.getPrincipalName());
+        return eventsDataController.listWindows2(calendarId, startDateTime, endDateTime, authorizedClient.getPrincipalName());
     }
 
     @GetMapping("/events/listWindows")

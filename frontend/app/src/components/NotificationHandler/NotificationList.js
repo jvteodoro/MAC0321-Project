@@ -8,8 +8,8 @@ const NotificationList = ({ visible, notifications }) => {
     <div id="notification-list" className={visible ? "extended" : ""}>
       <h3 id="list-header">Notifications</h3>
       <ul id="list-content">
-        {notifications.map((notification, key) => (
-          <NotificationItem notification={notification} key={key} />
+        {notifications.map((notification) => (
+          <NotificationItem notification={notification} key={notification.id} />
         ))}
       </ul>
     </div>
