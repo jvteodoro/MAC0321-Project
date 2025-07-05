@@ -32,6 +32,7 @@ public class NotificationController {
         if (userId == null) {
             throw new RuntimeException("Usuário não autenticado");
         }
-        return notificationService.getNotificationsForUser(userId);
+        List<Notification> notifications = notificationService.getNotificationsForUser(userId);
+        return notifications;
     }
 }

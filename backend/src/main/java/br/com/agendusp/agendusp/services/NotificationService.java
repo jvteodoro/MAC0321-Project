@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class NotificationService {
@@ -20,7 +19,7 @@ public class NotificationService {
     public void addNotification(Notification notification) {
         // Prevent duplicate notifications for the same user and message
         boolean exists = notifications.stream()
-            .anyMatch(n -> n.getUserId().equals(notification.getUserId()));
+            .anyMatch(n -> n.getId().equals(notification.getId()));
         if (!exists) {
             notifications.add(notification);
             // Send notification to the specific user via WebSocket
@@ -33,7 +32,6 @@ public class NotificationService {
 
     public List<Notification> getNotificationsForUser(String userId) {
         return notifications.stream()
-                .filter(n -> n.getUserId().equals(userId))
-                .collect(Collectors.toList());
+                .filter(n -> n.getUserId().equals(userId)).toList();
     }
 }

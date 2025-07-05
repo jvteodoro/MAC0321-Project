@@ -71,7 +71,9 @@ public class FormsController {
         @RequestParam String endDate,
         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
 
-        return eventPoolDataController.create(eventId, startDate, endDate);
+        EventPoll poll = eventPoolDataController.create(eventId, startDate, endDate);
+        sendPool(poll.getId()); // TODO: Checar se deve ser movido para outro lugar
+        return poll;
     }
 
     @PostMapping("/pool/vote")

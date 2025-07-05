@@ -241,13 +241,10 @@ const EditarEventoMenu = (props) => {
   // Helper to get start/end of the day in ISO string
   const getDayInterval = (date) => {
     if (!date) return [null, null];
-    const start = new Date(date);
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(date);
-    end.setHours(23, 59, 59, 99);
+    const day = new Date(date);
     return [
-      start.toISOString().split("T")[0] + "T00:00:00",
-      end.toISOString().split("T")[0] + "T23:59:59",
+      day.toISOString().split("T")[0] + "T00:00:00",
+      day.toISOString().split("T")[0] + "T23:59:59",
     ];
   };
 

@@ -56,7 +56,6 @@ public class EventPollDataController {
         EventPoll eventPool = new EventPoll(event);
 
         System.out.println("[DEBUG] 1");
-
         DateTimeInterval dateTimeInterval = new DateTimeInterval();
         dateTimeInterval.setStart(LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME));
         dateTimeInterval.setEnd(LocalDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME));
