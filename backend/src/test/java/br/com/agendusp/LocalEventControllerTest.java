@@ -8,15 +8,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-
 import br.com.agendusp.agendusp.AgendUspApplication;
 import br.com.agendusp.agendusp.MongoTestContainer;
 import br.com.agendusp.agendusp.controller.UserDataController;
-import br.com.agendusp.agendusp.controller.eventControllers.EventsController;
-import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.documents.User;
 
 
@@ -30,13 +24,6 @@ public class LocalEventControllerTest extends MongoTestContainer {
     @Autowired
     UserDataController userDataController; // Controlador de dados do usuário
     @Autowired
-    EventsDataController eventsDataController; // Controlador de dados de eventos
-    @Autowired
-    EventsController eventsController;
-    @Autowired
-    Gson gson; // Gson é usado para manipulação de JSON
-    @Autowired
-    ObjectMapper objMapper;
     static String userId = "testUser"; // ID do usuário de teste
     static String userEmail = "test@gmail.com"; // Email do usuário de teste
     static String userName = "Usuário de Teste"; // Nome do usuário de teste
@@ -91,18 +78,83 @@ public class LocalEventControllerTest extends MongoTestContainer {
                 .andDo(MockMvcResultHandlers.print()); // Imprime os detalhes da requisição e resposta
     }
 
-    
+    @Test
+    @WithMockUser
+    public void testGetEvent() throws Exception {
+        setupDataBase(); // Configura o banco de dados antes do teste
+        String calendarId = "testCalendar"; // ID do calendário de teste
 
+        mockMvc.perform(MockMvcRequestBuilders.get("/events/get/{eventId}", eventId)
+                .param("calendarId", calendarId))
+                .andExpect(MockMvcResultMatchers.status().isOk()) // Verifica se a resposta é 200 OK
+                .andDo(MockMvcResultHandlers.print()); // Imprime os detalhes da requisição e resposta
+    }
 
+    @Test
+    @WithMockUser
+    public void testUpdateEvent() throws Exception {
+        setupDataBase(); // Configura o banco de dados antes do teste
+        String calendarId = "testCalendar"; // ID do calendário de teste
+        String updatedEventName = "Evento Atualizado"; // Novo nome para o evento atualizado
 
+        String updatedEventJson = "{ \"name\": \"" + updatedEventName + "\" }";
 
+        mockMvc.perform(MockMvcRequestBuilders.put("/events/update/{eventId}", eventId)
+                .param("calendarId", calendarId)
+                .contentType("application/json")
+                .content(updatedEventJson))
+                .andExpect(MockMvcResultMatchers.status().isOk()) // Verifica se a resposta é 200 OK
+                .andDo(MockMvcResultHandlers.print()); // Imprime os detalhes da requisição e resposta
+    }
 
+    @Test
+    @WithMockUser
+    public void testGetAllEvents() throws Exception {
+        setupDataBase(); // Configura o banco de dados antes do teste
+        String calendarId = "testCalendar"; // ID do calendário de teste
 
+        mockMvc.perform(MockMvcRequestBuilders.get("/events/all")
+                .param("calendarId", calendarId))
+                .andExpect(MockMvcResultMatchers.status().isOk()) // Verifica se a resposta é 200 OK
+                .andDo(MockMvcResultHandlers.print()); // Imprime os detalhes da requisição e resposta
+    }
 
+    @Test
+    @WithMockUser
+    public void testAddAttendeeToEvent() throws Exception {
+        setupDataBase(); // Configura o banco de dados antes do teste
+        String attendeeId = "testAttendee"; // ID do participante de teste
+        String calendarId = "testCalendar"; // ID do calendário de teste
 
+        mockMvc.perform(MockMvcRequestBuilders.post("/events/addAttendee/{eventId}", eventId)
+                .param("calendarId", calendarId)
+                .param("attendeeId", attendeeId))
+                .andExpect(MockMvcResultMatchers.status().isOk()) // Verifica se a resposta é 200 OK
+                .andDo(MockMvcResultHandlers.print()); // Imprime os detalhes da requisição e resposta
+    }
 
+    @Test
+    @WithMockUser
+    public void testRemoveAttendeeFromEvent() throws Exception {
+        setupDataBase(); // Configura o banco de dados antes do teste
+        String attendeeId = "testAttendee"; // ID do participante de teste
+        String calendarId = "testCalendar"; // ID do calendário de teste
+        mockMvc.perform(MockMvcRequestBuilders.delete("/events/removeAttendee/{eventId}", eventId)
+                .param("calendarId", calendarId)
+                .param("attendeeId", attendeeId))
+                .andExpect(MockMvcResultMatchers.status().isNoContent()) // Verifica se a resposta é 204 No Content
+                .andDo(MockMvcResultHandlers.print()); // Imprime os detalhes da requisição e resposta]
+    }
 
-
-
+    @Test
+    @WithMockUser
+    public void testGetAttendeesForEvent() throws Exception {
+        setupDataBase(); // Configura o banco de dados antes do teste
+        String calendarId = "testCalendar"; // ID do calendário de teste
+        mockMvc.perform(MockMvcRequestBuilders.get("/events/attendees/{eventId}", eventId)
+                .param("calendarId", calendarId))
+                .andExpect(MockMvcResultMatchers.status().isOk()) // Verifica se a resposta é 200 OK
+                .andDo(MockMvcResultHandlers.print()); // Imprime os detalhes da requisição e resposta
+    }
 
 }
