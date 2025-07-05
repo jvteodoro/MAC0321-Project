@@ -94,8 +94,6 @@ public class EventPollDataController {
         return eventPool;
     }
 
-    // Deprecated: keep for compatibility, but throw if called
-    @Deprecated
     public EventPoll create(String eventId,  String startDate, String endDate){
         throw new UnsupportedOperationException("Use create(eventId, startDate, endDate, userId) instead.");
     }
