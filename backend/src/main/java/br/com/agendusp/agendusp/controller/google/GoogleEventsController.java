@@ -96,7 +96,7 @@ public class GoogleEventsController {
         return eventListResource;
     }
 
-        /*@PostMapping("/google/events/update")
+        @PostMapping("/google/events/update")
         public EventsResource update(@RequestBody EventsResource event,
                 @RequestParam String calendarId,
                 @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
@@ -114,7 +114,7 @@ public class GoogleEventsController {
                 .uri("https://www.googleapis.com/calendar/v3/calendars/" + calendarId + "/events/" + event.getId())
                 .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
                 .body(event).retrieve().toEntity(EventsResource.class).getBody();
-        }*/
+        }
         
     // Pensar no tipo de dado que um Json somente com as partes escolhidas
     // representa
