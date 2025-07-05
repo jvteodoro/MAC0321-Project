@@ -42,23 +42,23 @@ public class FormsController {
     @Autowired
     EventPollDataController eventPollDataController;
 
-    @MessageMapping("/Poll/send/{eventPollId}")
+    @MessageMapping("/poll/send/{eventPollId}")
     public void sendPoll(@PathVariable String eventPollId) {
         Optional<EventPoll> eventPollOptional = eventPollRepository.findById(eventPollId);
         if (eventPollOptional.isPresent()) {
             EventPoll eventPoll = eventPollOptional.get();
-            String destination = "/notify/Poll/" + eventPollId;
+            String destination = "/notify/poll/" + eventPollId;
             msgTemplate.convertAndSend(destination, eventPoll);
         }
     }
 
-    @MessageMapping("/Poll/vote/{eventPollId}")
+    @MessageMapping("/poll/vote/{eventPollId}")
     public void voteEventPoll(@PathVariable String eventPollId, @RequestParam String dateTimeIntervalId) {
-        String destination = "/notify/Poll/" + eventPollId;
+        String destination = "/notify/poll/" + eventPollId;
         msgTemplate.convertAndSend(destination, this.vote(eventPollId, dateTimeIntervalId));
     }
 
-    @MessageMapping("/Poll/create/{eventPollId}/{dateTimeIntervalId}")
+    @MessageMapping("/poll/create/{eventPollId}/{dateTimeIntervalId}")
     public void createEventFromPoll(@PathVariable String eventPollId,
             @PathVariable String dateTimeIntervalId) {
 
@@ -66,7 +66,7 @@ public class FormsController {
         eventPollRepository.findById(eventPollId);
     }
 
-    @GetMapping("/Poll/create")
+    @GetMapping("/poll/create")
     public EventPoll createPoll(@RequestParam String eventId, @RequestParam String startDate,
         @RequestParam String endDate,
         @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
@@ -84,7 +84,7 @@ public class FormsController {
         }
     }
 
-    @PostMapping("/Poll/vote")
+    @PostMapping("/poll/vote")
     public EventPoll vote(@RequestParam String eventPollId, @RequestParam String dateTimeIntervalId) {
         Optional<EventPoll> evPoll = eventPollRepository.findById(eventPollId);
         if (evPoll.isPresent()) {
@@ -97,7 +97,7 @@ public class FormsController {
 
     }
 
-    @PostMapping("/Poll/createEvent")
+    @PostMapping("/poll/createEvent")
     public EventsResource createEvent(@RequestParam String eventPollId, @RequestParam String dateTimeIntervalId) {
         Optional<EventPoll> evPoll = eventPollRepository.findById(eventPollId);
         DateTimeIntervalPoll selected;
@@ -120,7 +120,7 @@ public class FormsController {
         return new EventsResource();
     }
 
-    @GetMapping("/Poll/byEvent")
+    @GetMapping("/poll/byEvent")
     public EventPoll getPollByEvent(@RequestParam String eventId) {
         return eventPollRepository.findByEventId(eventId).orElse(null);
     }
