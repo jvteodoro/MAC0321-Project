@@ -19,12 +19,18 @@ public class NotificationService {
     private SimpMessagingTemplate messagingTemplate;
 
     public void addNotification(Notification notification) {
-        notifications.add(notification);
-        // Send notification to the specific user via WebSocket
-        messagingTemplate.convertAndSendToUser(
-                notification.getUserId(),
-                "/queue/notifications",
-                notification);
+        // Prevent duplicate notifications for the same user and message
+        boolean exists = notifications.stream()
+            .anyMatch(n -> n.getUserId().equals(notification.getUserId())
+                        && n.getMessage().equals(notification.getMessage()));
+        if (!exists) {
+            notifications.add(notification);
+            // Send notification to the specific user via WebSocket
+            messagingTemplate.convertAndSendToUser(
+                    notification.getUserId(),
+                    "/queue/notifications",
+                    notification);
+        }
     }
 
     public List<Notification> getNotificationsForUser(String userId) {

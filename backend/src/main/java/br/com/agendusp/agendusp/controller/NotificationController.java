@@ -5,6 +5,10 @@ import br.com.agendusp.agendusp.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+
 import java.util.List;
 
 @RestController
@@ -16,6 +20,18 @@ public class NotificationController {
 
     @GetMapping("/{userId}")
     public List<Notification> getNotifications(@PathVariable String userId) {
+        return notificationService.getNotificationsForUser(userId);
+    }
+
+    @GetMapping("/me")
+    public List<Notification> getMyNotifications(
+            Authentication authentication,
+            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient
+    ) {
+        String userId = authorizedClient != null ? authorizedClient.getPrincipalName() : null;
+        if (userId == null) {
+            throw new RuntimeException("Usuário não autenticado");
+        }
         return notificationService.getNotificationsForUser(userId);
     }
 }
