@@ -1,15 +1,15 @@
-# CreatePollMenu
+# NotificationItem
 
 <!-- STORY -->
 
 ## Introduction
 
-CreatePollMenu is an easy-to-use component.
+NotificationItem is an easy-to-use component.
 
 ## Usage
 
 ```javascript
-import { CreatePollMenu } from 'some-package-name';
+import { NotificationItem } from 'some-package-name';
 ```
 
 ## Example use
@@ -18,7 +18,7 @@ import { CreatePollMenu } from 'some-package-name';
 const myPage = props => {
   return (
     <main>
-      <CreatePollMenu />
+      <NotificationItem />
     </main>
   );
 };

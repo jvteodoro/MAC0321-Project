@@ -26,11 +26,25 @@ const VoteMenu = (props) => {
 
     const fetchTimeSlots = async () => {
       try {
-        const response = await axios.get(`/api/events/${eventId}/timeslots`, {
-          withCredentials: true,
-        });
+        // Use listWindows2 endpoint
+        // You may need to provide calendarId and endDateTime; here we assume eventId is calendarId and use a default endDateTime
+        const calendarId = eventId;
+        const endDateTime = new Date();
+        endDateTime.setDate(endDateTime.getDate() + 7); // 7 days from now
+        const endDateTimeStr = endDateTime.toISOString().split("T")[0]; // Format: yyyy-MM-dd
+
+        const response = await axios.get(
+          `http://localhost:12003/events/listWindows2`,
+          {
+            params: {
+              calendarId,
+              endDateTime: endDateTimeStr,
+            },
+            withCredentials: true,
+          }
+        );
         setTimeSlots(
-          response.data.timeSlots.map((slot) => ({
+          response.data.map((slot) => ({
             ...slot,
             start: new Date(slot.start),
             end: new Date(slot.end),
