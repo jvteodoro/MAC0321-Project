@@ -96,6 +96,26 @@ public class GoogleEventsController {
         return eventListResource;
     }
 
+        /*@PostMapping("/google/events/update")
+        public EventsResource update(@RequestBody EventsResource event,
+                @RequestParam String calendarId,
+                @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        if (event.getId() == null || event.getId().isEmpty()) {
+            throw new IllegalArgumentException("Event ID must not be null or empty");
+        }
+        if (event.getStart() == null || event.getEnd() == null) {
+            throw new IllegalArgumentException("Event must have a start and end time.");
+        }       
+        String userId = authorizedClient.getPrincipalName();
+        // Atualiza o evento no banco de dados local
+        eventsDataController.updateEvent(calendarId, event.getId(), event, userId);
+        // Atualiza o evento no Google Calendar
+        return restClient.put()
+                .uri("https://www.googleapis.com/calendar/v3/calendars/" + calendarId + "/events/" + event.getId())
+                .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
+                .body(event).retrieve().toEntity(EventsResource.class).getBody();
+        }*/
+        
     // Pensar no tipo de dado que um Json somente com as partes escolhidas
     // representa
     // @PatchMapping("/google/events/patch")

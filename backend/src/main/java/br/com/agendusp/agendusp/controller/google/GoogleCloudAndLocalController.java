@@ -6,6 +6,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
@@ -110,7 +111,7 @@ public class GoogleCloudAndLocalController {
         }
     }
 
-    @GetMapping("/google/localToCloud")
+    @PostMapping("/google/localToCloud")
     public Map<String, Object> localToCloud(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) throws Exception {
         // 1. Obter usuário autenticado
         User user = this.getUserInfo(authorizedClient);
@@ -119,13 +120,13 @@ public class GoogleCloudAndLocalController {
         // Relatório de sincronização
         Map<String, Object> syncReport = new HashMap<>();
         ArrayList<String> syncedCalendars = new ArrayList<>();
-        ArrayList<String> syncedEvents = new ArrayList<>();
+        //ArrayList<String> syncedEvents = new ArrayList<>();
 
         // 2. Para cada calendário local, sincronizar com Google
         for (CalendarListResource calendar : localCalendars) {
             try {
                 // Tenta obter o calendário na nuvem
-                CalendarListResource googleCalendarExist = gCalendarListController.get(calendar.getId(), authorizedClient);
+                CalendarListResource checkIfGoogleCalendarExist = gCalendarListController.get(calendar.getId(), authorizedClient);
                 gCalendarListController.update(calendar);
                 // Se não lançar exceção, já existe na nuvem
             } catch (Exception e) {
@@ -135,14 +136,12 @@ public class GoogleCloudAndLocalController {
             syncedCalendars.add(calendar.getCalendarId());
 
             // 3. Para cada evento local do calendário, sincronizar
-            ArrayList<EventsResource> localEvents = eventsDataController.getEvents(calendar.getCalendarId(), user.getId());
+            /*ArrayList<EventsResource> localEvents = eventsDataController.getEvents(calendar.getCalendarId(), user.getId());
             for (EventsResource event : localEvents) {
                 try {
                     // Tenta obter o evento na nuvem
-                    restClient.get()
-                        .uri("https://www.googleapis.com/calendar/v3/calendars/" + calendar.getCalendarId() + "/events/" + event.getId())
-                        .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
-                        .retrieve().toEntity(EventsResource.class).getBody();
+                    EventsResource checkIfGoogleEventExist = gEventsController.get(calendar.getId(), event.getId(), authorizedClient);
+                    gEventsController.update(event, calendar.getId(), authorizedClient);
                     // Se não lançar exceção, já existe
                 } catch (Exception e) {
                     // Não existe, criar
@@ -153,10 +152,10 @@ public class GoogleCloudAndLocalController {
                         .retrieve().toEntity(EventsResource.class).getBody();
                 }
                 syncedEvents.add(event.getId());
-            }
+            }*/
         }
         syncReport.put("calendars", syncedCalendars);
-        syncReport.put("events", syncedEvents);
+        /*syncReport.put("events", syncedEvents);*/
         return syncReport;
     }
     
