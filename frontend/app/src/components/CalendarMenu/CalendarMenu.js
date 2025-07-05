@@ -50,10 +50,15 @@ const Calendar = ({ year, month }) => {
     resetToCurrent();
   }, []);
   useEffect(() => {
-  fetchNationalHolidays(currentDate.getFullYear())
-    .then(setHolidays)
-    .catch(() => setHolidays([]));
-}, [currentDate]);
+    if (
+      currentDate instanceof Date &&
+      !isNaN(currentDate.getFullYear())
+    ) {
+      fetchNationalHolidays(currentDate.getFullYear())
+        .then(setHolidays)
+        .catch(() => setHolidays([]));
+    }
+  }, [currentDate]);
 
 
 
