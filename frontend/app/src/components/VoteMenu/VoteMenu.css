@@ -22,10 +22,48 @@
   color: #388e3c;
 }
 
-.timeslot-list {
-  list-style: none;
+.timeslot-container {
   display: flex;
   flex-direction: column;
+}
+
+.timeslot-inputs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timeslot-list-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 1em auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timeslot-list {
+  width: 100%;
+  padding: 0.3em;
+  background-color: var(--secondary-color);
+  border: 2px var(--main-hoverselect-color) solid;
+  border-radius: 0.4em;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  gap: 0.25em;
+  z-index: 1;
+  margin-bottom: 1em;
+}
+
+.timeslot-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.44em;
+  background-color: var(--secondary-hoverselect-color);
+  border-radius: 4px;
+  user-select: none;
 }
 
 .timeslot-item {

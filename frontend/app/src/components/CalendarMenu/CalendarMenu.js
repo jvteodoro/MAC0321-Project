@@ -34,6 +34,8 @@ const Calendar = ({ year, month }) => {
         if (validCalendars.length > 0) {
           const newCalendarId = validCalendars[0].id;
           setCalendarId(newCalendarId);
+          // Store in localStorage for NotificationHandler
+          localStorage.setItem("currentCalendarId", newCalendarId);
 
           const eventsResponse = await axios.get(
             `http://localhost:12003/events/list?calendarId=${newCalendarId}`,

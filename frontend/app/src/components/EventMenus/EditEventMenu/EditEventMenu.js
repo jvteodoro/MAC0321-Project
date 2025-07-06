@@ -445,32 +445,15 @@ const EditarEventoMenu = (props) => {
             </div>
           )}
 
-          {pollSuccess ? (
-            <button
-              type="button"
-              className="submit-button criar-enquete-btn"
-              style={{ marginBottom: "1em", width: "auto" }}
-              onClick={() => {
-                // Navigate to voting page for this poll
-                navigate("/votar", {
-                  replace: true,
-                  state: { eventId: createdPollId }
-                });
-              }}
-              disabled={disableInputs}
-            >
-              Visualizar enquete
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="submit-button criar-enquete-btn"
-              onClick={handleCreatePoll}
-              disabled={disableInputs}
-            >
-              Criar enquete
-            </button>
-          )}
+          <button
+            type="button"
+            className="submit-button criar-enquete-btn"
+            style={{ marginBottom: "1em", width: "auto" }}
+            onClick={handleCreatePoll}
+            disabled={disableInputs || pollSuccess}
+          >
+            Criar enquete
+          </button>
         </div>
 
         <label htmlFor="local" className="form-field full-width">

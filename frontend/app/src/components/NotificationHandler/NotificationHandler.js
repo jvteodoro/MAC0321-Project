@@ -17,7 +17,13 @@ const NotificationHandler = () => {
       const res = await axios.get("http://localhost:12003/api/notifications/me", {
         withCredentials: true,
       });
-      setNotifications(res.data || []);
+      // Inject calendarId from localStorage into each notification
+      const calendarId = localStorage.getItem("currentCalendarId");
+      const notificationsWithCalendarId = (res.data || []).map(n => ({
+        ...n,
+        calendarId
+      }));
+      setNotifications(notificationsWithCalendarId);
     } catch (err) {
       setNotifications([]);
     }

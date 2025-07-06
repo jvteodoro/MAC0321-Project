@@ -11,7 +11,10 @@ const NotificationItem = ({notification}) => {
     if (notification.linkedObjectId) {
       navigate("/votar", {
         replace: true,
-        state: { eventId: notification.linkedObjectId }
+        state: {
+          eventId: notification.linkedObjectId,
+          calendarId: notification.calendarId
+        }
       });
     }
   };
@@ -31,6 +34,7 @@ NotificationItem.propTypes = {
     id: PropTypes.any,
     message: PropTypes.string.isRequired,
     linkedObjectId: PropTypes.any,
+    calendarId: PropTypes.any,
     // ...other possible notification props...
   }).isRequired,
 };
