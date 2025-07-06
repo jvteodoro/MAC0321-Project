@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -27,13 +29,14 @@ public class HomeController {
     @GetMapping("/stats")
     public String generateStats(
             @RequestParam("start") LocalDateTime start,
-            @RequestParam("end") LocalDateTime end) {
+            @RequestParam("end") LocalDateTime end,
+            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
         DateTimeInterval interval = new DateTimeInterval();
         interval.setStart(start);
         interval.setEnd(end);
 
         System.out.println("[DEBUG] interval " + interval.getStart() + " | " + interval.getEnd());
-        ArrayList<EventsResource> allEvents = eventsDataController.getEventsOnInterval(interval);
+        ArrayList<EventsResource> allEvents = eventsDataController.getEventsOnInterval(authorizedClient.getPrincipalName(), interval);
         System.out.println("[DEBUG] allEvents " + allEvents);
         int eventsNum = allEvents.size();
         long timeInEvents = 0;

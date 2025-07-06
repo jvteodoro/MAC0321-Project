@@ -70,9 +70,16 @@ public class EventPollDataController {
         initialFreeTime.add(dateTimeInterval);
 
         // Pegar todos os eventos no intervalo
-        ArrayList<EventsResource> allEvents = eventsDataController.getEventsOnInterval(dateTimeInterval);
+        ArrayList<EventsResource> allEvents = eventsDataController.getEventsOnInterval(userId, dateTimeInterval);
         System.out.println("[DEBUG] 3");
+        try {
+           System.out.println("Free Time: "+objectMapper.writeValueAsString(initialFreeTime));
+        } catch (Exception e){}
+        
         for (EventsResource ev : allEvents) {
+            try {
+            System.out.println("Event :"+objectMapper.writeValueAsString(ev));
+            } catch (Exception e){}
             initialFreeTime = ev.freeTime(initialFreeTime);
             System.out.println("[DEBUG] A");
         }

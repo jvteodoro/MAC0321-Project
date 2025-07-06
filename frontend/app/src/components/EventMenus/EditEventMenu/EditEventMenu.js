@@ -141,6 +141,11 @@ const EditarEventoMenu = (props) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
+  const fixTimezoneOffset = (date) => {
+    if (!date) return "";
+    return new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+  }
+
   const handleDateChange = (data, campo) => {
     setFormData((prev) => ({ ...prev, [campo]: data }));
   };
@@ -203,11 +208,11 @@ const EditarEventoMenu = (props) => {
       // Update only the properties from the form
       updatedEvent.summary = formData.titulo;
       updatedEvent.start = {
-        dateTime: formData.dataInicio.toISOString(),
+        dateTime: fixTimezoneOffset(formData.dataInicio).toISOString(),
         timeZone: "America/Sao_Paulo",
       };
       updatedEvent.end = {
-        dateTime: formData.dataFim.toISOString(),
+        dateTime: fixTimezoneOffset(formData.dataFim).toISOString(),
         timeZone: "America/Sao_Paulo",
       };
       updatedEvent.colorId = formData.cor.toString();
@@ -299,6 +304,7 @@ const EditarEventoMenu = (props) => {
       return;
     }
     const [startDate, endDate] = getDayInterval(formData.dataInicio);
+
     try {
       const response = await axios.get(
         `http://localhost:12003/poll/create?eventId=${originalEvent.id}&startDate=${startDate}&endDate=${endDate}`,

@@ -3,9 +3,11 @@ package br.com.agendusp.agendusp.documents;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.services.calendar.model.Event.ExtendedProperties;
 
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
@@ -15,6 +17,9 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.EventDate;
 
 @Document(collection = "events")
 public class EventsResource { // objetos dessa classe serão salvos na coleção events do MongoDB
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Id
     String id;
@@ -101,20 +106,31 @@ public class EventsResource { // objetos dessa classe serão salvos na coleção
                                                                                            // intervalos que se
                                                                                            // sobrepõem
         ArrayList<DateTimeInterval> freeTimeVecNew = new ArrayList<>();
-
+        try {
+            System.out.println(objectMapper.writeValueAsString(freeTimeVec));}
+        catch (Exception e){}
         for (DateTimeInterval interval : freeTimeVec) {
 
+            System.out.println("[DEBUG] Eventstart: " + this.getStart().getDateTime() + " | Timezone: " + this.getStart().getTimeZone());
+            System.out.println("[DEBUG] Eventend: " + this.getEnd().getDateTime() + " | Timezone: " + this.getEnd().getTimeZone());
             LocalDateTime eventStart = this.getStart().getDateTime();
             LocalDateTime eventEnd = this.getEnd().getDateTime();
             LocalDateTime freeTimeStart = interval.getStart();
             LocalDateTime freeTimeEnd = interval.getEnd();
+            System.out.println("[DEBUG] freeTimeEnd: " + interval.getEnd());
 
             DateTimeInterval beforeEventFreeTime = new DateTimeInterval();
             DateTimeInterval afterEventFreeTime = new DateTimeInterval();
+
+            System.err.println("[DEBUG] A-1: interval 1 start: " + freeTimeStart + " | interval 1 end: " + eventStart);
             beforeEventFreeTime.setStart(freeTimeStart);
             beforeEventFreeTime.setEnd(eventStart);
+            System.err.println("[DEBUG] A-2: interval 1 start: " + freeTimeStart + " | interval 1 end: " + eventStart);
+
+            System.err.println("[DEBUG] B-1: interval 1 start: " + eventEnd + " | interval 1 end: " + freeTimeEnd);
             afterEventFreeTime.setStart(eventEnd);
             afterEventFreeTime.setEnd(freeTimeEnd);
+             System.err.println("[DEBUG] B-2: interval 1 start: " + eventEnd + " | interval 1 end: " + freeTimeEnd);
 
             System.err.println("BeforeEventFreeTime: " + beforeEventFreeTime.getEnd().toString());
             // System.err.println("AfterEventFreeTime:

@@ -42,8 +42,11 @@ public class DateTimeInterval implements Comparable<DateTimeInterval> {
     }
 
     public void setEnd(LocalDateTime end) {
+        // System.out.println("DateTimeInterval start: "+this.start.toString());
+        // System.out.println("DateTimeInterval end: "+end.toString());
         if (end != null && start != null && end.isBefore(this.start)) {
-            throw new IllegalArgumentException("end não pode ser antes do start");
+            System.err.println("End: "+end.toString());
+            throw new IllegalArgumentException("Start:"+this.start.toString()+" End:"+end.toString()+" .end não pode ser antes do start");
         }
         this.end = end;
     }
