@@ -259,7 +259,6 @@ const EditarEventoMenu = (props) => {
       window.location.href = "http://localhost:3000/";
     } catch (erro) {
       console.error("Falha ao cancelar evento:", erro);
-      alert("Erro ao cancelar evento.");
     }
   };
 

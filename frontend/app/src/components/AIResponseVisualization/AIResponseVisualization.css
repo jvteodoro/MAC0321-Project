@@ -1,58 +1,7 @@
 /* Container principal */
-.visualization-container.ai-response {
+#responseViewer {
   height: 100%;
-  border-radius: 10px;
-  padding: 24px 32px;
-  margin: 20px auto;
-  max-width: 600px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-/* Pergunta */
-.visualization-container.ai-response h3 {
-  color: #2563eb;
-  margin-bottom: 16px;
-}
-
-/* Resposta da IA */
-.ai-answer {
-  background: #e0e7ff;
-  border-radius: 6px;
-  padding: 16px;
-  margin-bottom: 18px;
-}
-
-.ai-answer strong {
-  color: #1e293b;
-}
-
-/* Metadados */
-.response-meta {
-  font-size: 0.97em;
-  color: #334155;
-}
-.response-meta p {
-  margin: 6px 0;
-}
-
-/* Lista de fontes */
-.response-meta ul {
-  margin: 6px 0 12px 20px;
-  padding-left: 0;
-}
-
-.response-meta li {
-  list-style-type: disc;
-  margin-bottom: 2px;
-}
-
-/* Confiança destacada */
-.response-meta strong {
-  color: #0ea5e9;
-}
-
-/* Timestamp */
-.timestamp small {
-  color: #64748b;
-  font-style: italic;
+  width: 100%;
+  padding: 0 0.5em 0.5em 0.5em;
+  overflow-y: auto;
 }

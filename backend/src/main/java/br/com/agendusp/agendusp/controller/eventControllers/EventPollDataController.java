@@ -32,10 +32,6 @@ public class EventPollDataController {
     ApplicationEventPublisher applicationPublisher;
 
     public ArrayList<EventPoll> getAllEventPolls(ArrayList<String> eventPollIdList) {
-        // Verifica se a lista de IDs está vazia
-        if (eventPollIdList == null || eventPollIdList.isEmpty()) {
-            throw new IllegalArgumentException("A lista de IDs de EventPoll não pode ser nula ou vazia.");
-        }
         ArrayList<EventPoll> allEventPolls = new ArrayList<>();
         for (String id : eventPollIdList) {
             allEventPolls.add(eventPollRepository.findById(id).orElse(null));
