@@ -1,81 +1,52 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "./AIResponseVisualization.css";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const AIResponseVisualization = ({ response }) => {
-  if (!response) {
-    return (
-      <div className="visualization-container ai-response">
-        No response data.
-      </div>
-    );
-  }
-  // Sample response structure:
-  // {
-  //   question: "What are the benefits of React?",
-  //   answer: "React offers several benefits including component reusability...",
-  //   confidence: "High",
-  //   sources: ["React Documentation", "Stack Overflow 2022 Survey"],
-  //   timestamp: "2023-06-15T14:30:00Z"
-  // }
+const AIResponseVisualization = () => {
+  const { calendarId, eventId } = location.state || {};
+  const [responseData, setResponseData] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchAIResponse = async () => {
+      if (!calendarId || !firstDay) return;
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await axios.get(
+          `http://localhost:12003/aiReport?initialDate=${firstDay}&calendarId=${calendarId}`
+        );
+        setResponseData(response.data);
+      } catch (err) {
+        setError('Erro ao buscar os dados.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAIResponse();
+  }, [calendarId, firstDay]);
 
   return (
-    <div className="visualization-container ai-response">
-      {response.question && <h3>Question: {response.question}</h3>}
+    <div style={{ padding: '20px' }}>
+      <h2>Visualização da Resposta da IA</h2>
+      <p><strong>Calendário:</strong> {calendarId}</p>
+      <p><strong>Data Inicial:</strong> {firstDay}</p>
+      <p><strong>Data Final:</strong> {lastDay}</p>
 
-      <div className="ai-answer">
-        {response.answer ? (
-          <>
-            <p>
-              <strong>AI Answer:</strong>
-            </p>
-            <p>{response.answer}</p>
-          </>
-        ) : (
-          <p>No answer provided</p>
-        )}
-      </div>
-
-      <div className="response-meta">
-        {response.confidence && (
-          <p>
-            <strong>Confidence:</strong> {response.confidence}
-          </p>
-        )}
-
-        {response.sources && response.sources.length > 0 && (
-          <>
-            <p>
-              <strong>Sources:</strong>
-            </p>
-            <ul>
-              {response.sources.map((source, index) => (
-                <li key={index}>{source}</li>
-              ))}
-            </ul>
-          </>
-        )}
-
-        {response.timestamp && (
-          <p className="timestamp">
-            <small>
-              Generated on: {new Date(response.timestamp).toLocaleString()}
-            </small>
-          </p>
-        )}
-      </div>
+      {loading && <p>Carregando resposta...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {!loading && !error && (
+        <div style={{ marginTop: '20px', whiteSpace: 'pre-wrap' }}>
+          <h3>Resposta da API:</h3>
+          <p>{responseData}</p>
+        </div>
+      )}
     </div>
   );
-};
-
-AIResponseVisualization.propTypes = {
-  response: PropTypes.shape({
-    question: PropTypes.string,
-    answer: PropTypes.string,
-    confidence: PropTypes.string,
-    sources: PropTypes.arrayOf(PropTypes.string),
-    timestamp: PropTypes.string,
-  }).isRequired,
 };
 
 export default AIResponseVisualization;
