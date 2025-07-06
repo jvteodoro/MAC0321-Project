@@ -21,14 +21,16 @@ public class EventPoll {
 
     public EventPoll (EventsResource event) {
       this.setEvent(event);
+      this.done = event.getAttendees().size();
     }
 
     public void addPossibleTimesFromDateTimeIntervalList(ArrayList<DateTimeInterval> dtList) {
+        int currentId = 0;
         if (this.posibleTimes == null) {
             this.posibleTimes = new ArrayList<>();
         }
         for (DateTimeInterval dt : dtList) {
-            this.posibleTimes.add(new DateTimeIntervalPoll(dt));
+            this.posibleTimes.add(new DateTimeIntervalPoll(dt, currentId++));
         }
     }
     public void setPossibleTimesFromDateTimeIntervalList(ArrayList<DateTimeInterval> dtList) {
@@ -39,12 +41,13 @@ public class EventPoll {
         this.posibleTimes = intervalPoll;
     }
 
-    public void vote(String dateTimeIntervalPollId) {
+    public void vote(int dateTimeIntervalPollId) {
         for (DateTimeIntervalPoll dtPoll : this.posibleTimes){
             if (dtPoll.getId() == dateTimeIntervalPollId){
                 dtPoll.vote();
             }
         }
+        this.done = done - 1;
     }
     
 

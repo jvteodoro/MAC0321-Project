@@ -121,7 +121,7 @@ public class EventsResource { // objetos dessa classe serão salvos na coleção
             // "+objMapper.writeValueAsString(afterEventFreeTime));
 
             // TODO pois nunca é usado
-            int index = freeTimeVec.indexOf(interval);
+            // int index = freeTimeVec.indexOf(interval);
 
             // Não há tempo livre!! ;-;
             if (eventStart.isBefore(freeTimeStart) && eventEnd.isAfter(freeTimeEnd)) {

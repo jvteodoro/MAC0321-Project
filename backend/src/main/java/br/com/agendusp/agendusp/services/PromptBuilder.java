@@ -10,7 +10,6 @@ import org.springframework.web.client.RestClient;
 
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.controller.UserDataController;
-import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventPollDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.dataobjects.PollNotification;
@@ -31,8 +30,6 @@ public class PromptBuilder {
     private PromptService promptService;
     @Autowired
     private UserDataController userDataController;
-    @Autowired
-    private CalendarDataController calendarDataController;
     @Autowired
     private EventsDataController eventsDataController;
     @Autowired

@@ -12,7 +12,6 @@ import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
-import br.com.agendusp.agendusp.events.EventPollNotification;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
@@ -51,6 +50,11 @@ public class UserDataController {
                         userRepository.delete(user.get());
                 }
         }
+
+        public void deleteUser(User user) {
+                userRepository.delete(user);
+        }
+        
 
         public User findUserOrCreate(User userGiven) {
                 Optional<User> user = userRepository.findById(userGiven.getId());

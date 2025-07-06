@@ -53,14 +53,14 @@ public class FormsController {
     }
 
     @MessageMapping("/poll/vote/{eventPollId}")
-    public void voteEventPoll(@PathVariable String eventPollId, @RequestParam String dateTimeIntervalId) {
+    public void voteEventPoll(@PathVariable String eventPollId, @RequestParam int dateTimeIntervalId) {
         String destination = "/notify/poll/" + eventPollId;
         msgTemplate.convertAndSend(destination, this.vote(eventPollId, dateTimeIntervalId));
     }
 
     @MessageMapping("/poll/create/{eventPollId}/{dateTimeIntervalId}")
     public void createEventFromPoll(@PathVariable String eventPollId,
-            @PathVariable String dateTimeIntervalId) {
+            @PathVariable int dateTimeIntervalId) {
 
         this.createEvent(eventPollId, dateTimeIntervalId);
         eventPollRepository.findById(eventPollId);
@@ -78,14 +78,14 @@ public class FormsController {
             return poll;
         } catch (IllegalArgumentException ex) {
             // Return an empty poll with error message (or handle as preferred)
-            EventPoll errorPoll = new EventPoll();
+            // EventPoll errorPoll = new EventPoll();
             // Optionally, set a field or log the error
             throw ex;
         }
     }
 
     @PostMapping("/poll/vote")
-    public EventPoll vote(@RequestParam String eventPollId, @RequestParam String dateTimeIntervalId) {
+    public EventPoll vote(@RequestParam String eventPollId, @RequestParam int dateTimeIntervalId) {
         Optional<EventPoll> evPoll = eventPollRepository.findById(eventPollId);
         if (evPoll.isPresent()) {
             evPoll.get().vote(dateTimeIntervalId);
@@ -98,7 +98,7 @@ public class FormsController {
     }
 
     @PostMapping("/poll/createEvent")
-    public EventsResource createEvent(@RequestParam String eventPollId, @RequestParam String dateTimeIntervalId) {
+    public EventsResource createEvent(@RequestParam String eventPollId, @RequestParam int dateTimeIntervalId) {
         Optional<EventPoll> evPoll = eventPollRepository.findById(eventPollId);
         DateTimeIntervalPoll selected;
         if (evPoll.isPresent()) {

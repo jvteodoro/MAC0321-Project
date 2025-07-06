@@ -1,7 +1,6 @@
 package br.com.agendusp.agendusp.controller.eventControllers;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
@@ -66,7 +65,6 @@ public class LocalEventsController implements EventsController {
         boolean[][] dateVec = new boolean[dayNum][divTempo];
 
         // TO-DO pois nunca é usado
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         for (EventsResource ev : eventsOnInterval) {
             EventDate end = ev.getEnd();
             EventDate start = ev.getStart();

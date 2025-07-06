@@ -18,7 +18,6 @@ import br.com.agendusp.agendusp.dataobjects.UserInfo;
 import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarListList;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.User;
-import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 
 import java.util.ArrayList;

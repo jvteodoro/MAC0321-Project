@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import br.com.agendusp.agendusp.controller.UserDataController;
@@ -14,7 +15,7 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.events.EventPollNotification;
 
 @Component
-public class InvitePollListener implements ApplicationListener<EventPollNotification> {
+public class InvitePollListener  {
     @Autowired
     UserDataController userDataController;
     @Autowired
@@ -22,7 +23,7 @@ public class InvitePollListener implements ApplicationListener<EventPollNotifica
     @Autowired
     NotificationService notificationService;
 
-    @Override
+    @EventListener
     public void onApplicationEvent(EventPollNotification event) {
         EventPoll evPoll = eventPollDataController.getById(event.getEventPollId());
         ArrayList<Attendee> attendees = evPoll.getAttendees();
@@ -33,7 +34,7 @@ public class InvitePollListener implements ApplicationListener<EventPollNotifica
         for (Attendee at: attendees){
             String userId = at.getCalendarPerson().getId();
             if (userId == null || userId.equals(organizerId)) continue; // skip organizer
-            PollNotification notification = new PollNotification(userId, evPoll.getEventId(), message, type);
+            PollNotification notification = new PollNotification(this, userId, evPoll.getEventId(), message, type);
             userDataController.addEventPollNotification(userId, notification);
             // Add to NotificationService for WebSocket and REST API
             notificationService.addNotification(notification);

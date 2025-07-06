@@ -6,7 +6,7 @@ public class Notification {
     private String userId;
     private String message;
     String type;
-    private String linkedObjectId = null;
+    private Object source = null;
 
     public Notification() {}
 
@@ -16,11 +16,12 @@ public class Notification {
         this.message = message;
     }
 
-    public Notification(String userId, String message, String linkedObjectId) {
+    public Notification( Object source, String userId, String message, String type) {
         this.id = java.util.UUID.randomUUID().toString();
         this.userId = userId;
         this.message = message;
-        this.linkedObjectId = linkedObjectId;
+        this.source = source;
+        this.type  = type;
     }
 
 
@@ -44,8 +45,8 @@ public class Notification {
         return message;
     }
 
-    public String getlinkedObjectId() {
-        return linkedObjectId;
+    public Object getSource() {
+        return this.source;
     }
     
     public void setId(String id) {
@@ -59,7 +60,7 @@ public class Notification {
     public void setMessage(String message) {
         this.message = message;
     }
-    public void setlinkedObjectId(String linkedObjectId) {
-        this.linkedObjectId = linkedObjectId;
+    public void setlinkedObjectId(Object source) {
+        this.source = source;
     }
 }

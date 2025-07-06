@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
-import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.events.EventPollDoneEvent;
 import br.com.agendusp.agendusp.events.EventPollNotification;
@@ -98,7 +97,7 @@ public class EventPollDataController {
 
         return eventPoll;
     }
-    public EventPoll vote( String eventPollId, String dateTimeIntervalId) {
+    public EventPoll vote( String eventPollId, int dateTimeIntervalId) {
         Optional<EventPoll> evPoll = eventPollRepository.findById(eventPollId);
         if (evPoll.isPresent()) {
             evPoll.get().vote(dateTimeIntervalId);
@@ -107,9 +106,11 @@ public class EventPollDataController {
             EventPollNotification notification = new EventPollNotification(this, eventPollId, message);
             applicationPublisher.publishEvent(notification);
             if (evPoll.get().getDone() == 0){
+                System.err.println("Event done!");
                 EventPollDoneEvent pollDone = new EventPollDoneEvent(this, evPoll.get().getEventId());
                 applicationPublisher.publishEvent(pollDone);
             }
+            eventPollRepository.save(evPoll.get());
             return evPoll.get();
         } else {
             return new EventPoll();

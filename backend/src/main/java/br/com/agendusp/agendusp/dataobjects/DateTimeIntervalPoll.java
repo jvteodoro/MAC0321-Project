@@ -4,7 +4,7 @@ package br.com.agendusp.agendusp.dataobjects;
 public class DateTimeIntervalPoll {
 
     private DateTimeInterval dateTimeInterval;
-    private String id;
+    private int id;
     private int votes;
 
     public DateTimeIntervalPoll() {}
@@ -13,7 +13,7 @@ public class DateTimeIntervalPoll {
         setDateTimeInterval(dt);
     }
 
-    public DateTimeIntervalPoll(DateTimeInterval dt, String id) {
+    public DateTimeIntervalPoll(DateTimeInterval dt, int id) {
         this(dt);
         this.id = id;
     }
@@ -39,11 +39,11 @@ public class DateTimeIntervalPoll {
         this.votes = votes_num;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

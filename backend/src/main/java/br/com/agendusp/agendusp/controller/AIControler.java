@@ -8,7 +8,6 @@ import org.springframework.web.client.RestClient;
 import br.com.agendusp.agendusp.dataobjects.aiObjects.AIRequest;
 import br.com.agendusp.agendusp.dataobjects.aiObjects.AIResponse;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController // para poder fazer requisicoes http
