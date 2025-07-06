@@ -61,8 +61,8 @@ public class CalendarTest extends MongoTestContainer {
         calendarDataController.addCalendar(calR, user1.getId());
 
         // TODO pois nunca é usado
-        CalendarListResource response = calendarDataController.addCalendarListResourceFromCalendar(user1.getId(),
-                calR.getCalendarId());
+        // CalendarListResource response = calendarDataController.addCalendarListResourceFromCalendar(user1.getId(),
+                // calR.getCalendarId());
         CalendarListResource fetched = calendarDataController.getCalendarListResource(calR.getCalendarId(),
                 user1.getId());
         assertEquals(objectMapper.writeValueAsString(calR.toCalendarListResource()),
@@ -90,7 +90,7 @@ public class CalendarTest extends MongoTestContainer {
         System.out.println("USer ID: " + userId);
         String calendarId = calItem.getCalendarId();
         // TODO pois nunca é usado
-        String calendarResourceId = calResource.getId();
+        // String calendarResourceId = calResource.getId();
         String calendarListResourceId = calListResource.getId();
 
         userRepository.insertCalendarListResourceByUserId(user1.getId(), calItem);
@@ -125,7 +125,7 @@ public class CalendarTest extends MongoTestContainer {
         calendarDataController.removeCalendar(calendarId, userId);
 
         // TODO pois nunca é usado
-        CalendarListResource calListDelete = calendarDataController.getCalendarListResource(calendarId, userId);
+        // CalendarListResource calListDelete = calendarDataController.getCalendarListResource(calendarId, userId);
 
         // System.out.println("DELETADO COM SUCESSO");
 
