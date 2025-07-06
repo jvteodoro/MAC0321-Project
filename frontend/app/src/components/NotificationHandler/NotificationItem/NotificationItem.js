@@ -8,7 +8,8 @@ const NotificationItem = ({notification}) => {
   const handleGoClick = () => {
     // If notification.eventPollId exists, go to /votar with eventId = eventPollId
     if (notification.eventPollId) {
-      navigate("/votar", {
+      let address = notification.type == "invitePoll" ? "/votar" : "/viewPollResult";
+      navigate(address, {
         replace: true,
         state: {
           userId: notification.userId,
@@ -18,7 +19,6 @@ const NotificationItem = ({notification}) => {
       });
     }
   };
-
   return (
     <li id={notification.id}>
       {notification.message}
