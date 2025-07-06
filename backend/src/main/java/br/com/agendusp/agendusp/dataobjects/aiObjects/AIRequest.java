@@ -30,9 +30,10 @@ public class AIRequest { // contem as informacoes necessarias para que o AIContr
         private String builderModel;
         private String builderPrompt;
         private String builderStream;
-        public AiRequestBuilder(String builderModel, String builderPrompt){
+        public AiRequestBuilder(String builderModel, String builderPrompt, String builderStream) {
             this.builderModel = builderModel;
             this.builderPrompt = builderPrompt;
+            this.builderStream = builderStream;
         }
 
         public AiRequestBuilder setModel(String model){

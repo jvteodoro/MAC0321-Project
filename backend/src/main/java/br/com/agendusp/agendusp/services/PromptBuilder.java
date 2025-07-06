@@ -96,7 +96,7 @@ public class PromptBuilder {
     }
 
     private String callLLM(String prompt) {
-        AIRequest aiRequest = new AIRequest.AiRequestBuilder("llama3.2:1b", prompt).setStream("false").build();
+        AIRequest aiRequest = new AIRequest.AiRequestBuilder("llama3.2:1b", prompt, "false").build();
         return restClient.post().uri("http://localhost:11434/generate/api")
                 .body(aiRequest)
                 .retrieve()
