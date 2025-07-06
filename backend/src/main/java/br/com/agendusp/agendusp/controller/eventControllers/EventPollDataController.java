@@ -106,8 +106,8 @@ public class EventPollDataController {
             evPoll.get().vote(dateTimeIntervalId);
             evPoll.get().getDone();
             String message = "Voto novo  no horário "+dateTimeIntervalId;
-            EventPollNotification notification = new EventPollNotification(this, eventPollId, message);
-            applicationPublisher.publishEvent(notification);
+            // EventPollNotification notification = new EventPollNotification(this, eventPollId, message);
+            // applicationPublisher.publishEvent(notification);
             eventPollRepository.save(evPoll.get());
             if (evPoll.get().getDone() == 0){
                 System.err.println("Event done!");

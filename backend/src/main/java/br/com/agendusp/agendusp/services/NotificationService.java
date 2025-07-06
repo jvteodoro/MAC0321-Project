@@ -1,5 +1,7 @@
 package br.com.agendusp.agendusp.services;
 
+import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.dataobjects.PollNotification;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class NotificationService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+    @Autowired
+    private UserDataController userDataController;
+
     public void addNotification(Notification notification) {
         // Prevent duplicate notifications for the same user and message
         boolean exists = notifications.stream()
@@ -31,8 +36,7 @@ public class NotificationService {
         }
     }
 
-    public List<Notification> getNotificationsForUser(String userId) {
-        return notifications.stream()
-                .filter(n -> n.getUserId().equals(userId)).toList();
+    public ArrayList<PollNotification> getNotificationsForUser(String userId) {
+        return userDataController.findUser(userId).getEventPollNotifications();
     }
 }

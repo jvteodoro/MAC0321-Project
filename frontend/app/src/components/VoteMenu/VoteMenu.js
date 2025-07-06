@@ -8,7 +8,7 @@ import "./VoteMenu.css";
 const VoteMenu = (props) => {
   const location = useLocation();
   // const navigate = useNavigate();
-  const { eventId, calendarId } = location.state || {};
+  const { userId, eventId, calendarId } = location.state || {};
 
   // State for the component
   const [poll, setPoll] = useState(null);
@@ -79,6 +79,7 @@ const VoteMenu = (props) => {
           null,
           {
             params: {
+              userId: userId,
               eventPollId: poll.id,
               dateTimeIntervalId,
             },

@@ -11,6 +11,7 @@ const NotificationItem = ({notification}) => {
       navigate("/votar", {
         replace: true,
         state: {
+          userId: notification.userId,
           eventId: notification.eventPollId,
           calendarId: notification.calendarId
         }

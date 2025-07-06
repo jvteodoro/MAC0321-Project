@@ -20,9 +20,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.agendusp.agendusp.controller.eventControllers.EventPollDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.dataobjects.DateTimeIntervalPoll;
+import br.com.agendusp.agendusp.dataobjects.PollNotification;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventDate;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.EventsResource;
+import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.EventPollRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
@@ -33,6 +35,8 @@ public class FormsController {
     EventsDataController eventsDataController;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    UserDataController userDataController;
     @Autowired
     EventPollRepository eventPollRepository;
     @Autowired
@@ -81,13 +85,32 @@ public class FormsController {
     }
 
     @PostMapping("/poll/vote")
-    public EventPoll vote(@RequestParam String eventPollId, @RequestParam int dateTimeIntervalId) {
+    public EventPoll vote(@RequestParam String eventPollId, @RequestParam int dateTimeIntervalId, @RequestParam String userId) {
         Optional<EventPoll> evPoll = eventPollRepository.findById(eventPollId);
 
         if (evPoll.isPresent()) {
+            System.out.println("Votando!");
             eventPollDataController.vote(eventPollId, dateTimeIntervalId);
+            System.out.println("Votado!");
+            User user = userDataController.findUser(userId);
+            ArrayList<PollNotification> not = user.getEventPollNotifications();
+            Optional<PollNotification> toRemove = (not.stream().filter(p -> p.getEventPollId().equals(eventPollId)).findFirst());
+            for (PollNotification pollNot: not){
+                if (pollNot.getEventPollId() == eventPollId){
+                    not.remove(pollNot);
+                }
+            }
+            user.setEventPollNotifications(not);
+            System.out.println("New user:");
+            try {
+            System.out.println(objectMapper.writeValueAsString(user.getEventPollNotifications()));
+            } catch (Exception e){}
+            userRepository.save(user);
+            
             // evPoll.get().vote(dateTimeIntervalId);
             // REMOVE WebSocket notification here, handled by NotificationService
+            
+
             return evPoll.get();
         } else {
             return new EventPoll();

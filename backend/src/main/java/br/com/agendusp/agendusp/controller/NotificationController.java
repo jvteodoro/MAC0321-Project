@@ -1,5 +1,6 @@
 package br.com.agendusp.agendusp.controller;
 
+import br.com.agendusp.agendusp.dataobjects.PollNotification;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
 import br.com.agendusp.agendusp.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,12 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @GetMapping("/{userId}")
-    public List<Notification> getNotifications(@PathVariable String userId) {
+    public List<PollNotification> getNotifications(@PathVariable String userId) {
         return notificationService.getNotificationsForUser(userId);
     }
 
     @GetMapping("/me")
-    public List<Notification> getMyNotifications(
+    public List<PollNotification> getMyNotifications(
             Authentication authentication,
             @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient
     ) {
@@ -32,7 +33,7 @@ public class NotificationController {
         if (userId == null) {
             throw new RuntimeException("Usuário não autenticado");
         }
-        List<Notification> notifications = notificationService.getNotificationsForUser(userId);
+        List<PollNotification> notifications = notificationService.getNotificationsForUser(userId);
         return notifications;
     }
 }
