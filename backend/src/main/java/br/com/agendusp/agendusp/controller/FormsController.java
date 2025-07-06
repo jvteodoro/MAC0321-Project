@@ -90,6 +90,10 @@ public class FormsController {
         if (evPoll.isPresent()) {
             evPoll.get().vote(dateTimeIntervalId);
             evPoll.get().getDone();
+            if (evPoll.get().getDone() == 0){
+                String destination = "/notify/donePoll/"+ eventPollId;
+                msgTemplate.convertAndSend(destination, evPoll.get());
+            }
             return evPoll.get();
         } else {
             return new EventPoll();

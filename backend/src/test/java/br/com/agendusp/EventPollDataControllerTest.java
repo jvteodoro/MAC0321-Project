@@ -79,7 +79,7 @@ public class EventPollDataControllerTest extends MongoTestContainer {
     }
 
     @Test
-    public void testNotifications() throws Exception {
+    public void testVoteNotifications() throws Exception {
         createTest();
         int oldPollDone = eventPollDataController.getById(eventId).getDone();
         eventPollDataController.vote(eventId, 0);
