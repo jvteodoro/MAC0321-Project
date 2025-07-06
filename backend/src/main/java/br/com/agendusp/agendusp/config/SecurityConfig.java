@@ -53,6 +53,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000", "ws://localhost:12003"));
+        // configuration.setAllowedOriginPatterns(List.of("http://localhost:3000", "ws://localhost:12003"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -62,6 +63,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         source.registerCorsConfiguration("/logout", configuration);
         source.registerCorsConfiguration("/gs-guide-websocket/**", configuration);
+        source.registerCorsConfiguration("/gs-guide-websocket", configuration); // Add this line
         return source;
     }
 
@@ -72,7 +74,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/events/**", "/poll/**",
-                                "/logout", "/gs-guide-websocket/**"))
+                                "/logout", "/gs-guide-websocket/**", "/gs-guide-websocket")) // Add "/gs-guide-websocket"
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(
                             "/",

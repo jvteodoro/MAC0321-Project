@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
         loading: false,
         authenticated: true,
         user: response.data.user,
+        userId: response.data.userId,
         accessToken: response.data.accessToken,
       });
     } catch (err) {
@@ -28,6 +29,7 @@ export const AuthProvider = ({ children }) => {
         loading: false,
         authenticated: false,
         user: null,
+        userId: null,
         accessToken: null,
       });
     }

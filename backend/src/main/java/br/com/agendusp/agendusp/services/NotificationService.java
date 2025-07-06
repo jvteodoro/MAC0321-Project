@@ -23,6 +23,7 @@ public class NotificationService {
         if (!exists) {
             notifications.add(notification);
             // Send notification to the specific user via WebSocket
+            System.out.println("[NotificationService] Sending notification to user: " + notification.getUserId());
             messagingTemplate.convertAndSendToUser(
                     notification.getUserId(),
                     "/queue/notifications",

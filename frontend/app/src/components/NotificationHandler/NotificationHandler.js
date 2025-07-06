@@ -41,19 +41,26 @@ const NotificationHandler = () => {
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
-      debug: () => {},
+      debug: (msg) => { console.log("[STOMP DEBUG]", msg); },
       onConnect: () => {
+        console.log("[STOMP] Connected");
         if (userId) {
+          console.log("[STOMP] Subscribing to /user/" + userId + "/queue/notifications");
           stompClient.current.subscribe(
             `/user/${userId}/queue/notifications`,
-            () => {
+            (message) => {
+              console.log("[STOMP] Notification received:", message);
               fetchNotifications();
             }
           );
         }
       },
-      onStompError: () => {},
-      onWebSocketError: () => {},
+      onStompError: (frame) => {
+        console.error("[STOMP ERROR]", frame);
+      },
+      onWebSocketError: (event) => {
+        console.error("[WebSocket ERROR]", event);
+      },
     });
     stompClient.current.activate();
     fetchNotifications();

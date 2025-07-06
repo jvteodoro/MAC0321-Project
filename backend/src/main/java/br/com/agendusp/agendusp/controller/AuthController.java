@@ -1,5 +1,8 @@
 package br.com.agendusp.agendusp.controller;
 
+import br.com.agendusp.agendusp.documents.User;
+import br.com.agendusp.agendusp.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,6 +20,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/check")
     public ResponseEntity<?> checkAuthentication(Authentication authentication) {
@@ -34,8 +39,16 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        User user = userRepository.findByGoogleId(principal.getAttribute("sub"))
+                .orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        String userId = user.getId();
+
         Map<String, Object> result = new HashMap<>();
         result.put("user", principal.getAttributes());
+        result.put("userId", userId);
         result.put("accessToken", authorizedClient.getAccessToken().getTokenValue());
         return ResponseEntity.ok(result);
     }
