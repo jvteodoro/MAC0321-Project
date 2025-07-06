@@ -101,7 +101,7 @@ const EditarEventoMenu = (props) => {
           // Check if a poll already exists for this event
           try {
             const pollResp = await axios.get(
-              `http://localhost:12003/pool/byEvent?eventId=${evento.id}`,
+              `http://localhost:12003/poll/byEvent?eventId=${evento.id}`,
               { withCredentials: true }
             );
             if (pollResp.data && pollResp.data.id) {
@@ -288,7 +288,7 @@ const EditarEventoMenu = (props) => {
     const [startDate, endDate] = getDayInterval(formData.dataInicio);
     try {
       const response = await axios.get(
-        `http://localhost:12003/pool/create?eventId=${originalEvent.id}&startDate=${startDate}&endDate=${endDate}`,
+        `http://localhost:12003/poll/create?eventId=${originalEvent.id}&startDate=${startDate}&endDate=${endDate}`,
         {
           withCredentials: true,
         }

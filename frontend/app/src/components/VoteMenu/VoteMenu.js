@@ -19,6 +19,41 @@ const VoteMenu = (props) => {
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [pollInterval, setPollInterval] = useState(null); // {startDate, endDate}
+
+  // Fetch poll interval
+  useEffect(() => {
+    const fetchPollInterval = async () => {
+      if (!eventId) return;
+      try {
+        const pollResp = await axios.get(
+          `http://localhost:12003/poll/byEvent`,
+          {
+            params: { eventId },
+            withCredentials: true,
+          }
+        );
+        if (pollResp.data && pollResp.data.posibleTimes && pollResp.data.posibleTimes.length > 0) {
+          // Use the first posibleTimes interval as the poll interval
+          const first = pollResp.data.posibleTimes[0].dateTimeInterval;
+          setPollInterval({
+            startDate: first.start,
+            endDate: first.end,
+          });
+        } else if (pollResp.data && pollResp.data.startDate && pollResp.data.endDate) {
+          setPollInterval({
+            startDate: pollResp.data.startDate,
+            endDate: pollResp.data.endDate,
+          });
+        } else {
+          setError("Não foi possível obter o intervalo da enquete.");
+        }
+      } catch (err) {
+        setError("Erro ao buscar dados da enquete.");
+      }
+    };
+    fetchPollInterval();
+  }, [eventId]);
 
   // Fetch available time slots from backend
   useEffect(() => {
@@ -26,18 +61,17 @@ const VoteMenu = (props) => {
 
     const fetchTimeSlots = async () => {
       try {
-        // Use listWindows2 endpoint
-        // You may need to provide calendarId and endDateTime; here we assume eventId is calendarId and use a default endDateTime
         const calendarId = eventId;
-        const endDateTime = new Date();
-        endDateTime.setDate(endDateTime.getDate() + 7); // 7 days from now
-        const endDateTimeStr = endDateTime.toISOString().split("T")[0]; // Format: yyyy-MM-dd
+        // Use pollInterval for start and end
+        const startDateTimeStr = pollInterval.startDate;
+        const endDateTimeStr = pollInterval.endDate;
 
         const response = await axios.get(
           `http://localhost:12003/events/listWindows2`,
           {
             params: {
               calendarId,
+              startDateTime: startDateTimeStr,
               endDateTime: endDateTimeStr,
             },
             withCredentials: true,
@@ -57,10 +91,10 @@ const VoteMenu = (props) => {
       }
     };
 
-    if (eventId) {
+    if (eventId && pollInterval && pollInterval.startDate && pollInterval.endDate) {
       fetchTimeSlots();
     }
-  }, [eventId]);
+  }, [eventId, pollInterval]);
 
   const toggleTimeSlot = (slot) => {
     setSelectedSlots((prev) => {

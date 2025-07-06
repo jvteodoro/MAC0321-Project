@@ -485,18 +485,16 @@ public class EventsDataController {
     }
 
 
-
-
-
-     public ArrayList<DateTimeInterval> listWindows2(String calendarId, String endDateTime, String userId) {
+     public ArrayList<DateTimeInterval> listWindows2(String calendarId, String startDateTime, String endDateTime, String userId) {
 
         ArrayList<EventsResource> allEvents = getEvents(calendarId, userId);
 
         ArrayList<DateTimeInterval> freeTimeVec = new ArrayList<>();
-        LocalDateTime endDateTimeObj = LocalDateTime.parse(endDateTime, DateTimeFormatter.ISO_DATE);
+        LocalDateTime startDateTimeObj = LocalDateTime.parse(startDateTime, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime endDateTimeObj = LocalDateTime.parse(endDateTime, DateTimeFormatter.ISO_DATE_TIME);
         DateTimeInterval freeTime = new DateTimeInterval();
 
-        freeTime.setStart(LocalDateTime.now());
+        freeTime.setStart(startDateTimeObj);
         freeTime.setEnd(endDateTimeObj);
 
         freeTimeVec.add(freeTime);

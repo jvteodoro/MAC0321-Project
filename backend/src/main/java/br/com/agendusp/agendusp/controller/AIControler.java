@@ -7,6 +7,9 @@ import org.springframework.web.client.RestClient;
 
 import br.com.agendusp.agendusp.dataobjects.aiObjects.AIRequest;
 import br.com.agendusp.agendusp.dataobjects.aiObjects.AIResponse;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController // para poder fazer requisicoes http
 public class AIControler {
@@ -18,6 +21,12 @@ public class AIControler {
         this.restClient = restClient;
     }
 
+    public AIControler() {
+        // Construtor vazio para o Spring poder instanciar a classe
+        // (necessário para o RestController)
+    }
+
+    @GetMapping("/aiReport")
     public AIResponse gerarInforme(AIRequest airequest) { // a requisicao da ia precisa mandar isso {"model" :
                                                           // "llama3.2:1b", "prompt": "-prompt para a ia-", "stream":
                                                           // false}

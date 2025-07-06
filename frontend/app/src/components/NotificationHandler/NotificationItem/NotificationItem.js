@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import styles from "./NotificationItem.css";
 
-const NotificationItem = (notification, key) => {
+const NotificationItem = ({notification}) => {
   const navigate = useNavigate();
 
   const handleGoClick = () => {
@@ -17,7 +17,7 @@ const NotificationItem = (notification, key) => {
   };
 
   return (
-    <li id={notification.id} key={key}>
+    <li id={notification.id}>
       {notification.message}
       {notification.linkedObjectId != null && (
         <button className="goButton" onClick={handleGoClick}>Ir</button>

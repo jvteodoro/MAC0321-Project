@@ -37,7 +37,7 @@ const NotificationHandler = () => {
       heartbeatOutgoing: 4000,
       debug: () => {},
       onConnect: () => {
-        stompClient.current.subscribe("/notify/pool/*", () => {
+        stompClient.current.subscribe("/notify/poll/*", () => {
           fetchNotifications();
         });
         if (user?.id) {
