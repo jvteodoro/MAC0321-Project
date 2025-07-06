@@ -46,6 +46,11 @@
   justify-content: center;
   background-color: #e6b720;
 }
+
+#notifications-button:hover {
+  background-color: #cea10f;
+}
+
 #stats-button {
   position: relative;
   z-index: 1;
@@ -57,6 +62,11 @@
   justify-content: center;
   background-color: blueviolet;
 }
+
+#stats-button:hover {
+  background-color: #751ec7;
+}
+
 #salvar {
   position: relative;
   z-index: 2;
@@ -67,6 +77,7 @@
   align-items: center;
   justify-content: center;
 }
+
 #logout {
   position: relative;
   z-index: 2;

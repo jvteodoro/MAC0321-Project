@@ -28,9 +28,32 @@
 }
 
 #cancel-button {
+    background-color: blueviolet;
+    border-color: blueviolet;
+}
+#cancel-button:hover {
+    background-color: #751ec7;
+}
+
+#delete-button {
+    display: flex;
+    justify-content: center;
+    gap: 0.2em;
     background-color: #ff4444;
     border-color: #ff4444;
 }
-#cancel-button:hover {
+#delete-button:hover {
     background-color: #cc0000;
+}
+
+/* --- NEW: Button row as 3-column grid --- */
+#event-data-form .button-row {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5em;
+}
+
+#event-data-form .button-row button {
+    width: 100%;
 }

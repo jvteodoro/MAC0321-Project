@@ -262,6 +262,20 @@ const EditarEventoMenu = (props) => {
     }
   };
 
+  const deletarEvento = async () => {
+    if (!calendarId || !eventId) return;
+    try {
+      await axios.delete(
+        `http://localhost:12003/events/delete/${calendarId}/${eventId}`,
+        { withCredentials: true }
+      );
+      console.log("Evento deletado com sucesso!");
+      window.location.href = "http://localhost:3000/";
+    } catch (erro) {
+      console.error("Falha ao deletar evento:", erro);
+    }
+  };
+
   const aoFechar = () => {
     window.location.href = "http://localhost:3000/";
   };
@@ -535,18 +549,32 @@ const EditarEventoMenu = (props) => {
             </div>
           )}
         </div>
-        <button
-          type="button"
-          id="cancel-button"
-          className="form-field"
-          onClick={cancelarEvento}
-          disabled={disableInputs}
-        >
-          Cancelar
-        </button>
-        <button type="submit" id="save-button" className="form-field" disabled={disableInputs}>
-          Salvar Alterações
-        </button>
+        <div className="form-field button-row">
+          <button
+            type="button"
+            id="cancel-button"
+            onClick={cancelarEvento}
+            disabled={disableInputs}
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            id="delete-button"
+            onClick={deletarEvento}
+            disabled={disableInputs}
+          >
+            Deletar
+            <i className="fa-solid fa-trash"></i>
+          </button>
+          <button
+            type="submit"
+            id="save-button"
+            disabled={disableInputs}
+          >
+            Salvar Alterações
+          </button>
+        </div>
       </form>
     </main>
   );
