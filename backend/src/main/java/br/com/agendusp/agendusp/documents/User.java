@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import br.com.agendusp.agendusp.dataobjects.PollNotification;
 import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
+import br.com.agendusp.agendusp.events.EventPollNotification;
 
 @Document(collection = "users")
 public class User { // objetos dessa classe serão salvos na coleção users do MongoDB

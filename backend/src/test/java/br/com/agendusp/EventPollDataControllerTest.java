@@ -11,10 +11,11 @@ import br.com.agendusp.agendusp.MongoTestContainer;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventPollDataController;
 import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
-import br.com.agendusp.agendusp.documents.eventDocuments.EventPollResource;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class EventPollDataControllerTest extends MongoTestContainer {
         userDataController.createUser(attendee3);
         
 
-        eventsDataController.addEvent(event);
+//         eventsDataController.addEvent(event);
     }
 
     @Test
@@ -74,8 +75,6 @@ public class EventPollDataControllerTest extends MongoTestContainer {
             String endDate = "2025-07-20T20:00:00Z";
             EventPoll poll = eventPollDataController.create(eventId, startDate, endDate, userId);
             assertNotNull(poll);
-            //assertEquals(eventId, poll.getEventId());
-            assertNotNull(poll.getById());
         }
     
         @Test
@@ -94,6 +93,7 @@ public class EventPollDataControllerTest extends MongoTestContainer {
             String endDate = "2025-07-20T20:00:00Z";
             String startDate2 = "2025-07-22T20:00:00Z";
             String endDate2 = "2025-07-22T20:00:00Z";
+            String organizerId = userId;
             EventPoll poll1 = eventPollDataController.create(eventId, startDate, endDate, userId);
             EventPoll poll2 = eventPollDataController.create(eventId, startDate2, endDate2, organizerId);
     

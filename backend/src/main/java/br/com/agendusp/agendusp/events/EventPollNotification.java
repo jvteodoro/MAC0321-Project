@@ -3,6 +3,7 @@ package br.com.agendusp.agendusp.events;
 import org.springframework.context.ApplicationEvent;
 
 public class EventPollNotification extends ApplicationEvent {
+    String type;
     String message;
     String eventPollId;
 
@@ -10,6 +11,13 @@ public class EventPollNotification extends ApplicationEvent {
         super(source);
         this.message = message;
         this.eventPollId = eventPollId;
+    }
+
+    public EventPollNotification(Object source, String eventPollId, String message, String type){
+        super(source);
+        this.message = message;
+        this.eventPollId = eventPollId;
+        this.type = type;
     }
 
     public String getMessage() {
@@ -26,6 +34,14 @@ public class EventPollNotification extends ApplicationEvent {
     }
     public String getId(){
         return this.eventPollId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     

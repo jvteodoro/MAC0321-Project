@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,12 +17,15 @@ import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
 import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Attendee;
+import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
+import br.com.agendusp.agendusp.repositories.EventPollRepository;
+
 import br.com.agendusp.agendusp.repositories.EventsRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 import br.com.agendusp.agendusp.services.NotificationService;
@@ -30,6 +34,8 @@ public class EventsDataController {
     // Events
     @Autowired
     EventsRepository eventsRepository;
+    @Autowired
+    EventPollRepository eventPollRepository;
     @Autowired
     UserDataController userDataController;
     @Autowired
@@ -477,6 +483,9 @@ public class EventsDataController {
         eventResource.setAttendees(updatedAttendees);
         eventResource.setCalendarIds(calendarIds);
     }
+
+
+
 
 
      public ArrayList<DateTimeInterval> listWindows2(String calendarId, String endDateTime, String userId) {

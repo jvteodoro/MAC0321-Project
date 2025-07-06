@@ -12,6 +12,7 @@ import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
+import br.com.agendusp.agendusp.events.EventPollNotification;
 import br.com.agendusp.agendusp.repositories.CalendarRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
@@ -140,8 +141,8 @@ public class UserDataController {
                 }
         }
 
-        public void addEventPollNotification(PollNotification evPoll){
-                User user = findUser(evPoll.getUserId());
+        public void addEventPollNotification(String userId, PollNotification evPoll){
+                User user = findUser(userId);
                 user.addEventPollNotifications(evPoll);
                 userRepository.save(user);
         }

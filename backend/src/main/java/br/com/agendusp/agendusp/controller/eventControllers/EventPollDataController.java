@@ -14,6 +14,7 @@ import br.com.agendusp.agendusp.dataobjects.DateTimeInterval;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.Notification;
 import br.com.agendusp.agendusp.documents.EventsResource;
+import br.com.agendusp.agendusp.events.EventPollDoneEvent;
 import br.com.agendusp.agendusp.events.EventPollNotification;
 import br.com.agendusp.agendusp.repositories.EventPollRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
@@ -104,8 +105,11 @@ public class EventPollDataController {
             evPoll.get().getDone();
             String message = "Voto novo  no horário "+dateTimeIntervalId;
             EventPollNotification notification = new EventPollNotification(this, eventPollId, message);
-            // if evPoll.get().getDone()
             applicationPublisher.publishEvent(notification);
+            if (evPoll.get().getDone() == 0){
+                EventPollDoneEvent pollDone = new EventPollDoneEvent(this, evPoll.get().getEventId());
+                applicationPublisher.publishEvent(pollDone);
+            }
             return evPoll.get();
         } else {
             return new EventPoll();

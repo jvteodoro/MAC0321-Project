@@ -7,8 +7,8 @@ public class PollNotification extends Notification {
 
     public PollNotification(){}
 
-    public PollNotification(String userId, EventPollNotification event){
-        super(userId, event.getMessage(), event.getEventPollId());
+    public PollNotification(String userId, String eventPollId, String message, String type){
+        super(userId, message, eventPollId);
     }
     
 }

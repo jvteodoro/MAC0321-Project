@@ -5,6 +5,7 @@ public class Notification {
     private String id;
     private String userId;
     private String message;
+    String type;
     private String linkedObjectId = null;
 
     public Notification() {}
@@ -20,6 +21,15 @@ public class Notification {
         this.userId = userId;
         this.message = message;
         this.linkedObjectId = linkedObjectId;
+    }
+
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getId() {

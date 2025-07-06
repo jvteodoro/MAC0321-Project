@@ -27,11 +27,14 @@ public class InvitePollListener implements ApplicationListener<EventPollNotifica
         EventPoll evPoll = eventPollDataController.getById(event.getEventPollId());
         ArrayList<Attendee> attendees = evPoll.getAttendees();
         String organizerId = evPoll.getOwnerId();
+        String type = "invitePoll";
+        String message = "Nova enquete criada! Não se esqueça de votar";
+        
         for (Attendee at: attendees){
             String userId = at.getCalendarPerson().getId();
             if (userId == null || userId.equals(organizerId)) continue; // skip organizer
-            PollNotification notification = new PollNotification(userId, event);
-            userDataController.addEventPollNotification(notification);
+            PollNotification notification = new PollNotification(userId, evPoll.getEventId(), message, type);
+            userDataController.addEventPollNotification(userId, notification);
             // Add to NotificationService for WebSocket and REST API
             notificationService.addNotification(notification);
         }
