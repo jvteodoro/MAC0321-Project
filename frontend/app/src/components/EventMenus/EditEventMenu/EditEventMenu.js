@@ -313,6 +313,8 @@ const EditarEventoMenu = (props) => {
 
   // Disable all form controls if not organizer
   const disableInputs = !isOrganizer;
+  // Disable poll creation if event is cancelled
+  const isEventCancelled = originalEvent && originalEvent.status === "cancelled";
 
   return (
     <main id="event-menu">
@@ -449,7 +451,7 @@ const EditarEventoMenu = (props) => {
             className="submit-button criar-enquete-btn"
             style={{ marginBottom: "1em", width: "auto" }}
             onClick={handleCreatePoll}
-            disabled={disableInputs || pollSuccess}
+            disabled={disableInputs || pollSuccess || isEventCancelled}
           >
             Criar enquete
           </button>
