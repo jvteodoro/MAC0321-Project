@@ -100,7 +100,7 @@ public class EventPollDataController {
 
         return eventPoll;
     }
-    public EventPoll vote( String eventPollId, int dateTimeIntervalId) {
+    public EventPoll vote(String eventPollId, int dateTimeIntervalId) {
         Optional<EventPoll> evPoll = eventPollRepository.findById(eventPollId);
         if (evPoll.isPresent()) {
             evPoll.get().vote(dateTimeIntervalId);
@@ -108,12 +108,12 @@ public class EventPollDataController {
             String message = "Voto novo  no horário "+dateTimeIntervalId;
             EventPollNotification notification = new EventPollNotification(this, eventPollId, message);
             applicationPublisher.publishEvent(notification);
+            eventPollRepository.save(evPoll.get());
             if (evPoll.get().getDone() == 0){
                 System.err.println("Event done!");
                 EventPollDoneEvent pollDone = new EventPollDoneEvent(this, evPoll.get().getEventId());
                 applicationPublisher.publishEvent(pollDone);
             }
-            eventPollRepository.save(evPoll.get());
             return evPoll.get();
         } else {
             return new EventPoll();

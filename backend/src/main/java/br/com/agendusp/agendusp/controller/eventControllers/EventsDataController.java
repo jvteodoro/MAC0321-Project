@@ -502,6 +502,19 @@ public class EventsDataController {
             freeTimeVec = event.freeTime(freeTimeVec);
         }
 
-        return freeTimeVec;
+        ArrayList<DateTimeInterval> uniqueFreeTimeVec = new ArrayList<>();
+        for (DateTimeInterval interval : freeTimeVec) {
+            boolean exists = false;
+            for (DateTimeInterval other : uniqueFreeTimeVec) {
+                if (interval.getStart().equals(other.getStart()) && interval.getEnd().equals(other.getEnd())) {
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists) {
+                uniqueFreeTimeVec.add(interval);
+            }
+        }
+        return uniqueFreeTimeVec;
     }
 }

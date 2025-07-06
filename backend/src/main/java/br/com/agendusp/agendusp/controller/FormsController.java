@@ -44,18 +44,14 @@ public class FormsController {
 
     @MessageMapping("/poll/send/{eventPollId}")
     public void sendPoll(@PathVariable String eventPollId) {
-        Optional<EventPoll> eventPollOptional = eventPollRepository.findById(eventPollId);
-        if (eventPollOptional.isPresent()) {
-            EventPoll eventPoll = eventPollOptional.get();
-            String destination = "/notify/poll/" + eventPollId;
-            msgTemplate.convertAndSend(destination, eventPoll);
-        }
+        // No-op or remove this method if not needed, as notifications should go through
+        // NotificationService
     }
 
     @MessageMapping("/poll/vote/{eventPollId}")
     public void voteEventPoll(@PathVariable String eventPollId, @RequestParam int dateTimeIntervalId) {
-        String destination = "/notify/poll/" + eventPollId;
-        msgTemplate.convertAndSend(destination, this.vote(eventPollId, dateTimeIntervalId));
+        // No-op or remove this method if not needed, as notifications should go through
+        // NotificationService
     }
 
     @MessageMapping("/poll/create/{eventPollId}/{dateTimeIntervalId}")
@@ -68,13 +64,13 @@ public class FormsController {
 
     @GetMapping("/poll/create")
     public EventPoll createPoll(@RequestParam String eventId, @RequestParam String startDate,
-        @RequestParam String endDate,
-        @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+            @RequestParam String endDate,
+            @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
 
         String userId = authorizedClient.getPrincipalName();
         try {
             EventPoll poll = eventPollDataController.create(eventId, startDate, endDate, userId);
-            sendPoll(poll.getId()); // TODO: Checar se deve ser movido para outro lugar
+            // sendPoll(poll.getId()); // REMOVE this line, handled by NotificationService
             return poll;
         } catch (IllegalArgumentException ex) {
             // Return an empty poll with error message (or handle as preferred)
@@ -87,13 +83,11 @@ public class FormsController {
     @PostMapping("/poll/vote")
     public EventPoll vote(@RequestParam String eventPollId, @RequestParam int dateTimeIntervalId) {
         Optional<EventPoll> evPoll = eventPollRepository.findById(eventPollId);
+
         if (evPoll.isPresent()) {
-            evPoll.get().vote(dateTimeIntervalId);
-            evPoll.get().getDone();
-            if (evPoll.get().getDone() == 0){
-                String destination = "/notify/donePoll/"+ eventPollId;
-                msgTemplate.convertAndSend(destination, evPoll.get());
-            }
+            eventPollDataController.vote(eventPollId, dateTimeIntervalId);
+            // evPoll.get().vote(dateTimeIntervalId);
+            // REMOVE WebSocket notification here, handled by NotificationService
             return evPoll.get();
         } else {
             return new EventPoll();
@@ -121,8 +115,8 @@ public class FormsController {
 
             return eventsDataController.updateByObject(event);
         }
-        return new EventsResource();
-    }
+    return new EventsResource();
+}
 
     @GetMapping("/poll/byEvent")
     public EventPoll getPollByEvent(@RequestParam String eventId) {

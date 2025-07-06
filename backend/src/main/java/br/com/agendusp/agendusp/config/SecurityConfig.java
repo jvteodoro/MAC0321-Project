@@ -105,7 +105,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/error");
+        return (web) -> web.ignoring().requestMatchers("/error", "/gs-guide-websocket/**", "/gs-guide-websocket");
     }
 
     @Bean

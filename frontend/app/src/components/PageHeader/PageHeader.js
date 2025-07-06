@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const PageHeader = (props) => {
   const [statsMenuVisible, setStatsMenuVisible] = useState(false);
-  const { logout } = useAuth();
+  const { logout, userId } = useAuth();
 
   const toggleStatsMenuVisibility = () =>
     setStatsMenuVisible(!statsMenuVisible);

@@ -8,7 +8,7 @@ const NotificationHandler = () => {
   const [notListVisible, setNotListVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const stompClient = useRef(null);
-  const { authenticated, getAccessToken, user } = useAuth();
+  const { authenticated, getAccessToken, user, userId } = useAuth();
 
   // Fetch notifications from backend
   const fetchNotifications = async () => {
@@ -43,12 +43,9 @@ const NotificationHandler = () => {
       heartbeatOutgoing: 4000,
       debug: () => {},
       onConnect: () => {
-        stompClient.current.subscribe("/notify/poll/*", () => {
-          fetchNotifications();
-        });
-        if (user?.id) {
+        if (userId) {
           stompClient.current.subscribe(
-            `/user/${user.id}/queue/notifications`,
+            `/user/${userId}/queue/notifications`,
             () => {
               fetchNotifications();
             }

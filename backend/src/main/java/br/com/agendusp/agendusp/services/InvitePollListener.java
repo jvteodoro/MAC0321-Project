@@ -36,6 +36,7 @@ public class InvitePollListener  {
             PollNotification notification = new PollNotification(this, userId, evPoll.getEventId(), message, type);
             userDataController.addEventPollNotification(userId, notification);
             // Add to NotificationService for WebSocket and REST API
+            System.out.println("[DEBUG] notification: " + notification.getMessage());
             notificationService.addNotification(notification);
         }
     }

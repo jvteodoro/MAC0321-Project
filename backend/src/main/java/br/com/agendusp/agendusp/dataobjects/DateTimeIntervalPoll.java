@@ -28,7 +28,9 @@ public class DateTimeIntervalPoll {
     }
 
     public void vote() {
+        System.out.println("Votes 0: " + this.votes);
         this.votes += 1;
+        System.out.println("Votes 1: " + this.votes);
     }
 
     public int getVotes() {

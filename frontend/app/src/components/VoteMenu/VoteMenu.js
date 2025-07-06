@@ -161,15 +161,13 @@ const VoteMenu = (props) => {
           ) : (
             <ul className="timeslot-list">
               {poll.posibleTimes.map((slot, idx) => {
-                // Always use the same value for key and selection: fallbackId is used everywhere
-                const fallbackId = slot.id ?? `slot-${idx}`;
-                const isSelected = selectedIds.includes(fallbackId);
+                const isSelected = selectedIds.includes(idx);
                 const interval = slot.dateTimeInterval;
                 return (
                   <li
-                    key={fallbackId}
+                    key={idx}
                     className={`timeslot-item ${isSelected ? "selected" : ""}`}
-                    onClick={() => toggleTimeSlot(fallbackId)}
+                    onClick={() => toggleTimeSlot(idx)}
                   >
                     <div className="timeslot-time">
                       {formatTime(interval?.start)} - {formatTime(interval?.end)}

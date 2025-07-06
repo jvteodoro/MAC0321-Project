@@ -16,15 +16,18 @@ public class EventPollDoneEventListener{
     UserDataController userDataController;
     @Autowired
     EventsDataController eventsDataController;
+    @Autowired
+    NotificationService notificationService;
 
     @EventListener
     public void onApplicationEvent(EventPollDoneEvent event) {
-        System.err.println("EVento finalizado ouvido!");
+        System.err.println("Evento finalizado ouvido!");
         EventsResource eventResource = eventsDataController.getEventById(event.getEventPollId());
         String userId = eventResource.getOrganizer().getId();
         String message = "Votação finalizada! Crie o evento";
         PollNotification notification = new PollNotification(this, userId, eventResource.getId(), message, "pollDone");
         userDataController.addEventPollNotification(userId, notification);
+        notificationService.addNotification(notification);
     }
 
 }
