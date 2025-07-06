@@ -15,6 +15,7 @@ import br.com.agendusp.agendusp.dataobjects.aiObjects.AIResponse;
 import br.com.agendusp.agendusp.services.PromptBuilder;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController // para poder fazer requisicoes http

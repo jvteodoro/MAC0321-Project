@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AIResponseVisualization = () => {
-  const { calendarId, eventId } = location.state || {};
+  const { calendarId, firstDay, lastDay } = location.state || {};
   const [responseData, setResponseData] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
