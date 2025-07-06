@@ -5,14 +5,13 @@ import styles from "./NotificationItem.css";
 
 const NotificationItem = ({notification}) => {
   const navigate = useNavigate();
-
   const handleGoClick = () => {
-    // If notification.linkedObjectId exists, go to /votar with eventId = linkedObjectId
-    if (notification.linkedObjectId) {
+    // If notification.eventPollId exists, go to /votar with eventId = eventPollId
+    if (notification.eventPollId) {
       navigate("/votar", {
         replace: true,
         state: {
-          eventId: notification.linkedObjectId,
+          eventId: notification.eventPollId,
           calendarId: notification.calendarId
         }
       });
@@ -22,7 +21,7 @@ const NotificationItem = ({notification}) => {
   return (
     <li id={notification.id}>
       {notification.message}
-      {notification.linkedObjectId != null && (
+      {notification.eventPollId != null && (
         <button className="goButton" onClick={handleGoClick}>Ir</button>
       )}
     </li>
@@ -33,7 +32,7 @@ NotificationItem.propTypes = {
   notification: PropTypes.shape({
     id: PropTypes.any,
     message: PropTypes.string.isRequired,
-    linkedObjectId: PropTypes.any,
+    eventPollId: PropTypes.any,
     calendarId: PropTypes.any,
     // ...other possible notification props...
   }).isRequired,

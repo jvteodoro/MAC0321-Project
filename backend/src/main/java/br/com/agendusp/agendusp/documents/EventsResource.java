@@ -97,74 +97,55 @@ public class EventsResource { // objetos dessa classe serão salvos na coleção
         this.hangoutLink = hangoutLink;
     }
 
-    public ArrayList<DateTimeInterval> freeTime(ArrayList<DateTimeInterval> freeTimeVec) { // Método que recebe um vetor
-                                                                                           // de intervalos de tempo
-                                                                                           // livre e retorna um novo
-                                                                                           // vetor,
-                                                                                           // de intervalos de tempo
-                                                                                           // livre, removendo os
-                                                                                           // intervalos que se
-                                                                                           // sobrepõem
+    public ArrayList<DateTimeInterval> freeTime(ArrayList<DateTimeInterval> freeTimeVec) {
         ArrayList<DateTimeInterval> freeTimeVecNew = new ArrayList<>();
         try {
-            System.out.println(objectMapper.writeValueAsString(freeTimeVec));}
-        catch (Exception e){}
+            System.out.println(objectMapper.writeValueAsString(freeTimeVec));
+        } catch (Exception e) {}
         for (DateTimeInterval interval : freeTimeVec) {
-
-            System.out.println("[DEBUG] Eventstart: " + this.getStart().getDateTime() + " | Timezone: " + this.getStart().getTimeZone());
-            System.out.println("[DEBUG] Eventend: " + this.getEnd().getDateTime() + " | Timezone: " + this.getEnd().getTimeZone());
             LocalDateTime eventStart = this.getStart().getDateTime();
             LocalDateTime eventEnd = this.getEnd().getDateTime();
             LocalDateTime freeTimeStart = interval.getStart();
             LocalDateTime freeTimeEnd = interval.getEnd();
-            System.out.println("[DEBUG] freeTimeEnd: " + interval.getEnd());
 
-            DateTimeInterval beforeEventFreeTime = new DateTimeInterval();
-            DateTimeInterval afterEventFreeTime = new DateTimeInterval();
-
-            System.err.println("[DEBUG] A-1: interval 1 start: " + freeTimeStart + " | interval 1 end: " + eventStart);
-            beforeEventFreeTime.setStart(freeTimeStart);
-            beforeEventFreeTime.setEnd(eventStart);
-            System.err.println("[DEBUG] A-2: interval 1 start: " + freeTimeStart + " | interval 1 end: " + eventStart);
-
-            System.err.println("[DEBUG] B-1: interval 1 start: " + eventEnd + " | interval 1 end: " + freeTimeEnd);
-            afterEventFreeTime.setStart(eventEnd);
-            afterEventFreeTime.setEnd(freeTimeEnd);
-             System.err.println("[DEBUG] B-2: interval 1 start: " + eventEnd + " | interval 1 end: " + freeTimeEnd);
-
-            System.err.println("BeforeEventFreeTime: " + beforeEventFreeTime.getEnd().toString());
-            // System.err.println("AfterEventFreeTime:
-            // "+objMapper.writeValueAsString(afterEventFreeTime));
-
-            // TODO pois nunca é usado
-            // int index = freeTimeVec.indexOf(interval);
-
-            // Não há tempo livre!! ;-;
-            if (eventStart.isBefore(freeTimeStart) && eventEnd.isAfter(freeTimeEnd)) {
-
-            }
-            // Caso onde não temos tempo livre antes do evento
-            else if (eventStart.isBefore(freeTimeStart) && eventEnd.isBefore(freeTimeEnd)) {
-                freeTimeVecNew.add(afterEventFreeTime);
-            }
-            // Caso onde não há tempo livre depois do evento
-            else if ((eventStart.isAfter(freeTimeStart) && eventStart.isBefore(freeTimeEnd)) &&
-                    eventEnd.isAfter(freeTimeEnd)) {
-                freeTimeVecNew.add(beforeEventFreeTime);
-            }
-            // Temos tempo livre antes e depois do evento
-            else if (eventStart.isAfter(freeTimeStart) && eventStart.isBefore(freeTimeEnd) &&
-                    eventEnd.isBefore(freeTimeEnd) && eventEnd.isAfter(freeTimeStart)) {
-                freeTimeVecNew.add(beforeEventFreeTime);
-                freeTimeVecNew.add(afterEventFreeTime);
-            }
-            // O evento e o tempo livre são disjuntos
-            else if (eventStart.isAfter(freeTimeEnd)) {
+            // Caso 1: Evento completamente fora do intervalo de tempo livre (antes ou depois)
+            if (eventEnd.isBefore(freeTimeStart) || eventStart.isAfter(freeTimeEnd)) {
                 freeTimeVecNew.add(interval);
+                continue;
             }
 
+            // Caso 2: Evento cobre todo o intervalo de tempo livre
+            if (eventStart.isBefore(freeTimeStart) && eventEnd.isAfter(freeTimeEnd)) {
+                // Não há tempo livre nesse intervalo
+                continue;
+            }
+
+            // Caso 3: Tempo livre antes do evento
+            if (eventStart.isAfter(freeTimeStart)) {
+                if (eventStart.isAfter(freeTimeStart)) {
+                    DateTimeInterval before = new DateTimeInterval();
+                    before.setStart(freeTimeStart);
+                    before.setEnd(eventStart);
+                    // Só adiciona se o intervalo for válido
+                    if (!before.getStart().isAfter(before.getEnd())) {
+                        freeTimeVecNew.add(before);
+                    }
+                }
+            }
+
+            // Caso 4: Tempo livre depois do evento
+            if (eventEnd.isBefore(freeTimeEnd)) {
+                if (eventEnd.isBefore(freeTimeEnd)) {
+                    DateTimeInterval after = new DateTimeInterval();
+                    after.setStart(eventEnd);
+                    after.setEnd(freeTimeEnd);
+                    // Só adiciona se o intervalo for válido
+                    if (!after.getStart().isAfter(after.getEnd())) {
+                        freeTimeVecNew.add(after);
+                    }
+                }
+            }
         }
-        // Collections.sort(freeTimeVec);
         return freeTimeVecNew;
     }
 
