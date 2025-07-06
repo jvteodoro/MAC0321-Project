@@ -38,10 +38,9 @@ public class PromptBuilder {
     private RestClient restClient;
 
     @GetMapping("/prompt/semana")
-    public String getPromptSemana(@RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient,
-                                  @RequestParam String dataInicial,
-                                  @RequestParam(required = false) String calendarId) {
-        LocalDateTime startDate = LocalDateTime.parse(dataInicial, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    public String getPromptSemana(@RequestParam String firstDay,
+                                  @RequestParam(required = false) String calendarId, @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) {
+        LocalDateTime startDate = LocalDateTime.parse(firstDay, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         User user = userDataController.findUser(authorizedClient.getPrincipalName());
         List<CalendarListResource> calendars = user.getCalendarList();
 

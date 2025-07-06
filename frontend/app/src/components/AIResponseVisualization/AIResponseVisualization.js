@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom'; // Adicione esta linha
 
 const AIResponseVisualization = () => {
+   const location = useLocation();
   const { calendarId, firstDay, lastDay } = location.state || {};
   const [responseData, setResponseData] = useState('');
   const [loading, setLoading] = useState(false);
@@ -14,9 +16,14 @@ const AIResponseVisualization = () => {
       setLoading(true);
       setError(null);
 
+      const prompt = await axios.get(
+          `http://localhost:12003//prompt/semana?firstDay=${firstDay}&calendarId=${calendarId}`, { withCredentials: true }
+        );
+
+
       try {
         const response = await axios.get(
-          `http://localhost:12003/aiReport?initialDate=${firstDay}&calendarId=${calendarId}`
+          `http://localhost:12003/aiReport?firstDay=${firstDay}&calendarId=${calendarId}&prompt=${prompt.data}`, { withCredentials: true }
         );
         setResponseData(response.data);
       } catch (err) {

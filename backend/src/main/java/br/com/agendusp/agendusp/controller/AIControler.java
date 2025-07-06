@@ -36,10 +36,10 @@ public class AIControler {
     }
 
     @GetMapping("/aiReport")
-    public String gerarInforme(@RequestParam String initialDate, @RequestParam String calendarID, @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) { // a requisicao da ia precisa mandar isso {"model" :
+    public String gerarInforme(@RequestParam String firstDay, @RequestParam String calendarId, String prompt, @RegisteredOAuth2AuthorizedClient("Google") OAuth2AuthorizedClient authorizedClient) { // a requisicao da ia precisa mandar isso {"model" :
                                                           // "llama3.2:1b", "prompt": "-prompt para a ia-", "stream":
                                                           // false}
-        String prompt = promptBuilder.getPromptSemana(authorizedClient, initialDate, calendarID); // chama o promptBuilder para gerar o prompt
+        //String prompt = promptBuilder.getPromptSemana(authorizedClient, firstDay, calendarId); // chama o promptBuilder para gerar o prompt
         AIRequest airequest = new AIRequest.AiRequestBuilder("llama3.2:1b", prompt, "false")
                 .build();
         ResponseEntity<String> response = restClient.post()
