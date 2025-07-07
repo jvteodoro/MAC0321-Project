@@ -2,82 +2,91 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import ptBR from "date-fns/locale/pt-BR";
 import "./VoteMenu.css";
 
 const VoteMenu = (props) => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { eventId } = location.state || {};
+  // const navigate = useNavigate();
+  const { userId, eventId, calendarId } = location.state || {};
 
   // State for the component
-  const [timeSlots, setTimeSlots] = useState([]);
-  const [selectedSlots, setSelectedSlots] = useState([]);
+  const [poll, setPoll] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [eventName, setEventName] = useState("");
+  const [eventDate, setEventDate] = useState("");
 
-  // Fetch available time slots from backend
+  // Fetch poll for the event
   useEffect(() => {
-    registerLocale("pt-BR", ptBR);
-
-    const fetchTimeSlots = async () => {
-      try {
-        const response = await axios.get(`/api/events/${eventId}/timeslots`, {
-          withCredentials: true,
-        });
-        setTimeSlots(
-          response.data.timeSlots.map((slot) => ({
-            ...slot,
-            start: new Date(slot.start),
-            end: new Date(slot.end),
-          }))
-        );
+    const fetchPollAndEvent = async () => {
+      if (!eventId) {
+        setError("Evento não especificado.");
         setLoading(false);
+        return;
+      }
+      try {
+        // Fetch poll
+        const pollResp = await axios.get(
+          `http://localhost:12003/poll/byEvent`,
+          {
+            params: { eventId },
+            withCredentials: true,
+          }
+        );
+        if (pollResp.data && pollResp.data.posibleTimes) {
+          setPoll(pollResp.data);
+        } else {
+          setPoll(null);
+        }
+
+        // Always fetch event details if calendarId and eventId are present
+        if (calendarId && eventId) {
+          const eventResp = await axios.get(
+            `http://localhost:12003/events/get?calendarId=${calendarId}&eventId=${eventId}`,
+            { withCredentials: true }
+          );
+          setEventName(eventResp.data?.summary || "");
+          setEventDate(eventResp.data.start.dateTime || "");
+        }
       } catch (err) {
-        setError(err.response?.data?.message || "Erro ao carregar horários");
+        setError("Erro ao buscar dados da enquete.");
+      } finally {
         setLoading(false);
       }
     };
+    fetchPollAndEvent();
+  }, [eventId, calendarId]);
 
-    if (eventId) {
-      fetchTimeSlots();
-    }
-  }, [eventId]);
-
-  const toggleTimeSlot = (slot) => {
-    setSelectedSlots((prev) => {
-      const isSelected = prev.some(
-        (s) =>
-          s.start.getTime() === slot.start.getTime() &&
-          s.end.getTime() === slot.end.getTime()
-      );
-
-      if (isSelected) {
-        return prev.filter(
-          (s) =>
-            s.start.getTime() !== slot.start.getTime() ||
-            s.end.getTime() !== slot.end.getTime()
-        );
-      } else {
-        return [...prev, slot];
-      }
-    });
+  const toggleTimeSlot = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]
+    );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-
+    setError(null);
     try {
-      await axios.post(
-        `http://localhost:12003/events/${eventId}/vote`,
-        { selectedSlots },
-        { withCredentials: true }
-      );
+      // Send a vote for each selected posibleTime id
+      for (const dateTimeIntervalId of selectedIds) {
+        await axios.post(
+          `http://localhost:12003/poll/vote`,
+          null,
+          {
+            params: {
+              userId: userId,
+              eventPollId: poll.id,
+              dateTimeIntervalId,
+            },
+            withCredentials: true,
+          }
+        );
+      }
       setSubmitSuccess(true);
     } catch (err) {
       setError(err.response?.data?.message || "Erro ao enviar votos");
@@ -86,17 +95,45 @@ const VoteMenu = (props) => {
     }
   };
 
-  const formatTime = (date) => {
-    return (
-      date?.toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }) || ""
-    );
+  const formatTime = (isoString) => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+    return date.toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const formatDate = (isoString) => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+    return date.toLocaleDateString("pt-BR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   if (loading) return <div className="loading">Carregando horários...</div>;
   if (error) return <div className="error">{error}</div>;
+  if (!poll)
+    return (
+      <main id="vote-menu">
+        <h2>Vote nos melhores horários</h2>
+        {eventName && (
+          <div>
+            <strong>Evento:</strong> {eventName}
+          </div>
+        )}
+        {eventDate && (
+          <div>
+            <strong>Dia:</strong> {formatDate(eventDate)}
+          </div>
+        )}
+        <div>Nenhuma enquete disponível para este evento.</div>
+      </main>
+    );
   if (submitSuccess)
     return (
       <div className="success">
@@ -107,39 +144,34 @@ const VoteMenu = (props) => {
   return (
     <main id="vote-menu">
       <h2>Vote nos melhores horários</h2>
-
-      <button
-        type="button"
-        className="submit-button"
-        style={{ marginBottom: "1em", width: "auto" }}
-        onClick={() => navigate("/evento/criarEnquete", { state: { eventId } })}
-      >
-        Criar enquete
-      </button>
-
+      {eventName && (
+        <div>
+          <strong>Evento:</strong> {eventName}
+        </div>
+      )}
+      {eventDate && (
+        <div>
+          <strong>Dia:</strong> {formatDate(eventDate)}
+        </div>
+      )}
       <form onSubmit={handleSubmit} autoComplete="off">
         <div className="timeslot-list-container">
           <h3>Horários disponíveis:</h3>
-
-          {timeSlots.length === 0 ? (
+          {poll.posibleTimes.length === 0 ? (
             <p>Nenhum horário disponível para votação.</p>
           ) : (
             <ul className="timeslot-list">
-              {timeSlots.map((slot, index) => {
-                const isSelected = selectedSlots.some(
-                  (s) =>
-                    s.start.getTime() === slot.start.getTime() &&
-                    s.end.getTime() === slot.end.getTime()
-                );
-
+              {poll.posibleTimes.map((slot, idx) => {
+                const isSelected = selectedIds.includes(idx);
+                const interval = slot.dateTimeInterval;
                 return (
                   <li
-                    key={index}
+                    key={idx}
                     className={`timeslot-item ${isSelected ? "selected" : ""}`}
-                    onClick={() => toggleTimeSlot(slot)}
+                    onClick={() => toggleTimeSlot(idx)}
                   >
                     <div className="timeslot-time">
-                      {formatTime(slot.start)} - {formatTime(slot.end)}
+                      {formatTime(interval?.start)} - {formatTime(interval?.end)}
                     </div>
                     <div className="timeslot-votes">
                       {slot.votes || 0} votos
@@ -161,7 +193,7 @@ const VoteMenu = (props) => {
         <button
           type="submit"
           className="submit-button"
-          disabled={selectedSlots.length === 0 || submitting}
+          disabled={selectedIds.length === 0 || submitting}
         >
           {submitting ? "Enviando..." : "Enviar Votos"}
         </button>
@@ -171,7 +203,6 @@ const VoteMenu = (props) => {
 };
 
 VoteMenu.propTypes = {
-  // Add prop types as needed
   eventId: PropTypes.string,
 };
 

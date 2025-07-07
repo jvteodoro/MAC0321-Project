@@ -4,6 +4,7 @@ import "./CalendarMenu.css";
 import WeekView from "../WeekView/WeekView";
 import EventBlock from "../EventBlock/EventBlock";
 import axios from "axios";
+import { fetchNationalHolidays } from "../../utils/holidays";
 
 const Calendar = ({ year, month }) => {
   // Estados para armazenar os calendários e eventos
@@ -12,6 +13,7 @@ const Calendar = ({ year, month }) => {
   const [currentDate, setCurrentDate] = useState(new Date(year, month));
   const [selectedWeek, setSelectedWeek] = useState(null);
   const [calendarId, setCalendarId] = useState(null);
+  const [holidays, setHolidays] = useState([]);
 
   // Busca os eventos quando o componente é montado
   useEffect(() => {
@@ -32,6 +34,8 @@ const Calendar = ({ year, month }) => {
         if (validCalendars.length > 0) {
           const newCalendarId = validCalendars[0].id;
           setCalendarId(newCalendarId);
+          // Store in localStorage for NotificationHandler
+          localStorage.setItem("currentCalendarId", newCalendarId);
 
           const eventsResponse = await axios.get(
             `http://localhost:12003/events/list?calendarId=${newCalendarId}`,
@@ -47,6 +51,18 @@ const Calendar = ({ year, month }) => {
     fetchData();
     resetToCurrent();
   }, []);
+  useEffect(() => {
+    if (
+      currentDate instanceof Date &&
+      !isNaN(currentDate.getFullYear())
+    ) {
+      fetchNationalHolidays(currentDate.getFullYear())
+        .then(setHolidays)
+        .catch(() => setHolidays([]));
+    }
+  }, [currentDate]);
+
+
 
   // Funções de Navegação
   const prevMonth = () => {
@@ -209,46 +225,54 @@ const Calendar = ({ year, month }) => {
               >
                 {week.map((dayInfo, dayIndex) => {
                   const dayEvents = getEventsForDay(dayInfo);
+                  // Monta a data no formato YYYY-MM-DD
+                  const dateStr = `${dayInfo.year}-${String(dayInfo.monthIndex + 1).padStart(2, "0")}-${String(dayInfo.day).padStart(2, "0")}`;
+                  const holiday = holidays.find(h => h.date === dateStr);
+                  
                   return (
                     <div
-                      key={`day-${weekIndex}-${dayIndex}`}
-                      className={`calendar-day 
-                        ${dayInfo.isCurrentMonth ? "" : "other-month"} 
-                        ${dayInfo.isToday ? "today" : ""}`}
-                    >
-                      <span className="day-number">{dayInfo.day}</span>
-                      {/* Renderiza um EventBlock para cada evento deste dia */}
-                      {dayEvents.map((event, eventIndex) => (
-                        <EventBlock
-                          key={`event-${weekIndex}-${dayIndex}-${eventIndex}`}
-                          eventInfo={{
-                            colorId: event.colorId,
-                            title: event.summary,
-                            startTime: event.start.dateTime
-                              ? new Date(
-                                  event.start.dateTime
-                                ).toLocaleTimeString("pt-BR", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })
-                              : "Dia todo",
-                            endTime: event.end.dateTime
-                              ? new Date(event.end.dateTime).toLocaleTimeString(
-                                  "pt-BR",
-                                  {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  }
-                                )
-                              : "Dia todo",
-                            status: event.status
-                          }}
-                          clickable={false}
-                        />
-                      ))}
-                    </div>
-                  );
-                })}
+                    key={`day-${weekIndex}-${dayIndex}`}
+                    className={`calendar-day 
+                      ${dayInfo.isCurrentMonth ? "" : "other-month"} 
+                      ${dayInfo.isToday ? "today" : ""}
+                      ${holiday ? "holiday" : ""}
+                      `}
+                      title={holiday ? holiday.name : ""}
+                      >
+      <span className="day-number">{dayInfo.day}</span>
+      {holiday && <span className="holiday-emoji" title={holiday.name}>🎉</span>}
+      {/* Renderiza um EventBlock para cada evento deste dia */}
+      {dayEvents.map((event, eventIndex) => (
+        <EventBlock
+        key={`event-${weekIndex}-${dayIndex}-${eventIndex}`}
+        eventInfo={{
+          colorId: event.colorId,
+          title: event.summary,
+          startTime: event.start.dateTime
+          ? new Date(
+            event.start.dateTime
+          ).toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+                  minute: "2-digit",
+                })
+                : "Dia todo",
+                endTime: event.end.dateTime
+                ? new Date(event.end.dateTime).toLocaleTimeString(
+                  "pt-BR",
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }
+                )
+                : "Dia todo",
+                status: event.status
+              }}
+              clickable={false}
+              />
+            ))}
+    </div>
+  );
+})}
               </div>
             ))}
           </div>
@@ -257,6 +281,7 @@ const Calendar = ({ year, month }) => {
     </div>
   );
 };
+
 
 Calendar.propTypes = {
   year: PropTypes.number,

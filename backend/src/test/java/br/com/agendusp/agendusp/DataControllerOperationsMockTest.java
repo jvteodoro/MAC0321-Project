@@ -19,14 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
 public class DataControllerOperationsMockTest {
 
     @Autowired
@@ -35,8 +33,8 @@ public class DataControllerOperationsMockTest {
     @Autowired
     private Gson gson;
 
-     private String userID = "agendusp";
-     private String calendarID = "primeiros";
+    private String userID = "agendusp";
+    private String calendarID = "primeiros";
 
     private CalendarListResource createCalendar() {
         CalendarListResource calendar = new CalendarListResource();

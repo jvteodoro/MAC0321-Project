@@ -1,70 +1,124 @@
-@import url('../../App.css');
+@import url("../../App.css");
 
 #page-header {
-    width: 100%;
-    padding-inline: 0.5em;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
+  width: 100%;
+  padding-inline: 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
 }
 
 #page-title {
-    position: absolute;
-    bottom: 50%;
-    left: 50%;
-    transform: translate(-50%, 50%);
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
 }
 
 #nav-buttons {
-    display: flex;
-    gap: 0.5em;
+  display: flex;
+  gap: 0.5em;
 }
 
-#nav-buttons button{
-    font-size: 1.3em;
-    padding: 0.2em 0.5em;
-    border-radius: 0.4em;
-    font-weight: bold;
-    border: 0;
-    min-width: 3.5em;
-    min-height: 2.2em;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+#nav-buttons button {
+  font-size: 1.3em;
+  padding: 0.2em 0.5em;
+  border-radius: 0.4em;
+  font-weight: bold;
+  border: 0;
+  min-width: 3.5em;
+  min-height: 2.2em;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-#notifications-button{
-    position: relative;
-    z-index: 2;
-    min-width: 3.5em;
-    min-height: 2.2em;
-    padding: 0.2em 0.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #e6b720;
+#notifications-button {
+  position: relative;
+  z-index: 1;
+  min-width: 3.5em;
+  min-height: 2.2em;
+  padding: 0.2em 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e6b720;
 }
+
+#notifications-button:hover {
+  background-color: #cea10f;
+}
+
 #stats-button {
-    position: relative;
-    z-index: 2;
-    min-width: 3.5em;
-    min-height: 2.2em;
-    padding: 0.2em 0.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color:#2155ff;
+  position: relative;
+  z-index: 1;
+  min-width: 3.5em;
+  min-height: 2.2em;
+  padding: 0.2em 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: blueviolet;
 }
 
-#notifications-button.connected-to-list, #stats-button.connected-to-stats{
-    background-color: var(--secondary-hoverselect-color);
-    border-radius: 0.4em 0.4em 0 0;
-    outline: inset 2px var(--main-color);
+#stats-button:hover {
+  background-color: #751ec7;
+}
+
+#salvar {
+  position: relative;
+  z-index: 2;
+  min-width: 3.5em;
+  min-height: 2.2em;
+  padding: 0.2em 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#logout {
+  position: relative;
+  z-index: 2;
+  min-width: 3.5em;
+  min-height: 2.2em;
+  padding: 0.2em 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff4444;
+  border-color: #ff4444;
+}
+
+#logout:hover {
+  background-color: #cc0000;
+}
+
+#notifications-button.connected-to-list,
+#stats-button.connected-to-stats {
+  background-color: var(--secondary-hoverselect-color);
+  border-radius: 0.4em 0.4em 0 0;
+  outline: inset 2px var(--main-color);
+  position: relative;
+  z-index: 4;
 }
 
 .menu-button-group {
-    position: relative;
-    display: inline-block;
+  position: relative;
+}
+
+.notification-badge {
+  font-size: 0.7em;
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  width: 1.5em;
+  height: 1.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: red;
+  pointer-events: none;
 }

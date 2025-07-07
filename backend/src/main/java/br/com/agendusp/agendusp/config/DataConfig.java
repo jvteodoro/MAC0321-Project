@@ -4,13 +4,14 @@ package br.com.agendusp.agendusp.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import br.com.agendusp.agendusp.controller.CalendarDataController;
-import br.com.agendusp.agendusp.controller.EventPoolDataController;
-import br.com.agendusp.agendusp.controller.EventsDataController;
 import br.com.agendusp.agendusp.controller.UserDataController;
+import br.com.agendusp.agendusp.controller.calendarControllers.CalendarDataController;
+import br.com.agendusp.agendusp.controller.eventControllers.EventPollDataController;
+import br.com.agendusp.agendusp.controller.eventControllers.EventsDataController;
 import br.com.agendusp.agendusp.controller.google.GoogleCalendarListController;
 import br.com.agendusp.agendusp.controller.google.GoogleCalendarsController;
 import br.com.agendusp.agendusp.controller.google.GoogleEventsController;
+
 
 @Configuration
 public class DataConfig {
@@ -34,8 +35,8 @@ public class DataConfig {
         return new UserDataController();
     }
     @Bean
-    public EventPoolDataController eventPoolDataController(){
-        return new EventPoolDataController();
+    public EventPollDataController eventPollDataController(){
+        return new EventPollDataController();
     }
     @Bean
     public GoogleCalendarListController googleCalendarListController(){

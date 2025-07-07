@@ -2,10 +2,10 @@ package br.com.agendusp.agendusp.documents;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 
 @Document(collection = "calendarLists")
-public class CalendarListResource {
+public class CalendarListResource { // objetos dessa classe serão salvos na coleção calendarLists do MongoDB
     String id;
     String calendarId;
     String kind = "calendar#calendarListEntry";
@@ -27,26 +27,32 @@ public class CalendarListResource {
     public CalendarListResource() {
     }
 
-    // public CalendarListResource(String calendarId, boolean primary, CalendarListUserItem calendarListUserItem, CalendarResource calendarResource) {
-    //     this.calendarId = calendarId;
-    //     this.primary = primary;
+    // public CalendarListResource(String calendarId, boolean primary,
+    // CalendarListUserItem calendarListUserItem, CalendarResource calendarResource)
+    // {
+    // this.calendarId = calendarId;
+    // this.primary = primary;
 
-    //     this.summary = calendarResource.getSummary();
-    //     this.description = calendarResource.getDescription();
-    //     this.location = calendarResource.getLocation();
-    //     this.timeZone = calendarResource.getTimeZone();
-    //     this.deleted = calendarResource.isDeleted();
-    //     this.owner = calendarResource.getOwner();
-        
-    //     this.colorId = calendarListUserItem.getColorId();
-    //     this.backgroundColor = calendarListUserItem.getBackgroundColor();
-    //     this.foregroundColor = calendarListUserItem.getForegroundColor();
-    //     this.hidden = calendarListUserItem.isHidden();
-    //     this.selected = calendarListUserItem.isSelected();
-    //     this.accessRole = calendarListUserItem.getAccessRole();
+    // this.summary = calendarResource.getSummary();
+    // this.description = calendarResource.getDescription();
+    // this.location = calendarResource.getLocation();
+    // this.timeZone = calendarResource.getTimeZone();
+    // this.deleted = calendarResource.isDeleted();
+    // this.owner = calendarResource.getOwner();
+
+    // this.colorId = calendarListUserItem.getColorId();
+    // this.backgroundColor = calendarListUserItem.getBackgroundColor();
+    // this.foregroundColor = calendarListUserItem.getForegroundColor();
+    // this.hidden = calendarListUserItem.isHidden();
+    // this.selected = calendarListUserItem.isSelected();
+    // this.accessRole = calendarListUserItem.getAccessRole();
     // }
     // Índice 0 é o calendário principal do usuário
-    public CalendarResource extractCalendarResource() {
+    public CalendarResource extractCalendarResource() { // extrai um CalendarResource a partir de um
+                                                        // CalendarListResource
+        if (this.calendarId == null) {
+            throw new IllegalArgumentException("Calendar ID cannot be null");
+        }
         CalendarResource resource = new CalendarResource();
         resource.setCalendarId(this.calendarId);
         resource.setSummary(this.summary);
@@ -61,7 +67,8 @@ public class CalendarListResource {
     public String getId() {
         return id;
     }
-    public void setId(String id){
+
+    public void setId(String id) {
         this.calendarId = id;
         this.id = id;
     }
@@ -191,13 +198,13 @@ public class CalendarListResource {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "CalendarListResource{" +
                 "calendarId='" + calendarId + '\'' +
                 ", summary='" + summary + '\'' +
-                ", description='" + description + '\''+
+                ", description='" + description + '\'' +
                 '}';
-       
+
     }
 
 }

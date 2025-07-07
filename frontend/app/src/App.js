@@ -9,9 +9,9 @@ import CalendarMenu from "./components/CalendarMenu/CalendarMenu";
 import CreateEventMenu from "./components/EventMenus/CreateEventMenu";
 import EditEventMenu from "./components/EventMenus/EditEventMenu";
 import VoteMenu from "./components/VoteMenu/VoteMenu";
+import PollResultViewer from "./components/PollResultViewer/PollResultViewer";
 // import CreatePollMenu from "./components/OBSOLETE_CreatePollMenu/CreatePollMenu";
-import WeeklyParticipationVisualization from "./components/DataVisualization/WeeklyParticipationVisualization/WeeklyParticipationVisualization";
-import AIResponseVisualization from "./components/DataVisualization/AIResponseVisualization/AIResponseVisualization";
+import AIResponseVisualization from "./components/AIResponseVisualization/AIResponseVisualization";
 
 
 function App() {
@@ -45,20 +45,20 @@ function App() {
             element={
               <PrivateRoute>
                 <PageHeader title="Criar Reunião" />
-                <CreateEventMenu/>
+                <CreateEventMenu />
               </PrivateRoute>
             }
           />
-            <Route
-              path="/evento/editar"
-              element={
-                <PrivateRoute>
-                  <PageHeader title="Editar Reunião" />
-                  <EditEventMenu/>
-                </PrivateRoute>
-              }
-            />
-            {/* <Route
+          <Route
+            path="/evento/editar"
+            element={
+              <PrivateRoute>
+                <PageHeader title="Editar Reunião" />
+                <EditEventMenu />
+              </PrivateRoute>
+            }
+          />
+          {/* <Route
               path="/evento/criarEnquete"
               element={
                 <PrivateRoute>
@@ -72,16 +72,16 @@ function App() {
             element={
               <PrivateRoute>
                 <PageHeader title="Votar" />
-                <VoteMenu/>
+                <VoteMenu />
               </PrivateRoute>
             }
           />
           <Route
-            path="/relatorioSemanal"
+            path="/viewPollResult"
             element={
               <PrivateRoute>
-                <PageHeader title="Relatório" />
-                <WeeklyParticipationVisualization/>
+                <PageHeader title="Ver Enquete" />
+                <PollResultViewer />
               </PrivateRoute>
             }
           />
@@ -90,7 +90,7 @@ function App() {
             element={
               <PrivateRoute>
                 <PageHeader title="Relatório IA" />
-                <AIResponseVisualization/>
+                <AIResponseVisualization />
               </PrivateRoute>
             }
           />

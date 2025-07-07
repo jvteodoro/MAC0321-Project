@@ -4,35 +4,35 @@ import java.util.ArrayList;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
-import br.com.agendusp.agendusp.dataobjects.EventPool;
-
+import br.com.agendusp.agendusp.dataobjects.PollNotification;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 
 @Document(collection = "users")
-public class User {//implements UserDetails {
+public class User { // objetos dessa classe serão salvos na coleção users do MongoDB
 
     @Id
     private String id; // ID gerada pelo MongoDB
-    private String userId;
     private String DisplayName;
-    
+
     private String googleId; // Guarda o 'sub' (estável) do Google
     private String email;
     private String name;
-    private ArrayList<String> eventPoolList;
-    private ArrayList<EventPool> eventPoolNotifications;
-    private ArrayList<CalendarListResource> calendarList; // Índice 0 é o calendário principal do usuário
+    private ArrayList<String> eventPollList = new ArrayList<>();
+    private ArrayList<PollNotification> eventPollNotifications = new ArrayList<>(); 
+    private ArrayList<CalendarListResource> calendarList = new ArrayList<>(); // Índice 0 é o calendário principal do usuário
     private CalendarPerson calendarPerson;
 
     public User() {
     }
 
-    public User(String userId) {
-        this.userId = userId;
+    public User(String userId) { // Construtor para criar um usuário com um ID específico
+        this.id = userId; // 
+        this.googleId = null; // Google ID pode ser nulo se o usuário não se autenticou com o Google
     }
 
-    public User(String googleId, String email, String name) {
+    public User(String googleId, String email, String name) { // Construtor para criar um usuário com Google ID, email e
+                                                              // nome
+        this.id = googleId;
         this.googleId = googleId;
         this.email = email;
         this.name = name;
@@ -47,26 +47,39 @@ public class User {//implements UserDetails {
     }
 
     private void updateCalendarPerson() {
-        this.calendarPerson = new CalendarPerson(this.id, this.email, this.name);
-    }
-    
-
-    public ArrayList<String> getEventPoolList() {
-        return eventPoolList;
-    }
-
-    public void setEventPoolList(ArrayList<String> eventPoolList) {
-        this.eventPoolList = eventPoolList;
-    }
-    public void addEventPool(String eventPoolId){
-        this.eventPoolList.add(eventPoolId);
+        if (this.calendarPerson == null){
+            this.calendarPerson = new CalendarPerson();
+        }
+        this.calendarPerson.setId(this.googleId);
+        this.calendarPerson.setEmail(this.email);
+        this.calendarPerson.setDisplayName(name);
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public ArrayList<String> getEventPollList() {
+        if (this.eventPollList == null) {
+            this.eventPollList = new ArrayList<>();
+        }
+        return eventPollList;
+    }
+
+    public void setEventPollList(ArrayList<String> eventPollList) {
+        if (eventPollList == null) {
+            eventPollList = new ArrayList<>();
+        }
+        this.eventPollList = eventPollList;
+    }
+
+    public void addEventPoll(String eventPollId) {
+        if (this.eventPollList == null) {
+            this.eventPollList = new ArrayList<>();
+        }
+        this.eventPollList.add(eventPollId);
     }
 
     public void setName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
         this.name = name;
     }
 
@@ -74,18 +87,17 @@ public class User {//implements UserDetails {
         this.calendarList = calendarList;
     }
 
-    public ArrayList<EventPool> getEventPoolNotifications() {
-        return eventPoolNotifications;
-    }
-    public void addEventPoolNotifications(EventPool eventPoolNotification){
-        this.eventPoolNotifications.add(eventPoolNotification);
+    public ArrayList<PollNotification> getEventPollNotifications() {
+        return eventPollNotifications;
     }
 
-    public void setEventPoolNotifications(ArrayList<EventPool> eventPoolNotifications) {
-        this.eventPoolNotifications = eventPoolNotifications;
+    public void addEventPollNotifications(PollNotification eventPollNotification) {
+        this.eventPollNotifications.add(eventPollNotification);
     }
 
-    
+    public void setEventPollNotifications(ArrayList<PollNotification> eventPollNotifications) {
+        this.eventPollNotifications = eventPollNotifications;
+    }
 
     public String getDisplayName() {
         return DisplayName;
@@ -97,9 +109,6 @@ public class User {//implements UserDetails {
 
     public String getId() {
         return this.id;
-    }
-    public String getUserId() {
-        return this.userId;
     }
 
     public void setId(String id) {
@@ -122,7 +131,7 @@ public class User {//implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
-        updateCalendarPerson();
+        //updateCalendarPerson();
     }
 
     public String getName() {
@@ -137,6 +146,7 @@ public class User {//implements UserDetails {
     public ArrayList<CalendarListResource> getCalendarList() {
         return calendarList;
     }
+
     public CalendarListResource addCalendarListResource(CalendarListResource calendarListResource) {
         if (this.calendarList == null) {
             this.calendarList = new ArrayList<>();
@@ -145,28 +155,28 @@ public class User {//implements UserDetails {
         return calendarListResource;
     }
 
-
-
     // @Override
     // public Collection<? extends GrantedAuthority> getAuthorities() {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'getAuthorities'");
     // }
 
     // @Override
     // public String getPassword() {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'getPassword'");
+    // // TODO Auto-generated method stub
+    // throw new UnsupportedOperationException("Unimplemented method
+    // 'getPassword'");
     // }
 
     // @Override
     // public String getUsername() {
-    //     // TODO Auto-generated method stub
+    // // TODO Auto-generated method stub
 
     // // public void runArray(){
-    // //     //implementar
+    // // //implementar
     // // }
-        
-    //     return this.name;   
+
+    // return this.name;
     // }
 }

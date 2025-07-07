@@ -20,6 +20,7 @@
   cursor: pointer;
   color: var(--main-font-color);
   position: relative;
+  width: 7em;
 }
 
 .month-title:hover {
@@ -31,22 +32,15 @@
   position: absolute;
 }
 
-.nav-button { /* Botão para navegar pelos meses */
+.nav-button { /* botão para navegar pelos meses*/
   padding: 0.5em;
   border: none;
   border-radius: 50%;
-  position: absolute;
   text-align: center;
   top: 0%;
 }
-.nav-button:first-of-type {
-  left: 41.5em;
-}
-.nav-button:last-of-type {
-  right: 41.5em;
-}
 
-#calendar { /* Container principal do calendário */
+#calendar { /* container principal do calendário */
   width: 100%;
   height: calc(100% - 2em);
   padding: 0 0.5em 0.5em 0.5em;
@@ -94,6 +88,14 @@
   user-select: none;
   position: relative;
   overflow: hidden;
+}
+
+
+.holiday-emoji {
+  position: absolute;
+  top: 0.3em;
+  right: 0.3em;
+  font-size: 0.9em;
 }
 
 .calendar-day:hover > .day-number {

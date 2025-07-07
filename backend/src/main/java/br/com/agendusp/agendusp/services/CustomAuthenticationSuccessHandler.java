@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.agendusp.agendusp.controller.UserDataController;
 import br.com.agendusp.agendusp.controller.google.GoogleCalendarListController;
 import br.com.agendusp.agendusp.controller.google.GoogleCalendarsController;
-import br.com.agendusp.agendusp.controller.google.GoogleDataToLocalData;
+import br.com.agendusp.agendusp.controller.google.GoogleCloudAndLocalController;
 import br.com.agendusp.agendusp.controller.google.GoogleEventsController;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
-    GoogleDataToLocalData gDataToLocalData;
+    GoogleCloudAndLocalController gCloudAndLocalController;
     @Autowired
     GoogleCalendarListController gCalendarListController;
     @Autowired
@@ -46,9 +46,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             );
             if (authorizedClient != null) {
                 System.out.println("Downloading google info");
-                gDataToLocalData.getUserInfo(authorizedClient);
+                gCloudAndLocalController.getUserInfo(authorizedClient);
                 try {
-                    gDataToLocalData.cloudToLocal(authorizedClient);
+                    gCloudAndLocalController.cloudToLocal(authorizedClient);
                 } catch (Exception e) {
                     System.err.println(e);
                 }

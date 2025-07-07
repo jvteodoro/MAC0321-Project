@@ -16,6 +16,7 @@ public class UserRepositoryController {
         this.oAuth2User = oAuth2User;
         this.userRepository = userRepository;
     }
+
     public void addUser() {
         User user = new User(oAuth2User.getName());
         user.setUsername(oAuth2User.getName());

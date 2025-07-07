@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../EventMenu.css";
 import "./EditEventMenu.css";
 import ptBR from "date-fns/locale/pt-BR";
+import { useAuth } from "../../../context/AuthContext"; // <-- ADD THIS
 
 const EditarEventoMenu = (props) => {
   const colorMap = {
@@ -26,6 +27,8 @@ const EditarEventoMenu = (props) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { calendarId, eventId } = location.state || {};
+
+  const { user } = useAuth(); // <-- ADD THIS
 
   // Estados do componente
   const [formData, setFormData] = useState({
@@ -54,7 +57,8 @@ const EditarEventoMenu = (props) => {
   const [originalEvent, setOriginalEvent] = useState(null);
   const [pollSuccess, setPollSuccess] = useState(false);
   const [pollError, setPollError] = useState(null);
-
+  const [createdPollId, setCreatedPollId] = useState(null);
+  const [isOrganizer, setIsOrganizer] = useState(false);
   useEffect(() => {
     registerLocale("pt-BR", ptBR);
     const carregarEvento = async () => {
@@ -78,7 +82,7 @@ const EditarEventoMenu = (props) => {
             cor: evento.colorId ? parseInt(evento.colorId) : 0,
             descricao: evento.description || "",
             local: evento.location || "",
-            convidados: evento.attendees,
+            convidados: Array.isArray(evento.attendees) ? evento.attendees : [],
             novoConvidado: "",
             hangoutLink: evento.hangoutLink || "",
           });
@@ -93,6 +97,24 @@ const EditarEventoMenu = (props) => {
             displayName:
               evento.organizer?.displayName || "Organizador não identificado",
           });
+
+          // Check if a poll already exists for this event
+          try {
+            const pollResp = await axios.get(
+              `http://localhost:12003/poll/byEvent?eventId=${evento.id}`,
+              { withCredentials: true }
+            );
+            if (pollResp.data && pollResp.data.id) {
+              setPollSuccess(true);
+              setCreatedPollId(pollResp.data.id);
+            } else {
+              setPollSuccess(false);
+              setCreatedPollId(null);
+            }
+          } catch (pollErr) {
+            setPollSuccess(false);
+            setCreatedPollId(null);
+          }
         }
       } catch (erro) {
         console.error("Erro ao carregar reunião:", erro);
@@ -107,10 +129,22 @@ const EditarEventoMenu = (props) => {
     }
   }, [calendarId, eventId]);
 
+  // Check if user is organizer
+  useEffect(() => {
+    if (user && dadosOrganizador.email) {
+      setIsOrganizer(user.email === dadosOrganizador.email);
+    }
+  }, [user, dadosOrganizador.email]);
+
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
+
+  const fixTimezoneOffset = (date) => {
+    if (!date) return "";
+    return new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+  }
 
   const handleDateChange = (data, campo) => {
     setFormData((prev) => ({ ...prev, [campo]: data }));
@@ -174,11 +208,11 @@ const EditarEventoMenu = (props) => {
       // Update only the properties from the form
       updatedEvent.summary = formData.titulo;
       updatedEvent.start = {
-        dateTime: formData.dataInicio.toISOString(),
+        dateTime: fixTimezoneOffset(formData.dataInicio).toISOString(),
         timeZone: "America/Sao_Paulo",
       };
       updatedEvent.end = {
-        dateTime: formData.dataFim.toISOString(),
+        dateTime: fixTimezoneOffset(formData.dataFim).toISOString(),
         timeZone: "America/Sao_Paulo",
       };
       updatedEvent.colorId = formData.cor.toString();
@@ -189,19 +223,19 @@ const EditarEventoMenu = (props) => {
       updatedEvent.attendees =
         formData.convidados.length > 0
           ? formData.convidados.map((c) => {
-              // If already in Attendee structure, keep as is
-              if (typeof c === "object" && c.calendarPerson) return c;
-              // If string (email), wrap as Attendee with CalendarPerson
-              return {
-                calendarPerson: { email: c },
-                organizer: false,
-                resource: false,
-                optional: false,
-                responseStatus: "needsAction",
-                comment: "",
-                additionalGuests: 0,
-              };
-            })
+            // If already in Attendee structure, keep as is
+            if (typeof c === "object" && c.calendarPerson) return c;
+            // If string (email), wrap as Attendee with CalendarPerson
+            return {
+              calendarPerson: { email: c },
+              organizer: false,
+              resource: false,
+              optional: false,
+              responseStatus: "needsAction",
+              comment: "",
+              additionalGuests: 0,
+            };
+          })
           : null;
 
       await axios.post(
@@ -230,7 +264,20 @@ const EditarEventoMenu = (props) => {
       window.location.href = "http://localhost:3000/";
     } catch (erro) {
       console.error("Falha ao cancelar evento:", erro);
-      alert("Erro ao cancelar evento.");
+    }
+  };
+
+  const deletarEvento = async () => {
+    if (!calendarId || !eventId) return;
+    try {
+      await axios.delete(
+        `http://localhost:12003/events/delete/${calendarId}/${eventId}`,
+        { withCredentials: true }
+      );
+      console.log("Evento deletado com sucesso!");
+      window.location.href = "http://localhost:3000/";
+    } catch (erro) {
+      console.error("Falha ao deletar evento:", erro);
     }
   };
 
@@ -241,13 +288,10 @@ const EditarEventoMenu = (props) => {
   // Helper to get start/end of the day in ISO string
   const getDayInterval = (date) => {
     if (!date) return [null, null];
-    const start = new Date(date);
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(date);
-    end.setHours(23, 59, 59, 99);
+    const day = new Date(date);
     return [
-      start.toISOString().split("T")[0] + "T00:00:00",
-      end.toISOString().split("T")[0] + "T23:59:59",
+      day.toISOString().split("T")[0] + "T00:00:00",
+      day.toISOString().split("T")[0] + "T23:59:59",
     ];
   };
 
@@ -260,14 +304,16 @@ const EditarEventoMenu = (props) => {
       return;
     }
     const [startDate, endDate] = getDayInterval(formData.dataInicio);
+
     try {
-      await axios.get(
-        `http://localhost:12003/pool/create?eventId=${originalEvent.id}&startDate=${startDate}&endDate=${endDate}`,
+      const response = await axios.get(
+        `http://localhost:12003/poll/create?eventId=${originalEvent.id}&startDate=${startDate}&endDate=${endDate}`,
         {
           withCredentials: true,
         }
       );
       setPollSuccess(true);
+      setCreatedPollId(response.data.id); // Save poll id for navigation
       console.log("Enquete criada com sucesso!");
     } catch (err) {
       console.error(
@@ -284,6 +330,11 @@ const EditarEventoMenu = (props) => {
       </main>
     );
   }
+
+  // Disable all form controls if not organizer
+  const disableInputs = !isOrganizer;
+  // Disable poll creation if event is cancelled
+  const isEventCancelled = originalEvent && originalEvent.status === "cancelled";
 
   return (
     <main id="event-menu">
@@ -320,6 +371,7 @@ const EditarEventoMenu = (props) => {
             onChange={handleInputChange}
             className={errosFormulario.titulo ? "error-input" : ""}
             autoComplete="off"
+            disabled={disableInputs}
           />
         </label>
 
@@ -347,6 +399,7 @@ const EditarEventoMenu = (props) => {
             }
             placeholderText="dd/mm/aaaa hh:mm"
             locale="pt-BR"
+            disabled={disableInputs}
           />
         </label>
 
@@ -371,6 +424,7 @@ const EditarEventoMenu = (props) => {
             placeholderText="dd/mm/aaaa hh:mm"
             locale="pt-BR"
             minDate={formData.dataInicio}
+            disabled={disableInputs}
           />
         </label>
 
@@ -380,9 +434,9 @@ const EditarEventoMenu = (props) => {
             <div
               className="color-preview"
               style={{ backgroundColor: colorMap[formData.cor] }}
-              onClick={() => setMostrarSeletorCor(!mostrarSeletorCor)}
+              onClick={() => !disableInputs && setMostrarSeletorCor(!mostrarSeletorCor)}
             />
-            {mostrarSeletorCor && (
+            {mostrarSeletorCor && !disableInputs && (
               <div className="color-palette">
                 {Object.entries(colorMap).map(([colorId, colorValue]) => (
                   <div
@@ -397,20 +451,31 @@ const EditarEventoMenu = (props) => {
             )}
           </div>
         </label>
+        <div id="enquete-meet" >
+          {formData.hangoutLink && (
+            <div id="meetLinkHolder" className="form-field">
+              <label>Link do Google Meet</label>
+              <a
+                href={formData.hangoutLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                id="meet-link"
+              >
+                {formData.hangoutLink}
+              </a>
+            </div>
+          )}
 
-        {formData.hangoutLink && (
-          <div id="meetLinkHolder" className="form-field">
-            <label>Link do Google Meet</label>
-            <a
-              href={formData.hangoutLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              id="meet-link"
-            >
-              {formData.hangoutLink}
-            </a>
-          </div>
-        )}
+          <button
+            type="button"
+            className="submit-button criar-enquete-btn"
+            style={{ marginBottom: "1em", width: "auto" }}
+            onClick={handleCreatePoll}
+            disabled={disableInputs || pollSuccess || isEventCancelled}
+          >
+            Criar enquete
+          </button>
+        </div>
 
         <label htmlFor="local" className="form-field full-width">
           Local
@@ -421,6 +486,7 @@ const EditarEventoMenu = (props) => {
             onChange={handleInputChange}
             placeholder="Onde a reunião acontecerá"
             autoComplete="off"
+            disabled={disableInputs}
           />
         </label>
 
@@ -432,6 +498,7 @@ const EditarEventoMenu = (props) => {
             onChange={handleInputChange}
             rows="1"
             autoComplete="off"
+            disabled={disableInputs}
           />
         </label>
 
@@ -450,11 +517,13 @@ const EditarEventoMenu = (props) => {
                   (e.preventDefault(), adicionarConvidado())
                 }
                 autoComplete="off"
+                disabled={disableInputs}
               />
               <button
                 type="button"
                 className="adicionar"
                 onClick={adicionarConvidado}
+                disabled={disableInputs}
               >
                 Adicionar
               </button>
@@ -476,6 +545,7 @@ const EditarEventoMenu = (props) => {
                       type="button"
                       className="remover"
                       onClick={() => removerConvidado(email)}
+                      disabled={disableInputs}
                     >
                       <i className="fa-solid fa-close"></i>
                     </button>
@@ -485,25 +555,32 @@ const EditarEventoMenu = (props) => {
             </div>
           )}
         </div>
-        <button
-          type="button"
-          className="submit-button criar-enquete-btn"
-          style={{ marginBottom: "1em", width: "auto" }}
-          onClick={handleCreatePoll}
-        >
-          Criar enquete
-        </button>
-        <button
-          type="button"
-          id="cancel-button"
-          className="form-field"
-          onClick={cancelarEvento}
-        >
-          Cancelar
-        </button>
-        <button type="submit" id="save-button" className="form-field">
-          Salvar Alterações
-        </button>
+        <div className="form-field button-row">
+          <button
+            type="button"
+            id="cancel-button"
+            onClick={cancelarEvento}
+            disabled={disableInputs}
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            id="delete-button"
+            onClick={deletarEvento}
+            disabled={disableInputs}
+          >
+            Deletar
+            <i className="fa-solid fa-trash"></i>
+          </button>
+          <button
+            type="submit"
+            id="save-button"
+            disabled={disableInputs}
+          >
+            Salvar Alterações
+          </button>
+        </div>
       </form>
     </main>
   );

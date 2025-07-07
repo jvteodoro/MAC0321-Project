@@ -7,7 +7,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestClient;
 
-import br.com.agendusp.agendusp.dataobjects.CalendarPerson;
+import br.com.agendusp.agendusp.dataobjects.PollNotification;
+import br.com.agendusp.agendusp.dataobjects.calendarObjects.CalendarPerson;
 import br.com.agendusp.agendusp.documents.CalendarListResource;
 import br.com.agendusp.agendusp.documents.CalendarResource;
 import br.com.agendusp.agendusp.documents.User;
@@ -50,6 +51,11 @@ public class UserDataController {
                 }
         }
 
+        public void deleteUser(User user) {
+                userRepository.delete(user);
+        }
+        
+
         public User findUserOrCreate(User userGiven) {
                 Optional<User> user = userRepository.findById(userGiven.getId());
                 if (user.isEmpty()) {
@@ -90,7 +96,7 @@ public class UserDataController {
         public CalendarPerson getCalendarPerson(String userId) {
                 User user = findUser(userId);
                 CalendarPerson calPerson = new CalendarPerson();
-                calPerson.setId(user.getUserId());
+                calPerson.setId(user.getId());
                 calPerson.setEmail(user.getEmail());
                 calPerson.setDisplayName(user.getDisplayName());
                 return calPerson;
@@ -107,7 +113,7 @@ public class UserDataController {
 
         }
 
-        protected CalendarListResource findCalendarListResource(String userId, String calendarId) {
+        public CalendarListResource findCalendarListResource(String userId, String calendarId) {
                 CalendarListResource calListResource = userRepository
                                 .findCalendarListResourceByIdAndCalendarId(userId, calendarId)
                                 .orElseThrow(() -> new IllegalArgumentException("Calendário com ID '" + calendarId
@@ -137,5 +143,11 @@ public class UserDataController {
                 } catch (Exception e) {
                         return false;
                 }
+        }
+
+        public void addEventPollNotification(String userId, PollNotification evPollNotification){
+                User user = findUser(userId);
+                user.addEventPollNotifications(evPollNotification);
+                userRepository.save(user);
         }
 }

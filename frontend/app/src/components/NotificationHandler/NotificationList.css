@@ -1,0 +1,35 @@
+#notification-list {
+  font-size: 1.3em;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  height: 0;
+  width: 0;
+  visibility: hidden;
+  overflow: hidden;
+  border-radius: 0.4em 0 0.4em 0.4em;
+  background-color: var(--main-hoverselect-color);
+  padding: 0.1em;
+  z-index: 2;
+}
+
+#notification-list.extended {
+  top: 103%;
+  visibility: visible;
+  height: 15em;
+  width: 15em;
+  background-color: var(--secondary-hoverselect-color);
+  outline: inset 2px var(--main-color);
+}
+
+#notification-list h3 {
+  text-align: center;
+}
+
+#list-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  overflow-y: auto;
+}

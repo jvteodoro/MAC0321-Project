@@ -29,12 +29,10 @@ import br.com.agendusp.agendusp.services.CustomOAuth2UserService;
 @Profile("test")
 class SecurityConfigNoAuth {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.build();
     }
 }
-
-
 
 @Configuration
 @EnableWebSecurity
@@ -47,14 +45,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler(){
+    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return new CustomAuthenticationSuccessHandler();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "ws://localhost:12003"));
+        // configuration.setAllowedOriginPatterns(List.of("http://localhost:3000", "ws://localhost:12003"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -62,6 +61,9 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/logout", configuration);
+        source.registerCorsConfiguration("/gs-guide-websocket/**", configuration);
+        source.registerCorsConfiguration("/gs-guide-websocket", configuration); // Add this line
         return source;
     }
 
@@ -71,31 +73,41 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/events/**", "/pool/**")) // <-- added "/pool/**"
+                        .ignoringRequestMatchers("/oauth2/**", "/login/**", "/api/auth/**", "/events/**", "/poll/**",
+                                "/logout", "/gs-guide-websocket/**", "/gs-guide-websocket")) // Add "/gs-guide-websocket"
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(
-                        "/", 
-                        "/login", 
-                        "/api/auth/**", 
-                        "/oauth2/**",
-                        "/events/update",
-                        "/events/**",
-                        "/pool/**" // <-- added here
-                    ).permitAll();
+                            "/",
+                            "/login",
+                            "/api/auth/**",
+                            "/oauth2/**",
+                            "/logout").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("http://localhost:3000/login-success", true)
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(OAuth2UserService())).successHandler(customAuthenticationSuccessHandler()))
+                                .userService(OAuth2UserService()))
+                        .successHandler(customAuthenticationSuccessHandler()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // POST é default
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            System.out.println(
+                                    "Logout handler called. Invalidating session and clearing authentication."); // debug
+                                                                                                                 // log
+                            response.setStatus(200);
+                        })
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .clearAuthentication(true))
                 .build();
     }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/error");
+        return (web) -> web.ignoring().requestMatchers("/error", "/gs-guide-websocket/**", "/gs-guide-websocket");
     }
 
     @Bean

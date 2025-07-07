@@ -26,39 +26,38 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
     ).toLocaleDateString("pt-BR", { day: "numeric", month: "short" });
   };
 
+  const relatorioGerado = (firstDay) => {
+    navigate("relatorioIA", {
+      replace: true,
+      state: { calendarId: calendarId, firstDay: firstDay },
+    });
+  };
+
   const goToCreateMenu = (clickDayInfo) => {
     navigate("evento/criar", {
+      replace: true,
       state: { calendarId: calendarId, dayInfo: clickDayInfo },
     });
   };
 
-  let firstDay = new Date(
-    week[0].year,
-    week[0].monthIndex,
-    week[0].day
-  ).toISOString();
-
-  let lastDay = new Date(
-    week[6].year,
-    week[6].monthIndex,
-    week[6].day
-  ).toISOString();
-
+  let firstDay =
+    new Date(week[0].year, week[0].monthIndex, week[0].day)
+      .toISOString()
+      .split("T")[0] + "T00:00:00";
   return (
     <div className="week-view-container">
       <div className="week-view-header">
         <h3>Visualização da semana</h3>
-        <form action={"" /* INSERIR URL PARA GERAR O RELATÓRIO */}>
-          <button
-            id="gera-relatorio"
-            type="submit"
-            name="generate"
-            value={`${firstDay},${lastDay}`}
-          >
-            <p>Gerar relatório da semana</p>
-            <span>(LLaMA 4)</span>
-          </button>
-        </form>
+        <button
+          onClick={() => relatorioGerado(firstDay)}
+          id="gera-relatorio"
+          type="submit"
+          name="generate"
+          value={`${firstDay}`}
+        >
+          <p>Gerar relatório da semana</p>
+          <span>(LLaMA 4)</span>
+        </button>
         <button onClick={onClose} className="close-button">
           <i className="fa-solid fa-arrow-left"></i> Voltar para o Calendário
         </button>
@@ -110,7 +109,7 @@ const WeekView = ({ week, calendarId, events, onClose }) => {
                         : "Dia todo",
                       calendarId: calendarId,
                       eventId: event.id,
-                      status: event.status
+                      status: event.status,
                     }}
                   />
                 ))}

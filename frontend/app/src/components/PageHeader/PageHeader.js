@@ -1,18 +1,24 @@
 import React, { useState } from "react";
-// import PropTypes from 'prop-types';
 import "./PageHeader.css";
-import NotificationList from "../NotificationList/NotificationList";
+import NotificationHandler from "../NotificationHandler/NotificationHandler";
 import StatsMenu from "../StatsMenu/StatsMenu";
+import { useAuth } from "../../context/AuthContext";
 
 const PageHeader = (props) => {
-  const [notListVisible, setNotListVisible] = useState(false);
   const [statsMenuVisible, setStatsMenuVisible] = useState(false);
-
-  const toggleNotificationListVisibility = () =>
-    setNotListVisible(!notListVisible);
+  const { logout, userId } = useAuth();
 
   const toggleStatsMenuVisibility = () =>
     setStatsMenuVisible(!statsMenuVisible);
+
+  const fazerLogout = async () => {
+    try {
+      await logout();
+      window.location.reload();
+    } catch (err) {
+      console.error("Erro ao fazer logout:", err);
+    }
+  };
 
   return (
     <header id="page-header">
@@ -22,14 +28,7 @@ const PageHeader = (props) => {
       <h1 id="page-title">{props["title"]}</h1>
       <div id="nav-buttons">
         <div className="menu-button-group">
-          <button
-            id="notifications-button"
-            className={notListVisible ? "connected-to-list" : ""}
-            onClick={toggleNotificationListVisibility}
-          >
-            <i className="fa-solid fa-bell"></i>
-          </button>
-          <NotificationList visible={notListVisible} />
+          <NotificationHandler />
         </div>
         <div className="menu-button-group">
           <button
@@ -42,20 +41,24 @@ const PageHeader = (props) => {
           <StatsMenu visible={statsMenuVisible} />
         </div>
         <form action={null} method="POST">
-          <button type="submit">Salvar</button>
+          <button
+            id="salvar"
+            type="submit"
+            onClick={() => {
+              alert("implementação salvar ainda não feita");
+            }}
+          >
+            Salvar
+          </button>
         </form>
         <form action={null} method="POST">
-          <button type="submit">Logout</button>
+          <button id="logout" type="button" onClick={fazerLogout}>
+            Logout
+          </button>
         </form>
       </div>
     </header>
   );
 };
-
-const PageHeaderPropTypes = {
-  // always use prop types!
-};
-
-PageHeader.propTypes = PageHeaderPropTypes;
 
 export default PageHeader;

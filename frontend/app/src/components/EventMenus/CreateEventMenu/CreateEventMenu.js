@@ -59,11 +59,16 @@ const CriarEventoMenu = (props) => {
     return new Date(dayInfo.year, dayInfo.monthIndex, dayInfo.day, hours, minutes, 0, 0);
   };
 
+  const fixTimezoneOffset = (date) => {
+    if (!date) return "";
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  };
+
   // Handler for start/end datetime changes
   const handleDateTimeChange = (date, field) => {
     if (!date) return;
     setFormData((prev) => {
-      const newValue = { ...prev, [field]: new Date(date) };
+      const newValue = { ...prev, [field]: date };
       // Ensure end is after start
       if (field === "start" && newValue.end && newValue.start > newValue.end) {
         newValue.end = new Date(newValue.start.getTime() + 60 * 60 * 1000);
@@ -114,8 +119,8 @@ const CriarEventoMenu = (props) => {
         description: formData.descricao || "",
         location: formData.local || null,
         colorId: formData.cor ? String(formData.cor) : null,
-        start: { dateTime: formData.start }, // EventDate object
-        end: { dateTime: formData.end },     // EventDate object
+        start: { dateTime: fixTimezoneOffset(formData.start) }, // EventDate object
+        end: { dateTime: fixTimezoneOffset(formData.end) },     // EventDate object
         status: "confirmed",
         attendees: attendees,
         // Optional/empty fields for EventsResource compatibility
@@ -349,7 +354,7 @@ const CriarEventoMenu = (props) => {
                 value={formData.novoConvidado}
                 onChange={handleInputChange}
                 placeholder="Adicione e-mails de convidados"
-                onKeyPress={(e) =>
+                onKeyDown={(e) =>
                   e.key === "Enter" &&
                   (e.preventDefault(), adicionarConvidado())
                 }

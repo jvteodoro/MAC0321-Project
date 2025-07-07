@@ -1,0 +1,10 @@
+#list-content > li {
+    display: flex;
+    padding: 0.2em;
+    border: solid var(--secondary-color) 0.1em;
+    border-radius: 10px;
+}
+
+#list-content button {
+    font-size: 0.8em;
+}
