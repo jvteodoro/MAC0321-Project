@@ -15,6 +15,7 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.events.EventPollDoneEvent;
 import br.com.agendusp.agendusp.events.EventPollNotification;
+import br.com.agendusp.agendusp.events.EventPollVoteEvent;
 import br.com.agendusp.agendusp.repositories.EventPollRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 

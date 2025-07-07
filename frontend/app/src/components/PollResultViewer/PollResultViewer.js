@@ -79,6 +79,7 @@ const PollResultViewer = (props) => {
           null,
           {
             params: {
+              userId: userId,
               eventPollId: poll.id,
               dateTimeIntervalId,
             },

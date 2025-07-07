@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -25,6 +26,7 @@ import br.com.agendusp.agendusp.dataobjects.eventObjects.EventDate;
 import br.com.agendusp.agendusp.dataobjects.eventObjects.EventPoll;
 import br.com.agendusp.agendusp.documents.EventsResource;
 import br.com.agendusp.agendusp.documents.User;
+import br.com.agendusp.agendusp.events.EventPollVoteEvent;
 import br.com.agendusp.agendusp.repositories.EventPollRepository;
 import br.com.agendusp.agendusp.repositories.UserRepository;
 
@@ -45,6 +47,9 @@ public class FormsController {
     ObjectMapper objectMapper;
     @Autowired
     EventPollDataController eventPollDataController;
+    @Autowired
+    ApplicationEventPublisher applicationPublisher;
+
 
     @MessageMapping("/poll/send/{eventPollId}")
     public void sendPoll(@PathVariable String eventPollId) {
@@ -60,9 +65,9 @@ public class FormsController {
 
     @MessageMapping("/poll/create/{eventPollId}/{dateTimeIntervalId}")
     public void createEventFromPoll(@PathVariable String eventPollId,
-            @PathVariable int dateTimeIntervalId) {
+            @PathVariable int dateTimeIntervalId, @RequestParam String userId) {
 
-        this.createEvent(eventPollId, dateTimeIntervalId);
+        this.createEvent(eventPollId, dateTimeIntervalId, userId);
         eventPollRepository.findById(eventPollId);
     }
 
@@ -96,8 +101,8 @@ public class FormsController {
             ArrayList<PollNotification> not = user.getEventPollNotifications();
             Optional<PollNotification> toRemove = (not.stream().filter(p -> p.getEventPollId().equals(eventPollId)).findFirst());
             for (PollNotification pollNot: not){
-                if (pollNot.getEventPollId() == eventPollId){
-                    not.remove(pollNot);
+                if (pollNot.getEventPollId().equals(eventPollId)){
+                //    not.remove(pollNot);
                 }
             }
             user.setEventPollNotifications(not);
@@ -110,7 +115,8 @@ public class FormsController {
             // evPoll.get().vote(dateTimeIntervalId);
             // REMOVE WebSocket notification here, handled by NotificationService
             
-
+            EventPollVoteEvent vote = new EventPollVoteEvent(this, userId, eventPollId);
+            applicationPublisher.publishEvent(vote);
             return evPoll.get();
         } else {
             return new EventPoll();
@@ -119,7 +125,7 @@ public class FormsController {
     }
 
     @PostMapping("/poll/createEvent")
-    public EventsResource createEvent(@RequestParam String eventPollId, @RequestParam int dateTimeIntervalId) {
+    public EventsResource createEvent(@RequestParam String eventPollId, @RequestParam int dateTimeIntervalId, @RequestParam String userId) {
         Optional<EventPoll> evPoll = eventPollRepository.findById(eventPollId);
         DateTimeIntervalPoll selected;
         if (evPoll.isPresent()) {
@@ -135,7 +141,8 @@ public class FormsController {
                     event.setEnd(end);
                 }
             }
-
+            EventPollVoteEvent vote = new EventPollVoteEvent(this, userId, eventPollId);
+            applicationPublisher.publishEvent(vote);
             return eventsDataController.updateByObject(event);
         }
     return new EventsResource();
