@@ -1,11 +1,11 @@
 # MAC0321-Project
-## Integrantes (nome: nusp)
-- João Victor Costa Teodoro: 15463850
-- André Akira Horigoshi Maximino: 15493801
-- Diego Fontes de Avila: 15447910
-- Gabriel Lopes Prodossimo: 15453560
-- Sophia Soares Mariano: 15511213
-- Matheus Davi Leão: 15520593
+## Integrantes (nome)
+- João Victor Costa Teodoro
+- André Akira Horigoshi Maximino
+- Diego Fontes de Avila
+- Gabriel Lopes Prodossimo
+- Sophia Soares Mariano
+- Matheus Davi Leão
 
 ## Descrição do Projeto
 Escolhemos o projeto A1 - Assistente para Organização Pessoal. O programa sera desenvolvido pensando no caso de uso dos docentes da usp
